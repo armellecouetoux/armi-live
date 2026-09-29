@@ -119,6 +119,21 @@ body.c-rocket{--accent:#AAB6FF; --accent-soft:rgba(170,182,255,.14); --orb-a:#4C
 @media (hover:none){ .deltask{opacity:1} }
 .readonly .addtask, .readonly .deltask{display:none}
 
+/* Meeting notes */
+.notes{border-top:1px solid var(--line); padding-top:28px}
+.note-list{display:grid; gap:12px}
+.note{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:14px 16px; display:grid; gap:8px; animation:rise .4s var(--ease) both; transition:border-color .25s}
+.note:focus-within{border-color:var(--accent)}
+.note-head{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:center}
+.note-date, .note-title, .note-body{background:transparent; border:0; color:var(--ink); font-family:var(--f-body); outline:none; min-width:0}
+.note-date{font-size:12px; font-weight:700; color:var(--accent); color-scheme:dark; padding:4px 0}
+.note-title{font-size:16px; font-weight:700; padding:4px 0}
+.note-title::placeholder, .note-body::placeholder{color:var(--done)}
+.note-body{font-size:14px; line-height:1.6; resize:none; min-height:96px; width:100%; overflow:hidden; border-top:1px solid var(--line); padding-top:10px}
+.note-meta{font-size:11px; color:var(--done)}
+.readonly .note input, .readonly .note textarea{pointer-events:none}
+@media (max-width:560px){ .note-head{grid-template-columns:1fr auto} .note-title{grid-column:1 / -1; grid-row:2} }
+
 /* Home */
 body.c-home{--accent:#F0D88A; --accent-soft:rgba(240,216,138,.14); --orb-a:#6A55C9; --orb-b:#A0672A; --glow:rgba(240,216,138,.06)}
 .tab[data-tab="home"]{--dot:#F0D88A}
@@ -488,7 +503,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
   function canon(o){ if (Array.isArray(o)) return o.map(canon); if (o && typeof o === 'object'){ var r = {}; Object.keys(o).sort().forEach(function(k){ r[k] = canon(o[k]); }); return r; } return o; }
-  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
+  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
   function stable(o){ return JSON.stringify(canon(norm(JSON.parse(JSON.stringify(o || {}))))); }
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
@@ -739,6 +754,62 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   });
   document.querySelectorAll('li.task').forEach(setupTask);
   document.querySelectorAll('.row[data-key]').forEach(addTaskButton);
+
+  // ---------- Meeting notes per tab ----------
+  if (!state.notes || typeof state.notes !== 'object') state.notes = {};
+  var ndF = new Intl.DateTimeFormat('es-ES',{weekday:'short', day:'numeric', month:'short', year:'numeric'});
+  function isoToday(){ var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); }
+  function grow(ta){ ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, 96) + 'px'; }
+  function noteCard(key, n, list){
+    var card = el('article','note'); card.dataset.id = n.id;
+    var head = el('div','note-head');
+    var d = el('input','note-date'); d.type = 'date'; d.value = n.d || isoToday(); d.id = 'nd-' + n.id; d.setAttribute('aria-label','Fecha de la reunión');
+    var t = el('input','note-title'); t.type = 'text'; t.placeholder = 'Reunión con…'; t.value = n.title || ''; t.id = 'nt-' + n.id; t.setAttribute('aria-label','Título de la nota'); t.maxLength = 120;
+    var del = el('button','deltask','×'); del.type = 'button'; del.setAttribute('aria-label','Borrar nota'); del.style.opacity = '1';
+    head.append(d, t, del);
+    var ta = el('textarea','note-body'); ta.placeholder = 'Asistentes, acuerdos, próximos pasos…'; ta.value = n.body || ''; ta.id = 'nb-' + n.id; ta.setAttribute('aria-label','Notas');
+    var meta = el('div','note-meta', n.ts ? 'Editada ' + new Date(n.ts).toLocaleString('es-ES',{day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '');
+    card.append(head, ta, meta);
+    function find(){ return (state.notes[key] || []).find(function(x){ return x.id === n.id; }); }
+    function upd(field, v){ if (readOnly) return; var x = find(); if (!x) return; x[field] = v; x.ts = Date.now(); meta.textContent = 'Editada ahora'; scheduleSave(); }
+    d.addEventListener('change', function(){ upd('d', d.value); });
+    t.addEventListener('input', function(){ upd('title', t.value); });
+    ta.addEventListener('input', function(){ grow(ta); upd('body', ta.value); });
+    var armed;
+    del.addEventListener('click', function(){
+      if (readOnly) return;
+      if (!del.classList.contains('armed')){ del.classList.add('armed'); del.textContent = 'Borrar'; clearTimeout(armed); armed = setTimeout(function(){ del.classList.remove('armed'); del.textContent = '×'; }, 3000); return; }
+      state.notes[key] = (state.notes[key] || []).filter(function(x){ return x.id !== n.id; });
+      if (!state.notes[key].length) delete state.notes[key];
+      card.remove(); emptyState(list, key); scheduleSave();
+    });
+    requestAnimationFrame(function(){ grow(ta); });
+    return card;
+  }
+  function emptyState(list, key){
+    var e = list.querySelector('.empty'); var has = (state.notes[key] || []).length;
+    if (!has && !e) list.appendChild(el('p','empty','Aún no hay notas. Pulsa “+ Nueva nota” para empezar.'));
+    if (has && e) e.remove();
+  }
+  allPanels.forEach(function(panel){
+    var key = panel.dataset.client;
+    var sec = el('section','notes h-section');
+    var hd = el('div','h-head'); hd.appendChild(el('h2', null, key === 'home' ? 'Notas generales' : 'Notas de reuniones'));
+    var add = el('button','addtask','+ Nueva nota'); add.type = 'button'; add.style.marginLeft = '0'; hd.appendChild(add);
+    var list = el('div','note-list');
+    sec.append(hd, list);
+    panel.appendChild(sec);
+    (state.notes[key] || []).slice().sort(function(a,b){ return (b.d || '').localeCompare(a.d || '') || (b.ts || 0) - (a.ts || 0); })
+      .forEach(function(n){ list.appendChild(noteCard(key, n, list)); });
+    emptyState(list, key);
+    add.addEventListener('click', function(){
+      if (readOnly) return;
+      var n = {id: 'n-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), d: isoToday(), title: '', body: '', ts: Date.now()};
+      (state.notes[key] = state.notes[key] || []).push(n);
+      var card = noteCard(key, n, list); list.prepend(card); emptyState(list, key);
+      card.querySelector('.note-title').focus(); scheduleSave();
+    });
+  });
 
 
   // ---------- Home: overview of every client ----------

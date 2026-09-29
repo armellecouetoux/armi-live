@@ -95,7 +95,12 @@
  "s-pos-agenda": false,
  "c-mumgxeg9hkqg": false,
  "t-es-llav": false,
- "edit": {},
+ "edit": {
+  "t-es-llav": {
+   "t": "Llaveros",
+   "o": "Armelle"
+  }
+ },
  "order": {},
  "t-bt-pon": false
 }

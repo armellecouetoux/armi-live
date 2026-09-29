@@ -1,4 +1,21 @@
 {
+ "st": {},
+ "links": {},
+ "custom": {},
+ "edit": {},
+ "order": {},
+ "events": {
+  "armi-dbi": [
+   {
+    "key": "e-6kvy3ibl",
+    "name": "Tareas",
+    "d": "2026-12-31",
+    "d2": "",
+    "url": "",
+    "meta": ""
+   }
+  ]
+ },
  "clients": [
   {
    "key": "armi-dbi",

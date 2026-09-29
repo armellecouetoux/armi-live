@@ -154,6 +154,22 @@ body.c-rocket{--accent:#AAB6FF; --accent-soft:rgba(170,182,255,.14); --orb-a:#4C
 .sp-copy{appearance:none; border:0; border-radius:8px; background:var(--accent); color:var(--bg); font-family:var(--f-body); font-size:12px; font-weight:700; padding:8px 14px; cursor:pointer; white-space:nowrap}
 .sp-acts{display:flex; flex-wrap:wrap; gap:14px} .sp-acts a{font-size:12.5px; font-weight:700; color:var(--accent); text-decoration:none} .sp-acts a:hover{text-decoration:underline}
 
+/* Background halo: slow rotating aurora + a glow that follows the cursor */
+.aura{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden}
+.aura-ring{position:absolute; left:50%; top:-35vmax; width:110vmax; height:110vmax; margin-left:-55vmax; border-radius:50%;
+  background:conic-gradient(from 0deg, var(--orb-a), transparent 22%, var(--accent) 40%, transparent 58%, var(--orb-b) 76%, transparent 90%, var(--orb-a));
+  -webkit-mask:radial-gradient(circle, transparent 38%, #000 52%, transparent 70%); mask:radial-gradient(circle, transparent 38%, #000 52%, transparent 70%);
+  filter:blur(55px); opacity:.34; animation:auraSpin 48s linear infinite, auraBreath 9s ease-in-out infinite alternate; transition:background .8s}
+.aura-glow{position:absolute; left:0; top:0; width:560px; height:560px; margin:-280px 0 0 -280px; border-radius:50%;
+  background:radial-gradient(circle, var(--accent) 0%, transparent 62%); opacity:.18; filter:blur(30px); will-change:transform; animation:glowPulse 6s ease-in-out infinite alternate}
+.aura-grain{position:absolute; inset:-50%; background-image:radial-gradient(rgba(255,255,255,.035) 1px, transparent 1px); background-size:3px 3px; animation:grain 1.2s steps(4) infinite; opacity:.5}
+@keyframes auraSpin{to{transform:rotate(360deg)}}
+@keyframes auraBreath{from{opacity:.26} to{opacity:.44}}
+@keyframes glowPulse{from{opacity:.13} to{opacity:.22}}
+@keyframes grain{0%{transform:translate(0,0)} 25%{transform:translate(-1%,1%)} 50%{transform:translate(1%,-1%)} 75%{transform:translate(-1%,-1%)} 100%{transform:translate(1%,1%)}}
+@media (max-width:560px){ .aura-glow{width:340px; height:340px; margin:-170px 0 0 -170px} }
+@media (prefers-reduced-motion:reduce){ .aura-glow{display:none} }
+
 /* Home */
 body.c-home{--accent:#F0D88A; --accent-soft:rgba(240,216,138,.14); --orb-a:#6A55C9; --orb-b:#A0672A; --glow:rgba(240,216,138,.06)}
 .tab[data-tab="home"]{--dot:#F0D88A}
@@ -906,6 +922,27 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     });
     document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !pop.hidden){ pop.hidden = true; btn.setAttribute('aria-expanded','false'); btn.focus(); } });
   });
+
+  // ---------- Background halo ----------
+  (function(){
+    var aura = document.createElement('div'); aura.className = 'aura'; aura.setAttribute('aria-hidden','true');
+    aura.innerHTML = '<div class="aura-ring"></div><div class="aura-glow"></div><div class="aura-grain"></div>';
+    document.body.insertBefore(aura, document.body.firstChild);
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var glow = aura.querySelector('.aura-glow');
+    var x = innerWidth * .7, y = innerHeight * .25, tx = x, ty = y, last = 0, t0 = performance.now();
+    addEventListener('pointermove', function(e){ tx = e.clientX; ty = e.clientY; last = performance.now(); }, {passive:true});
+    function tick(now){
+      if (now - last > 2500){ // idle or touch: drift on a slow figure-eight
+        var t = (now - t0) / 1000;
+        tx = innerWidth * (.5 + .32 * Math.sin(t * .23)); ty = innerHeight * (.42 + .25 * Math.sin(t * .37 + 1));
+      }
+      x += (tx - x) * .06; y += (ty - y) * .06;
+      glow.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)';
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
 
   function counts(panel){
     var bx = panel.querySelectorAll('.task input[type=checkbox]'), open = 0, total = 0, prio = 0;

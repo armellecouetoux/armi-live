@@ -315,6 +315,26 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
 .tline{display:flex; align-items:flex-start; gap:8px}
 .tline > label{flex:1 1 auto; min-width:0}
 .tline > .st, .tline > .addlink, .tline > .edittask, .tline > .movebtns, .tline > .deltask, .tline > .drag{flex:0 0 auto}
+
+/* Client comments */
+.comments{border-top:1px solid var(--line); padding-top:28px}
+.cm-form{display:grid; gap:10px; border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:16px}
+.cm-row{display:flex; flex-wrap:wrap; gap:10px}
+.cm-form input, .cm-form select, .cm-form textarea{background:var(--surface-2); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-family:var(--f-body); font-size:14px; padding:9px 11px; min-width:0}
+.cm-form input{flex:1 1 180px} .cm-form select{flex:2 1 240px; color-scheme:dark}
+.cm-form textarea{min-height:90px; resize:vertical}
+.cm-form input:focus, .cm-form select:focus, .cm-form textarea:focus{outline:none; border-color:var(--accent)}
+.cm-form button.ok{justify-self:start; appearance:none; border:0; border-radius:8px; background:var(--accent); color:var(--bg); font-family:var(--f-body); font-size:13px; font-weight:700; padding:9px 16px; cursor:pointer}
+.cm-form button.ok:disabled{opacity:.5; cursor:default}
+.cm-msg{font-size:12.5px; color:var(--muted)} .cm-msg.is-ok{color:#8EE6B4} .cm-msg.is-err{color:var(--urgent)}
+.hp{position:absolute; left:-9999px; width:1px; height:1px; opacity:0}
+.cm-list{display:grid; gap:10px}
+.cm{border:1px solid var(--line); border-radius:12px; padding:12px 14px; background:var(--surface); display:grid; gap:6px; animation:rise .4s var(--ease) both}
+.cm-head{display:flex; flex-wrap:wrap; gap:4px 10px; align-items:baseline; font-size:13px} .cm-head b{color:var(--ink)}
+.cm-date{font-size:11.5px; color:var(--done)} .cm-task{font-size:12px; color:var(--accent); font-weight:600}
+.cm-text{margin:0; font-size:14px; line-height:1.55; white-space:pre-wrap}
+.cm-badge{align-self:center; appearance:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); font-family:var(--f-body); font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; cursor:pointer; flex:0 0 auto}
+.cm-badge:hover{border-color:var(--accent); color:var(--accent)}
 </style>
 <main class="page">
 
@@ -886,6 +906,77 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     });
   });
 
+
+  // ---------- Client comments (Google Sheet via Apps Script) ----------
+  var COMMENTS_URL = '';   // URL de la aplicación web de Apps Script
+  var VIEW_CODE = VIEW ? (window.ARMI_DATA || '').split('/')[0] : null;
+  if (COMMENTS_URL) (function(){
+    var targets = VIEW ? [[VIEW, VIEW_CODE]] : Object.keys(SHARES).map(function(c){ return [c, SHARES[c]]; });
+    var dF = new Intl.DateTimeFormat('es-ES',{day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+    targets.forEach(function(tg){
+      var client = tg[0], code = tg[1], panel = document.querySelector('.panel[data-client="' + client + '"]'); if (!panel || !code) return;
+      var sec = el('section','comments h-section'); sec.id = 'cm-' + client;
+      var hd = el('div','h-head'); hd.appendChild(el('h2', null, VIEW ? 'Comentarios' : 'Comentarios del cliente'));
+      var fresh = el('span','fresh'); hd.appendChild(fresh); sec.appendChild(hd);
+      var list = el('div','cm-list'); list.appendChild(el('p','empty','Cargando comentarios…')); sec.appendChild(list);
+      var sel = null, txt = null;
+      if (VIEW){
+        var f = el('form','cm-form');
+        var nm = el('input'); nm.type = 'text'; nm.placeholder = 'Tu nombre'; nm.id = 'cm-name'; nm.maxLength = 60; nm.required = true; nm.setAttribute('aria-label','Tu nombre');
+        try { nm.value = localStorage.getItem('armi-cm-name') || ''; } catch(e){}
+        sel = el('select'); sel.id = 'cm-task'; sel.setAttribute('aria-label','Sobre qué tarea');
+        var o0 = el('option', null, 'Comentario general'); o0.value = ''; sel.appendChild(o0);
+        panel.querySelectorAll('li.task').forEach(function(li){ var cb = li.querySelector('input[type=checkbox]'); var o = el('option', null, taskParts(li).t.slice(0, 70)); o.value = cb.id; sel.appendChild(o); });
+        txt = el('textarea'); txt.id = 'cm-text'; txt.placeholder = 'Escribe tu comentario…'; txt.maxLength = 1500; txt.required = true; txt.setAttribute('aria-label','Comentario');
+        var hp = el('input'); hp.type = 'text'; hp.name = 'website'; hp.tabIndex = -1; hp.autocomplete = 'off'; hp.className = 'hp'; hp.setAttribute('aria-hidden','true');
+        var send = el('button','ok','Enviar comentario'); send.type = 'submit';
+        var msg = el('span','cm-msg');
+        var row1 = el('div','cm-row'); row1.append(nm, sel);
+        f.append(row1, txt, hp, send, msg); sec.insertBefore(f, list);
+        f.addEventListener('submit', async function(e){
+          e.preventDefault(); if (!nm.value.trim() || !txt.value.trim()) return;
+          send.disabled = true; msg.textContent = 'Enviando…'; msg.className = 'cm-msg';
+          try {
+            try { localStorage.setItem('armi-cm-name', nm.value.trim()); } catch(e2){}
+            var r = await fetch(COMMENTS_URL, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({v: code, name: nm.value.trim(), task: sel.value, text: txt.value.trim(), website: hp.value})});
+            var j = await r.json(); if (!j.ok) throw 0;
+            txt.value = ''; msg.textContent = 'Comentario enviado. ¡Gracias!'; msg.className = 'cm-msg is-ok'; load();
+          } catch(err){ msg.textContent = 'No se pudo enviar. Revisa tu conexión y vuelve a intentarlo.'; msg.className = 'cm-msg is-err'; }
+          send.disabled = false;
+        });
+      }
+      panel.appendChild(sec);
+      function taskName(id){ var cb = id && document.getElementById(id); return cb ? taskParts(cb.closest('li.task')).t : ''; }
+      function render(rows){
+        list.innerHTML = '';
+        panel.querySelectorAll('.cm-badge').forEach(function(b){ b.remove(); });
+        if (!rows.length){ list.appendChild(el('p','empty', VIEW ? 'Aún no hay comentarios. Sé el primero en escribir uno.' : 'Aún no hay comentarios del cliente.')); return; }
+        var counts = {};
+        rows.slice().sort(function(a,b){ return (b.ts || '').localeCompare(a.ts || ''); }).forEach(function(c){
+          var card = el('article','cm');
+          var h = el('div','cm-head'); h.appendChild(el('b', null, c.name || 'Anónimo')); h.appendChild(el('span','cm-date', c.ts ? dF.format(new Date(c.ts)) : ''));
+          var tn = taskName(c.task); if (tn) h.appendChild(el('span','cm-task', '↳ ' + tn));
+          card.appendChild(h); card.appendChild(el('p','cm-text', c.text || '')); list.appendChild(card);
+          if (c.task) counts[c.task] = (counts[c.task] || 0) + 1;
+        });
+        Object.keys(counts).forEach(function(id){
+          var cb = document.getElementById(id); if (!cb) return;
+          var line = cb.closest('li.task').querySelector('.tline');
+          var b = el('button','cm-badge', '💬 ' + counts[id]); b.type = 'button'; b.setAttribute('aria-label', counts[id] + ' comentarios');
+          b.addEventListener('click', function(){ sec.scrollIntoView({behavior:'smooth', block:'start'}); if (sel){ sel.value = id; txt.focus(); } });
+          line.insertBefore(b, line.querySelector('.st'));
+        });
+      }
+      async function load(){
+        try {
+          var r = await fetch(COMMENTS_URL + '?v=' + encodeURIComponent(code) + '&t=' + Date.now(), {cache: 'no-store'});
+          render(await r.json()); fresh.textContent = 'actualizado ' + new Date().toLocaleTimeString('es-ES',{hour:'2-digit', minute:'2-digit'});
+        } catch(e){ list.innerHTML = ''; list.appendChild(el('p','empty warn','No se pudieron cargar los comentarios ahora mismo.')); }
+      }
+      load();
+      document.addEventListener('visibilitychange', function(){ if (!document.hidden) load(); });
+    });
+  })();
 
   // ---------- Home: overview of every client ----------
   var CL = {shopify:{name:'Shopify', c:'#8EE6B4'}};

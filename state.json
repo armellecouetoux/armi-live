@@ -7,5 +7,17 @@
  },
  "links": {},
  "t-ed-inv": false,
- "t-bt-stick": false
+ "t-bt-stick": false,
+ "custom": {},
+ "notes": {
+  "home": [
+   {
+    "id": "n-mumfljpzopw2",
+    "d": "2026-09-29",
+    "title": "",
+    "body": "",
+    "ts": 1790671535639
+   }
+  ]
+ }
 }

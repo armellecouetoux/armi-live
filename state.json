@@ -7,7 +7,8 @@
   "t-bt-merch": "ongoing",
   "t-bt-net": "ongoing",
   "t-bt-lany": "ongoing",
-  "t-cq-who": "ongoing"
+  "t-cq-who": "ongoing",
+  "s-pos-agenda": "ongoing"
  },
  "links": {},
  "t-ed-inv": false,
@@ -60,5 +61,6 @@
  },
  "t-bt-merch": false,
  "t-bt-net": false,
- "t-bt-lany": false
+ "t-bt-lany": false,
+ "s-pos-agenda": false
 }

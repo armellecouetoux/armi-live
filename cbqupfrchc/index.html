@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Rocket Digital · Agenda</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
 <style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
 </head>
 <body>
@@ -170,6 +171,27 @@ body.c-rocket{--accent:#AAB6FF; --accent-soft:rgba(170,182,255,.14); --orb-a:#4C
 @media (max-width:560px){ .aura-glow{width:340px; height:340px; margin:-170px 0 0 -170px} }
 @media (prefers-reduced-motion:reduce){ .aura-glow{display:none} }
 
+/* Edit / reorder tasks */
+.drag{align-self:center; color:var(--done); font-size:12px; letter-spacing:-2px; cursor:grab; user-select:none; padding:0 2px; opacity:0; transition:opacity .2s}
+.no-sortable .drag{display:none}
+.task:hover .drag{opacity:1}
+.drag-ghost{opacity:.35}
+.edittask, .mv{align-self:center; appearance:none; border:0; background:transparent; color:var(--done); font-family:var(--f-body); font-size:13px; line-height:1; padding:3px 5px; border-radius:6px; cursor:pointer; opacity:0; transition:opacity .2s, color .2s}
+.movebtns{display:inline-flex; align-self:center}
+.task:hover .edittask, .task:hover .mv, .edittask:focus-visible, .mv:focus-visible{opacity:1}
+.edittask:hover, .mv:hover{color:var(--accent)}
+@media (hover:none){ .edittask, .mv{opacity:1} .drag{display:none} }
+@media (hover:hover){ .movebtns{display:none} .no-sortable .movebtns{display:inline-flex} }
+.editform{padding-left:29px}
+/* Notes shared with the client */
+.note-head{grid-template-columns:auto minmax(0,1fr) auto auto}
+.note-share{appearance:none; border:1px solid var(--line); background:transparent; color:var(--muted); font-family:var(--f-body); font-size:11px; font-weight:700; padding:3px 9px; border-radius:999px; cursor:pointer; white-space:nowrap}
+.note-share.on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.note.is-shared{border-color:color-mix(in srgb, var(--accent) 45%, var(--line))}
+.note.ro .note-head{grid-template-columns:auto minmax(0,1fr)}
+.note-body.ro{white-space:pre-wrap; min-height:0; overflow:visible}
+@media (max-width:560px){ .note-head{grid-template-columns:1fr auto auto} }
+
 /* Home */
 body.c-home{--accent:#F0D88A; --accent-soft:rgba(240,216,138,.14); --orb-a:#6A55C9; --orb-b:#A0672A; --glow:rgba(240,216,138,.06)}
 .tab[data-tab="home"]{--dot:#F0D88A}
@@ -288,6 +310,11 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   body::after{width:280px; height:280px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important; transition:none!important}}
+
+/* Task row: flexible so optional controls never wrap the layout */
+.tline{display:flex; align-items:flex-start; gap:8px}
+.tline > label{flex:1 1 auto; min-width:0}
+.tline > .st, .tline > .addlink, .tline > .edittask, .tline > .movebtns, .tline > .deltask, .tline > .drag{flex:0 0 auto}
 </style>
 <main class="page">
 
@@ -473,7 +500,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
   function canon(o){ if (Array.isArray(o)) return o.map(canon); if (o && typeof o === 'object'){ var r = {}; Object.keys(o).sort().forEach(function(k){ r[k] = canon(o[k]); }); return r; } return o; }
-  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
+  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
   function stable(o){ return JSON.stringify(canon(norm(JSON.parse(JSON.stringify(o || {}))))); }
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
@@ -524,7 +551,11 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       if (state.st[id]) sub.st[id] = state.st[id];
       if (state.links[id]) sub.links[id] = state.links[id];
     });
-    panel.querySelectorAll('.row[data-key]').forEach(function(r){ var k = r.dataset.key; if (state.custom[k]) sub.custom[k] = state.custom[k]; });
+    sub.edit = {}; sub.order = {};
+    panel.querySelectorAll('.task input[type=checkbox]').forEach(function(b){ if (state.edit[b.id]) sub.edit[b.id] = state.edit[b.id]; });
+    panel.querySelectorAll('.row[data-key]').forEach(function(r){ var k = r.dataset.key; if (state.custom[k]) sub.custom[k] = state.custom[k]; if (state.order[k]) sub.order[k] = state.order[k]; });
+    var shared = (state.notes[client] || []).filter(function(n){ return n.shared; }).map(function(n){ return {id: n.id, d: n.d, title: n.title, body: n.body}; });
+    if (shared.length){ sub.notes = {}; sub.notes[client] = shared; }
     return sub;
   }
   async function putFile(path, obj, retry){
@@ -760,8 +791,78 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     var ul = row.querySelector('ul.tasks');
     (state.custom[row.dataset.key] || []).forEach(function(task){ ul.appendChild(customLi(row.dataset.key, task)); });
   });
+  // ---------- Edit texts and reorder tasks ----------
+  if (!state.edit || typeof state.edit !== 'object') state.edit = {};
+  if (!state.order || typeof state.order !== 'object') state.order = {};
+  function taskParts(li){
+    var txt = li.querySelector('.txt'), t = '', o = '';
+    txt.childNodes.forEach(function(n){ if (n.nodeType === 3) t += n.textContent; });
+    var ow = txt.querySelector('.owner'); if (ow) o = ow.textContent;
+    return {t: t.replace(/\s+/g, ' ').trim(), o: o.trim()};
+  }
+  function setTxt(li, t, o){
+    var txt = li.querySelector('.txt'), keep = [];
+    txt.querySelectorAll(':scope > .tlink, :scope > .note').forEach(function(k){ keep.push(k); });
+    txt.textContent = ''; txt.appendChild(document.createTextNode(t));
+    if (o){ txt.appendChild(document.createTextNode(' ')); var ow = document.createElement('span'); ow.className = 'owner'; ow.textContent = o; txt.appendChild(ow); }
+    keep.forEach(function(k){ txt.appendChild(document.createTextNode(' ')); txt.appendChild(k); });
+  }
+  document.querySelectorAll('li.task').forEach(function(li){
+    var id = li.querySelector('input[type=checkbox]').id, e = state.edit[id];
+    if (e && !li.classList.contains('custom')) setTxt(li, e.t, e.o);
+  });
+  document.querySelectorAll('.row[data-key]').forEach(function(row){
+    var ul = row.querySelector('ul.tasks'), order = state.order[row.dataset.key]; if (!ul || !order) return;
+    order.forEach(function(id){ var cb = document.getElementById(id); if (cb && ul.contains(cb)) ul.appendChild(cb.closest('li.task')); });
+    [].slice.call(ul.children).forEach(function(li){ if (order.indexOf(li.querySelector('input').id) < 0) ul.appendChild(li); });
+  });
+  function saveOrder(ul){
+    var row = ul.closest('.row'); if (!row) return;
+    state.order[row.dataset.key] = [].map.call(ul.querySelectorAll(':scope > li.task input[type=checkbox]'), function(b){ return b.id; });
+    renderHome(true); scheduleSave();
+  }
+  function addEditControls(li){
+    var line = li.querySelector('.tline'), label = line.querySelector('label');
+    var drag = el('span','drag','⋮⋮'); drag.title = 'Arrastra para reordenar'; drag.setAttribute('aria-hidden','true');
+    line.insertBefore(drag, label);
+    var ed = el('button','edittask','✎'); ed.type = 'button'; ed.setAttribute('aria-label','Editar tarea');
+    line.insertBefore(ed, line.querySelector('.st'));
+    var mv = el('span','movebtns');
+    var up = el('button','mv','↑'); up.type = 'button'; up.setAttribute('aria-label','Subir tarea');
+    var dn = el('button','mv','↓'); dn.type = 'button'; dn.setAttribute('aria-label','Bajar tarea');
+    mv.append(up, dn); line.insertBefore(mv, ed);
+    up.addEventListener('click', function(){ var p = li.previousElementSibling; if (p){ li.parentNode.insertBefore(li, p); saveOrder(li.parentNode); } });
+    dn.addEventListener('click', function(){ var n = li.nextElementSibling; if (n){ li.parentNode.insertBefore(n, li); saveOrder(li.parentNode); } });
+    ed.addEventListener('click', function(){
+      if (readOnly || li.querySelector('.editform')) return;
+      var cur = taskParts(li), id = li.querySelector('input[type=checkbox]').id;
+      var f = el('form','lform editform');
+      var t = el('input'); t.type = 'text'; t.value = cur.t; t.id = 'et-' + id; t.maxLength = 140; t.setAttribute('aria-label','Texto de la tarea');
+      var o = el('input','lbl'); o.type = 'text'; o.value = cur.o; o.placeholder = 'Responsable (opcional)'; o.id = 'eo-' + id; o.maxLength = 30; o.setAttribute('aria-label','Responsable');
+      var ok = el('button','ok','Guardar'); ok.type = 'submit';
+      var no = el('button','cancel','Cancelar'); no.type = 'button';
+      f.append(t, o, ok, no); line.hidden = true; li.insertBefore(f, line.nextSibling); t.focus(); t.select();
+      function close(){ f.remove(); line.hidden = false; }
+      no.addEventListener('click', close);
+      f.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+      f.addEventListener('submit', function(e){
+        e.preventDefault();
+        var nt = t.value.trim(), no2 = o.value.trim(); if (!nt){ t.focus(); return; }
+        if (li.classList.contains('custom')){
+          (state.custom[li.dataset.custom] || []).forEach(function(x){ if (x.id === id){ x.t = nt; x.o = no2; } });
+        } else state.edit[id] = {t: nt, o: no2};
+        setTxt(li, nt, no2); close(); renderHome(true); scheduleSave();
+      });
+    });
+  }
+  var _setupTask = setupTask;
+  setupTask = function(li){ _setupTask(li); if (!VIEW) addEditControls(li); };
   document.querySelectorAll('li.task').forEach(setupTask);
   if (!VIEW) document.querySelectorAll('.row[data-key]').forEach(addTaskButton);
+  if (!VIEW && window.Sortable) document.querySelectorAll('.row ul.tasks').forEach(function(ul){
+    Sortable.create(ul, {handle: '.drag', animation: 180, ghostClass: 'drag-ghost', onEnd: function(){ saveOrder(ul); }});
+  });
+  if (!window.Sortable) document.body.classList.add('no-sortable');
 
   // ---------- Meeting notes per tab ----------
   if (!state.notes || typeof state.notes !== 'object') state.notes = {};
@@ -775,6 +876,12 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     var t = el('input','note-title'); t.type = 'text'; t.placeholder = 'Reunión con…'; t.value = n.title || ''; t.id = 'nt-' + n.id; t.setAttribute('aria-label','Título de la nota'); t.maxLength = 120;
     var del = el('button','deltask','×'); del.type = 'button'; del.setAttribute('aria-label','Borrar nota'); del.style.opacity = '1';
     head.append(d, t, del);
+    if (key !== 'home'){
+      var sh = el('button','note-share'); sh.type = 'button';
+      function paintShare(){ var on = !!(find() || n).shared; sh.textContent = on ? '👁 Visible para el cliente' : 'Privada'; sh.classList.toggle('on', on); card.classList.toggle('is-shared', on); sh.setAttribute('aria-pressed', String(on)); }
+      sh.addEventListener('click', function(){ if (readOnly) return; var x = find(); if (!x) return; x.shared = !x.shared; x.ts = Date.now(); paintShare(); scheduleSave(); });
+      head.insertBefore(sh, del); setTimeout(paintShare, 0);
+    }
     var ta = el('textarea','note-body'); ta.placeholder = 'Asistentes, acuerdos, próximos pasos…'; ta.value = n.body || ''; ta.id = 'nb-' + n.id; ta.setAttribute('aria-label','Notas');
     var meta = el('div','note-meta', n.ts ? 'Editada ' + new Date(n.ts).toLocaleString('es-ES',{day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '');
     card.append(head, ta, meta);
@@ -799,6 +906,20 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     if (!has && !e) list.appendChild(el('p','empty','Aún no hay notas. Pulsa “+ Nueva nota” para empezar.'));
     if (has && e) e.remove();
   }
+  if (VIEW) allPanels.forEach(function(panel){
+    var notes = (state.notes[VIEW] || []).slice().sort(function(a,b){ return (b.d || '').localeCompare(a.d || ''); });
+    if (!notes.length) return;
+    var sec = el('section','notes h-section'), list = el('div','note-list');
+    sec.appendChild(el('h2', null, 'Notas de reuniones')); sec.appendChild(list); panel.appendChild(sec);
+    notes.forEach(function(n){
+      var c = el('article','note ro');
+      var h = el('div','note-head');
+      var dd = n.d ? new Date(n.d + 'T12:00:00') : null;
+      h.appendChild(el('span','note-date', dd ? ndF.format(dd) : ''));
+      h.appendChild(el('span','note-title', n.title || 'Reunión'));
+      c.appendChild(h); c.appendChild(el('div','note-body ro', n.body || '')); list.appendChild(c);
+    });
+  });
   if (!VIEW) allPanels.forEach(function(panel){
     var key = panel.dataset.client;
     var sec = el('section','notes h-section');

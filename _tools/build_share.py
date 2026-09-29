@@ -55,9 +55,33 @@ def build(client: str, code: str) -> str:
     return s
 
 
+def build_template() -> str:
+    """Generic read-only viewer for clients created from the page (no client data inside)."""
+    s = MAIN.read_text(encoding="utf-8")
+    s = cut_block(s, '<nav class="tabs"', "nav")
+    for other in ["home", *SHARES]:
+        s = cut_block(s, f'<section class="panel" id="p-{other}"', "section")
+    s = cut_block(s, '<div class="syncpanel"', "div")
+    s = re.sub(r'<button type="button" class="syncbtn"[^>]*>.*?</button>', "", s)
+    s = re.sub(r'^<script type="application/json" id="state">.*?</script>$',
+               '<script type="application/json" id="state">{}</script>', s, count=1, flags=re.S | re.M)
+    s = re.sub(r"var CL = \{.*?\};", "var CL = {};", s, count=1)
+    s = s.replace("var SHARES = {rocket: 'cbqupfrchc', shopify: 'lm7l8rjbdi'}", "var SHARES = {}")
+    s = s.replace("window.ARMI_DATA || 'd/3unwb8j9lfbwts0b.json'", "window.ARMI_DATA")
+    s = re.sub(r"<title>.*?</title>", "<title>Agenda</title>", s)
+    s = s.replace('<script id="app">', '<script>/*ARMI_VIEW_INIT*/</script>\n<script id="app">', 1)
+    for code in [*SHARES.values(), "3unwb8j9lfbwts0b", "3ocz9gy6iwl7"]:
+        assert code not in s, code
+    for word in ["Rocket Digital", "Bootcamp", "Critical Quarter"]:
+        assert word not in s, word
+    return s
+
+
 if __name__ == "__main__":
     for client, code in SHARES.items():
         out = ROOT / code / "index.html"
         out.parent.mkdir(exist_ok=True)
         out.write_text(build(client, code), encoding="utf-8")
         print("ok", client, "->", out.relative_to(ROOT))
+    (ROOT / "_tools" / "viewer.html").write_text(build_template(), encoding="utf-8")
+    print("ok template -> _tools/viewer.html")

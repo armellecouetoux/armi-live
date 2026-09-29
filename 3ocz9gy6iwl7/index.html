@@ -316,6 +316,21 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
 .tline > label{flex:1 1 auto; min-width:0}
 .tline > .st, .tline > .addlink, .tline > .edittask, .tline > .movebtns, .tline > .deltask, .tline > .drag{flex:0 0 auto}
 
+
+/* Add clients / activations */
+.tab-add{--dot:var(--muted); border:1px dashed var(--line); color:var(--muted)}
+.tab-add::before{display:none}
+.newclient{max-width:620px; animation:rise .3s var(--ease) both}
+.newclient input{flex:1 1 220px}
+.swatches{display:flex; gap:8px; align-items:center}
+.sw{appearance:none; width:22px; height:22px; border-radius:50%; border:2px solid transparent; cursor:pointer; padding:0}
+.sw.on{border-color:var(--ink); box-shadow:0 0 0 2px var(--bg) inset}
+.addev{margin-top:4px}
+.evform{max-width:760px}
+.evform input[type=date]{flex:0 1 160px; color-scheme:dark}
+.evtools{display:inline-flex; gap:2px; margin-left:8px; vertical-align:middle}
+.rmclient{justify-self:start; appearance:none; border:0; background:transparent; color:var(--done); font-family:var(--f-body); font-size:12px; font-weight:700; cursor:pointer; padding:6px 0}
+.rmclient:hover{color:var(--urgent)} .rmclient.armed{color:var(--urgent)}
 </style>
 <main class="page">
   <nav class="tabs" role="tablist" aria-label="Clientes">
@@ -507,6 +522,56 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var LS_KEY = window.ARMI_VIEW ? 'armi-view-' + window.ARMI_VIEW : 'armi-agenda-state';
   try { var saved = localStorage.getItem(LS_KEY); if (saved) state = JSON.parse(saved) || state; } catch(e){}
 
+
+  // ---------- Clients and activations added from the page ----------
+  if (!Array.isArray(state.clients)) state.clients = [];
+  if (!state.events || typeof state.events !== 'object') state.events = {};
+  var PALETTE = ['#F4A6C6', '#FFC98B', '#8FD3FF', '#D7B8FF', '#9EE6E0', '#F7E08A', '#FF9E9E'];
+  var MON = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sept','Oct','Nov','Dic'], WD = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  function mk(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function rgba(h, a){ var n = parseInt(h.slice(1), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; }
+  function shade(h, f){ var n = parseInt(h.slice(1), 16); function c(v){ return Math.round(v * f).toString(16).padStart(2, '0'); } return '#' + c(n >> 16 & 255) + c(n >> 8 & 255) + c(n & 255); }
+  function pd(s){ var p = (s || '').split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function eventRow(ev){
+    var li = mk('li','row'); li.dataset.date = ev.d; li.dataset.key = ev.key; li.dataset.dyn = '1';
+    var a = pd(ev.d), b = ev.d2 ? pd(ev.d2) : null;
+    var dd = String(a.getDate()).padStart(2, '0'), mm = MON[a.getMonth()], wd = WD[a.getDay()];
+    if (b && b > a){ dd += '–' + String(b.getDate()).padStart(2, '0'); if (b.getMonth() !== a.getMonth()) mm += '–' + MON[b.getMonth()]; wd += '–' + WD[b.getDay()]; }
+    var date = mk('div','date'); date.append(mk('span','d', dd), mk('span','m', mm + ' · ' + wd), mk('span','chip'));
+    var body = mk('div','body'), evd = mk('div','ev');
+    if (ev.url){ var an = mk('a','ev-name', ev.name); an.href = ev.url; an.target = '_blank'; an.rel = 'noopener'; evd.appendChild(an); }
+    else evd.appendChild(mk('span','ev-name', ev.name));
+    body.appendChild(evd);
+    if (ev.meta) body.appendChild(mk('div','meta', ev.meta));
+    body.appendChild(mk('ul','tasks'));
+    li.append(date, body);
+    return li;
+  }
+  function sortRows(ol){ [].slice.call(ol.querySelectorAll(':scope > li.row')).sort(function(x, y){ return (x.dataset.date || '').localeCompare(y.dataset.date || ''); }).forEach(function(r){ ol.appendChild(r); }); }
+  (function renderDynamic(){
+    var nav = document.querySelector('.tabs'), main = document.querySelector('main'), foot = main && main.querySelector(':scope > footer');
+    var css = '';
+    state.clients.forEach(function(c){
+      css += 'body.c-' + c.key + '{--accent:' + c.c + ';--accent-soft:' + rgba(c.c, .14) + ';--orb-a:' + shade(c.c, .45) + ';--orb-b:#6B4A2E;--glow:' + rgba(c.c, .07) + '}.tab[data-tab="' + c.key + '"]{--dot:' + c.c + '}';
+      if (nav){ var t = mk('button','tab', c.name); t.setAttribute('role','tab'); t.id = 'tab-' + c.key; t.dataset.tab = c.key; t.setAttribute('aria-controls','p-' + c.key); t.setAttribute('aria-selected','false'); nav.appendChild(t); }
+      var sec = mk('section','panel'); sec.id = 'p-' + c.key; sec.setAttribute('role','tabpanel'); sec.dataset.client = c.key; sec.dataset.dyn = '1'; sec.hidden = true;
+      var hd = mk('header'), eb = mk('div','eyebrow');
+      eb.append(mk('span', null, c.name), mk('span', null, '·'), mk('span', null, 'Cliente'), mk('span', null, '·'), mk('span','today','Q4 2026'));
+      var h1 = mk('h1'); h1.append(document.createTextNode('Agenda: '), mk('em', null, c.name));
+      var lede = mk('p','lede'); lede.innerHTML = 'Lo que viene y lo que hay que mover ya. <b>Los nombres con ↗</b> abren la landing de cada activación.';
+      var pr = mk('div','progress'); pr.setAttribute('aria-hidden','true'); pr.appendChild(mk('i'));
+      hd.append(eb, h1, lede, mk('div','summary'), pr);
+      sec.append(hd, mk('ol','timeline'));
+      if (foot) main.insertBefore(sec, foot); else if (main) main.appendChild(sec);
+    });
+    if (css){ var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); }
+    Object.keys(state.events).forEach(function(ck){
+      var ol = document.querySelector('.panel[data-client="' + ck + '"] ol.timeline'); if (!ol) return;
+      (state.events[ck] || []).forEach(function(ev){ ol.appendChild(eventRow(ev)); });
+      sortRows(ol);
+    });
+  })();
+
   // Read-only share view (/rocket/, /shopify/): only one client's tab, nothing editable, no notes
   var VIEW = window.ARMI_VIEW || null;
   if (VIEW){
@@ -581,7 +646,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
   function canon(o){ if (Array.isArray(o)) return o.map(canon); if (o && typeof o === 'object'){ var r = {}; Object.keys(o).sort().forEach(function(k){ r[k] = canon(o[k]); }); return r; } return o; }
-  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
+  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; if (!Array.isArray(o.clients)) o.clients = []; if (!o.events || typeof o.events !== 'object') o.events = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
   function stable(o){ return JSON.stringify(canon(norm(JSON.parse(JSON.stringify(o || {}))))); }
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
@@ -624,6 +689,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   }
   // Read-only share files: one per client, only that client's tasks, never notes
   var SHARES = {rocket: 'cbqupfrchc', shopify: 'lm7l8rjbdi'}, shareSha = {}, shareLast = {};
+  state.clients.forEach(function(c){ if (c.code) SHARES[c.key] = c.code; });
   function shareData(client){
     var panel = document.querySelector('.panel[data-client="' + client + '"]'); if (!panel) return null;
     var sub = {st: {}, links: {}, custom: {}};
@@ -637,6 +703,9 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     panel.querySelectorAll('.row[data-key]').forEach(function(r){ var k = r.dataset.key; if (state.custom[k]) sub.custom[k] = state.custom[k]; if (state.order[k]) sub.order[k] = state.order[k]; });
     var shared = (state.notes[client] || []).filter(function(n){ return n.shared; }).map(function(n){ return {id: n.id, d: n.d, title: n.title, body: n.body}; });
     if (shared.length){ sub.notes = {}; sub.notes[client] = shared; }
+    if (state.events[client] && state.events[client].length){ sub.events = {}; sub.events[client] = state.events[client]; }
+    var meta = state.clients.filter(function(c){ return c.key === client; });
+    if (meta.length) sub.clients = [{key: meta[0].key, name: meta[0].name, c: meta[0].c}];
     return sub;
   }
   async function putFile(path, obj, retry){
@@ -644,7 +713,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       var g = await fetch(GH_BASE + path + '?ref=main&t=' + Date.now(), {headers: ghHeaders(), cache: 'no-store'});
       shareSha[path] = g.ok ? (await g.json()).sha : null;
     }
-    var body = {message: 'Actualizar vista compartida', content: b64enc(JSON.stringify(obj, null, 1)), branch: 'main'};
+    var body = {message: 'Actualizar vista compartida', content: b64enc(typeof obj === 'string' ? obj : JSON.stringify(obj, null, 1)), branch: 'main'};
     if (shareSha[path]) body.sha = shareSha[path];
     var r = await fetch(GH_BASE + path, {method: 'PUT', headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()), body: JSON.stringify(body)});
     if (r.ok){ shareSha[path] = (await r.json()).content.sha; return true; }
@@ -1024,6 +1093,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
 
   // ---------- Home: overview of every client ----------
   var CL = {rocket:{name:'Rocket Digital', c:'#AAB6FF'}, shopify:{name:'Shopify', c:'#8EE6B4'}};
+  state.clients.forEach(function(c){ CL[c.key] = {name: c.name, c: c.c}; });
   var dfmt = new Intl.DateTimeFormat('es-ES',{day:'2-digit', month:'short'});
   var h = now.getHours();
   var helloEl = document.getElementById('hello'); if (helloEl) helloEl.innerHTML = (h < 6 ? 'Buenas noches' : h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches') + ', <em>Armi</em>';
@@ -1177,6 +1247,127 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
 
   var start = VIEW ? '' : (location.hash || '').replace('#','');
   if (!start){ try { start = localStorage.getItem('armi-tab') || ''; } catch(e){} }
+
+  // ---------- Add clients and activations (owner only) ----------
+  async function saveNow(){
+    clearTimeout(timer);
+    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e){}
+    if (!token()) return false;
+    pending = true; setStatus('Guardando…');
+    try { await pushRemote(false); await sharing; pending = false; return true; }
+    catch(e){ pending = false; setStatus('No se pudo sincronizar con GitHub. Inténtalo de nuevo.', true); return false; }
+  }
+  async function putViewer(c){
+    var r = await fetch(GH_BASE + '_tools/viewer.html?ref=main&t=' + Date.now(), {headers: ghHeaders(), cache: 'no-store'});
+    if (!r.ok) throw 0;
+    var html = b64dec((await r.json()).content);
+    html = html.replace('/*ARMI_VIEW_INIT*/', 'window.ARMI_VIEW = ' + JSON.stringify(c.key) + '; window.ARMI_DATA = ' + JSON.stringify(c.code + '/data.json') + ';')
+               .replace('<title>Agenda</title>', '<title>' + c.name.replace(/[<>&]/g, '') + ' · Agenda</title>');
+    await putFile(c.code + '/index.html', html, false);
+    await putFile(c.code + '/data.json', shareData(c.key) || {clients: [{key: c.key, name: c.name, c: c.c}]}, false);
+  }
+  function rid(n){ var a = 'abcdefghijklmnopqrstuvwxyz0123456789', s = ''; var b = new Uint8Array(n); crypto.getRandomValues(b); b.forEach(function(x){ s += a[x % a.length]; }); return s; }
+  function slug(t){ return (t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 20) || 'cliente'; }
+  function needToken(where){ if (token()) return false; setStatus('Conecta GitHub en "Sincronizar dispositivos" para ' + where + '.', true); document.getElementById('status').scrollIntoView({behavior:'smooth', block:'center'}); return true; }
+  function goReload(tab){ try { localStorage.setItem('armi-tab', tab); } catch(e){} location.reload(); }
+
+  if (!VIEW) (function(){
+    var nav = document.querySelector('.tabs'); if (!nav) return;
+    // New client
+    var add = el('button','tab tab-add','+ Cliente'); add.type = 'button'; add.setAttribute('aria-label','Añadir cliente'); nav.appendChild(add);
+    var box = el('form','newclient lform'); box.hidden = true; nav.parentNode.insertBefore(box, nav.nextSibling);
+    var nm = el('input'); nm.type = 'text'; nm.id = 'nc-name'; nm.placeholder = 'Nombre del cliente'; nm.maxLength = 40; nm.setAttribute('aria-label','Nombre del cliente');
+    var sw = el('div','swatches'), used = state.clients.map(function(c){ return c.c; }), pick = PALETTE.filter(function(c){ return used.indexOf(c) < 0; })[0] || PALETTE[0];
+    PALETTE.forEach(function(c, i){ var b = el('button','sw'); b.type = 'button'; b.style.background = c; b.setAttribute('aria-label','Color ' + (i + 1)); if (c === pick) b.classList.add('on'); b.addEventListener('click', function(){ pick = c; sw.querySelectorAll('.sw').forEach(function(x){ x.classList.toggle('on', x === b); }); }); sw.appendChild(b); });
+    var ok = el('button','ok','Crear cliente'); ok.type = 'submit';
+    var no = el('button','cancel','Cancelar'); no.type = 'button';
+    var er = el('span','err'); er.hidden = true;
+    box.append(nm, sw, ok, no, er);
+    add.addEventListener('click', function(){ box.hidden = !box.hidden; if (!box.hidden) nm.focus(); });
+    no.addEventListener('click', function(){ box.hidden = true; });
+    box.addEventListener('submit', async function(e){
+      e.preventDefault();
+      var name = nm.value.trim(); if (!name){ nm.focus(); return; }
+      if (needToken('añadir clientes')) return;
+      ok.disabled = true; er.hidden = false; er.textContent = 'Creando el cliente y su enlace…';
+      var c = {key: slug(name) + '-' + rid(3), name: name, c: pick, code: rid(10)};
+      state.clients.push(c); SHARES[c.key] = c.code;
+      var saved = await saveNow();
+      try { if (saved) await putViewer(c); } catch(err){ saved = false; }
+      if (!saved){ er.textContent = 'No se pudo crear el enlace en GitHub. Revisa tu conexión y vuelve a intentarlo.'; ok.disabled = false; return; }
+      goReload(c.key);
+    });
+
+    // Per client: add / edit / delete activations, delete added clients
+    panels.forEach(function(panel){
+      var ck = panel.dataset.client, ol = panel.querySelector('ol.timeline'); if (!ol) return;
+      var addEv = el('button','addtask addev','+ Añadir activación'); addEv.type = 'button'; addEv.style.marginLeft = '0';
+      ol.parentNode.insertBefore(addEv, ol.nextSibling);
+      function openForm(ev){
+        var old = panel.querySelector('.evform'); if (old) old.remove();
+        var f = el('form','lform evform');
+        var n = el('input'); n.type = 'text'; n.placeholder = 'Nombre de la activación'; n.maxLength = 80; n.id = 'ev-n-' + ck; n.value = ev ? ev.name : ''; n.setAttribute('aria-label','Nombre de la activación');
+        var d1 = el('input'); d1.type = 'date'; d1.id = 'ev-d-' + ck; d1.value = ev ? ev.d : ''; d1.setAttribute('aria-label','Fecha');
+        var d2 = el('input'); d2.type = 'date'; d2.id = 'ev-d2-' + ck; d2.value = ev && ev.d2 ? ev.d2 : ''; d2.setAttribute('aria-label','Fecha de fin (opcional)'); d2.title = 'Fecha de fin (opcional)';
+        var u = el('input'); u.type = 'text'; u.placeholder = 'Landing (opcional)'; u.id = 'ev-u-' + ck; u.value = ev && ev.url ? ev.url : ''; u.setAttribute('aria-label','Landing');
+        var m = el('input'); m.type = 'text'; m.placeholder = 'Hora · lugar (opcional)'; m.maxLength = 120; m.id = 'ev-m-' + ck; m.value = ev && ev.meta ? ev.meta : ''; m.setAttribute('aria-label','Detalles');
+        var ok2 = el('button','ok', ev ? 'Guardar' : 'Añadir'); ok2.type = 'submit';
+        var no2 = el('button','cancel','Cancelar'); no2.type = 'button';
+        var er2 = el('span','err'); er2.hidden = true;
+        f.append(n, d1, d2, u, m, ok2, no2, er2);
+        addEv.hidden = true; addEv.parentNode.insertBefore(f, addEv); n.focus();
+        function close(){ f.remove(); addEv.hidden = false; }
+        no2.addEventListener('click', close);
+        f.addEventListener('submit', async function(e){
+          e.preventDefault();
+          if (!n.value.trim() || !d1.value){ er2.textContent = 'Pon al menos el nombre y la fecha.'; er2.hidden = false; return; }
+          var url = u.value.trim() ? cleanUrl(u.value) : '';
+          if (u.value.trim() && !url){ er2.textContent = 'La landing no es una dirección válida.'; er2.hidden = false; return; }
+          if (needToken('añadir activaciones')) return;
+          ok2.disabled = true;
+          var data = {name: n.value.trim(), d: d1.value, d2: d2.value && d2.value > d1.value ? d2.value : '', url: url, meta: m.value.trim()};
+          var list = state.events[ck] = state.events[ck] || [];
+          if (ev){ list.forEach(function(x){ if (x.key === ev.key) Object.assign(x, data); }); }
+          else list.push(Object.assign({key: 'e-' + rid(8)}, data));
+          if (await saveNow()) goReload(ck); else { ok2.disabled = false; er2.textContent = 'No se pudo guardar. Inténtalo de nuevo.'; er2.hidden = false; }
+        });
+      }
+      addEv.addEventListener('click', function(){ openForm(null); });
+      panel.querySelectorAll('li.row[data-dyn]').forEach(function(row){
+        var ev = (state.events[ck] || []).filter(function(x){ return x.key === row.dataset.key; })[0]; if (!ev) return;
+        var tools = el('span','evtools');
+        var ed = el('button','edittask','✎'); ed.type = 'button'; ed.setAttribute('aria-label','Editar activación'); ed.style.opacity = '1';
+        var del = el('button','deltask','×'); del.type = 'button'; del.setAttribute('aria-label','Borrar activación'); del.style.opacity = '1';
+        tools.append(ed, del); row.querySelector('.ev').appendChild(tools);
+        ed.addEventListener('click', function(){ openForm(ev); });
+        var armed;
+        del.addEventListener('click', async function(){
+          if (!del.classList.contains('armed')){ del.classList.add('armed'); del.textContent = 'Borrar activación'; clearTimeout(armed); armed = setTimeout(function(){ del.classList.remove('armed'); del.textContent = '×'; }, 3000); return; }
+          if (needToken('borrar activaciones')) return;
+          state.events[ck] = (state.events[ck] || []).filter(function(x){ return x.key !== ev.key; });
+          if (!state.events[ck].length) delete state.events[ck];
+          delete state.custom[ev.key]; delete state.order[ev.key];
+          if (await saveNow()) goReload(ck);
+        });
+      });
+      if (panel.dataset.dyn){
+        var meta = state.clients.filter(function(c){ return c.key === ck; })[0];
+        var rm = el('button','rmclient','Eliminar cliente'); rm.type = 'button';
+        panel.appendChild(rm);
+        var armed2;
+        rm.addEventListener('click', async function(){
+          if (!rm.classList.contains('armed')){ rm.classList.add('armed'); rm.textContent = 'Pulsa otra vez para eliminar ' + meta.name + ' y todo su contenido'; clearTimeout(armed2); armed2 = setTimeout(function(){ rm.classList.remove('armed'); rm.textContent = 'Eliminar cliente'; }, 4000); return; }
+          if (needToken('eliminar clientes')) return;
+          (state.events[ck] || []).forEach(function(x){ delete state.custom[x.key]; delete state.order[x.key]; });
+          delete state.events[ck]; delete state.notes[ck];
+          state.clients = state.clients.filter(function(c){ return c.key !== ck; });
+          delete SHARES[ck];
+          if (await saveNow()){ try { await putFile(meta.code + '/data.json', {}, false); } catch(e){} goReload('home'); }
+        });
+      }
+    });
+  })();
+
   if (VIEW){ readOnly = true; lockBoxes(); }
   showTab(VIEW || start || 'home', false);
   syncLabel(); pullRemote();

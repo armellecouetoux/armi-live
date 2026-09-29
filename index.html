@@ -108,6 +108,17 @@ body.c-rocket{--accent:#AAB6FF; --accent-soft:rgba(170,182,255,.14); --orb-a:#4C
 .syncpanel p, .syncpanel ol{margin:0} .syncpanel ol{padding-left:20px; display:grid; gap:4px}
 .syncpanel b{color:var(--ink)} .syncpanel a{color:var(--accent)} .syncpanel code{color:var(--ink)}
 
+/* Add / delete tasks */
+.addtask{justify-self:start; appearance:none; border:1px dashed var(--line); background:transparent; color:var(--muted); font-family:var(--f-body); font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; cursor:pointer; margin-left:29px; transition:color .2s, border-color .2s}
+.addtask:hover, .addtask:focus-visible{color:var(--accent); border-color:var(--accent); outline:none}
+.body > .lform{padding-left:29px}
+.deltask{align-self:center; appearance:none; border:0; background:transparent; color:var(--done); font-family:var(--f-body); font-size:14px; font-weight:700; line-height:1; padding:3px 6px; border-radius:6px; cursor:pointer; opacity:0; transition:opacity .2s, color .2s, background .2s}
+.task:hover .deltask, .deltask:focus-visible, .deltask.armed{opacity:1}
+.deltask:hover{color:var(--urgent)}
+.deltask.armed{font-size:11px; color:var(--bg); background:var(--urgent)}
+@media (hover:none){ .deltask{opacity:1} }
+.readonly .addtask, .readonly .deltask{display:none}
+
 /* Home */
 body.c-home{--accent:#F0D88A; --accent-soft:rgba(240,216,138,.14); --orb-a:#6A55C9; --orb-b:#A0672A; --glow:rgba(240,216,138,.06)}
 .tab[data-tab="home"]{--dot:#F0D88A}
@@ -265,14 +276,14 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   <header>
     <div class="eyebrow"><span>Rocket Digital</span><span>·</span><span>Founders</span><span>·</span><span class="today">Q4 2026</span></div>
     <h1>Agenda Q4: <em>cinco activaciones</em> en cinco semanas</h1>
-    <p class="lede">Lo que viene y lo que hay que mover ya. <b>Los nombres con ↗</b> abren la landing de cada activación, usa <b>+ enlace</b> para añadir enlaces y cambia el <b>estado</b> de cada tarea a la derecha.</p>
+    <p class="lede">Lo que viene y lo que hay que mover ya. <b>Los nombres con ↗</b> abren la landing de cada activación, usa <b>+ tarea</b> y <b>+ enlace</b> para añadir tareas y enlaces y cambia el <b>estado</b> de cada tarea a la derecha.</p>
     <div class="summary"></div>
     <div class="progress" aria-hidden="true"><i></i></div>
   </header>
 
   <ol class="timeline">
 
-    <li class="row" data-date="2026-10-01">
+    <li class="row" data-key="r-cq" data-date="2026-10-01">
       <div class="date"><span class="d">01</span><span class="m">Oct · Mié</span><span class="chip"></span></div>
       <div class="body">
         <div class="ev">
@@ -285,7 +296,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       </div>
     </li>
 
-    <li class="row" data-date="2026-10-14">
+    <li class="row" data-key="r-ed" data-date="2026-10-14">
       <div class="date"><span class="d">14</span><span class="m">Oct · Mié</span><span class="chip"></span></div>
       <div class="body">
         <div class="ev">
@@ -298,7 +309,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       </div>
     </li>
 
-    <li class="row" data-date="2026-11-03">
+    <li class="row" data-key="r-bt" data-date="2026-11-03">
       <div class="date"><span class="d">03</span><span class="m">Nov · Mar</span><span class="chip"></span></div>
       <div class="body">
         <div class="ev">
@@ -317,7 +328,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       </div>
     </li>
 
-    <li class="row" data-date="2026-11-04">
+    <li class="row" data-key="r-es" data-date="2026-11-04">
       <div class="date"><span class="d">04–05</span><span class="m">Nov · Mié–Jue</span><span class="chip"></span></div>
       <div class="body">
         <div class="ev">
@@ -334,7 +345,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       </div>
     </li>
 
-    <li class="row" data-date="2026-11-04">
+    <li class="row" data-key="r-sh" data-date="2026-11-04">
       <div class="date"><span class="d">04</span><span class="m">Nov · Mié</span><span class="chip"></span></div>
       <div class="body">
         <div class="ev">
@@ -354,14 +365,14 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   <header>
     <div class="eyebrow"><span>Shopify</span><span>·</span><span>Partners</span><span>·</span><span class="today">Q4 2026</span></div>
     <h1>Agenda Q4: <em>POS Partners Bootcamp</em></h1>
-    <p class="lede">Lo que viene y lo que hay que mover ya. <b>Los nombres con ↗</b> abren la landing de cada activación, usa <b>+ enlace</b> para añadir enlaces y cambia el <b>estado</b> de cada tarea a la derecha.</p>
+    <p class="lede">Lo que viene y lo que hay que mover ya. <b>Los nombres con ↗</b> abren la landing de cada activación, usa <b>+ tarea</b> y <b>+ enlace</b> para añadir tareas y enlaces y cambia el <b>estado</b> de cada tarea a la derecha.</p>
     <div class="summary"></div>
     <div class="progress" aria-hidden="true"><i></i></div>
   </header>
 
   <ol class="timeline">
 
-    <li class="row" data-date="2026-10-21">
+    <li class="row" data-key="s-pos" data-date="2026-10-21">
       <div class="date"><span class="d">21</span><span class="m">Oct · Mié</span><span class="chip"></span></div>
       <div class="body">
         <div class="ev">
@@ -477,7 +488,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
   function canon(o){ if (Array.isArray(o)) return o.map(canon); if (o && typeof o === 'object'){ var r = {}; Object.keys(o).sort().forEach(function(k){ r[k] = canon(o[k]); }); return r; } return o; }
-  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
+  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
   function stable(o){ return JSON.stringify(canon(norm(JSON.parse(JSON.stringify(o || {}))))); }
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
@@ -554,14 +565,14 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   });
 
   function lockBoxes(){
-    boxes.forEach(function(b){ b.checked = !!state[b.id]; b.disabled = true; });
+    document.querySelectorAll('.task input[type=checkbox]').forEach(function(b){ b.checked = !!state[b.id]; b.disabled = true; });
     document.querySelectorAll('.st').forEach(function(x){ x.disabled = true; });
     document.body.classList.add('readonly');
     document.querySelectorAll('.lform').forEach(function(f){ renderLinks(f.closest('li.task')); });
     panels.forEach(summary);
   }
 
-  boxes.forEach(function(b){
+  function setupCheck(b){
     b.checked = !!state[b.id];
     b.addEventListener('change', function(){
       if (readOnly){ b.checked = !!state[b.id]; return; }
@@ -569,7 +580,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       summary(b.closest('.panel')); renderHome(true);
       scheduleSave();
     });
-  });
+  }
 
 
 
@@ -583,7 +594,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     li.classList.toggle('is-priority', v === 'priority');
     li.classList.toggle('is-canceled', v === 'canceled');
   }
-  document.querySelectorAll('li.task').forEach(function(li){
+  function setupStatus(li){
     var label = li.querySelector('label'), cb = li.querySelector('input[type=checkbox]');
     var line = document.createElement('div'); line.className = 'tline';
     li.insertBefore(line, label); line.appendChild(label);
@@ -603,7 +614,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       paintTask(li);
     });
     paintTask(li);
-  });
+  }
 
   // Links people add to each task (saved for everyone, like the checks)
   if (!state.links || typeof state.links !== 'object') state.links = {};
@@ -661,7 +672,73 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       renderLinks(li); scheduleSave();
     });
   }
-  document.querySelectorAll('li.task').forEach(renderLinks);
+
+  // ---------- Tasks people add themselves ----------
+  if (!state.custom || typeof state.custom !== 'object') state.custom = {};
+  function customLi(key, t){
+    var li = document.createElement('li'); li.className = 'task custom'; li.dataset.custom = key;
+    var label = document.createElement('label');
+    var cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = t.id;
+    var txt = document.createElement('span'); txt.className = 'txt'; txt.appendChild(document.createTextNode(t.t));
+    if (t.o){ txt.appendChild(document.createTextNode(' ')); var o = document.createElement('span'); o.className = 'owner'; o.textContent = t.o; txt.appendChild(o); }
+    label.appendChild(cb); label.appendChild(txt); li.appendChild(label);
+    return li;
+  }
+  function addDelete(li){
+    var line = li.querySelector('.tline'), del = document.createElement('button');
+    del.type = 'button'; del.className = 'deltask'; del.textContent = '×'; del.setAttribute('aria-label', 'Borrar tarea');
+    var armed = null;
+    del.addEventListener('click', function(){
+      if (readOnly) return;
+      if (!del.classList.contains('armed')){ del.classList.add('armed'); del.textContent = 'Borrar'; clearTimeout(armed); armed = setTimeout(function(){ del.classList.remove('armed'); del.textContent = '×'; }, 3000); return; }
+      var key = li.dataset.custom, id = li.querySelector('input[type=checkbox]').id, panel = li.closest('.panel');
+      state.custom[key] = (state.custom[key] || []).filter(function(x){ return x.id !== id; });
+      if (!state.custom[key].length) delete state.custom[key];
+      delete state[id]; delete state.st[id]; delete state.links[id];
+      li.remove(); summary(panel); renderHome(true); scheduleSave();
+    });
+    line.insertBefore(del, line.querySelector('.st'));
+  }
+  function setupTask(li){
+    setupCheck(li.querySelector('input[type=checkbox]'));
+    setupStatus(li);
+    renderLinks(li);
+    if (li.classList.contains('custom')) addDelete(li);
+  }
+  function addTaskButton(row){
+    var key = row.dataset.key, body = row.querySelector('.body');
+    var ul = body.querySelector('ul.tasks'); if (!ul){ ul = document.createElement('ul'); ul.className = 'tasks'; body.appendChild(ul); }
+    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'addtask'; btn.textContent = '+ tarea';
+    body.appendChild(btn);
+    btn.addEventListener('click', function(){
+      if (readOnly) return;
+      btn.hidden = true;
+      var f = document.createElement('form'); f.className = 'lform';
+      var t = document.createElement('input'); t.type = 'text'; t.placeholder = 'Nueva tarea'; t.id = 'nt-' + key; t.setAttribute('aria-label', 'Nueva tarea'); t.maxLength = 140;
+      var o = document.createElement('input'); o.type = 'text'; o.placeholder = 'Responsable (opcional)'; o.className = 'lbl'; o.id = 'no-' + key; o.setAttribute('aria-label', 'Responsable'); o.maxLength = 30;
+      var ok = document.createElement('button'); ok.type = 'submit'; ok.className = 'ok'; ok.textContent = 'Añadir';
+      var no = document.createElement('button'); no.type = 'button'; no.className = 'cancel'; no.textContent = 'Cancelar';
+      f.append(t, o, ok, no); body.insertBefore(f, btn); t.focus();
+      function close(){ f.remove(); btn.hidden = false; }
+      no.addEventListener('click', close);
+      f.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+      f.addEventListener('submit', function(e){
+        e.preventDefault();
+        var text = t.value.trim(); if (!text){ t.focus(); return; }
+        var task = {id: 'c-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), t: text, o: o.value.trim()};
+        (state.custom[key] = state.custom[key] || []).push(task);
+        var li = customLi(key, task); ul.appendChild(li); setupTask(li);
+        summary(row.closest('.panel')); renderHome(true); scheduleSave();
+        t.value = ''; o.value = ''; t.focus();
+      });
+    });
+  }
+  document.querySelectorAll('.row[data-key]').forEach(function(row){
+    var ul = row.querySelector('ul.tasks');
+    (state.custom[row.dataset.key] || []).forEach(function(task){ ul.appendChild(customLi(row.dataset.key, task)); });
+  });
+  document.querySelectorAll('li.task').forEach(setupTask);
+  document.querySelectorAll('.row[data-key]').forEach(addTaskButton);
 
 
   // ---------- Home: overview of every client ----------

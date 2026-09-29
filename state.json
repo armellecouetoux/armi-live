@@ -2,8 +2,10 @@
  "t-cq-who": false,
  "t-es-stand": false,
  "st": {
-  "t-ed-inv": "ongoing"
+  "t-ed-inv": "ongoing",
+  "t-bt-stick": "canceled"
  },
  "links": {},
- "t-ed-inv": false
+ "t-ed-inv": false,
+ "t-bt-stick": false
 }

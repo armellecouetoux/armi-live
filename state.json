@@ -8,15 +8,7 @@
  "links": {},
  "t-ed-inv": false,
  "t-bt-stick": false,
- "custom": {
-  "r-bt": [
-   {
-    "id": "c-mumg5oufz27p",
-    "t": "Newsletter Jungle anunciado Bold Talks",
-    "o": ""
-   }
-  ]
- },
+ "custom": {},
  "notes": {
   "home": [
    {
@@ -27,6 +19,5 @@
     "ts": 1790671535639
    }
   ]
- },
- "c-mumg5oufz27p": true
+ }
 }

@@ -3,7 +3,8 @@
  "t-es-stand": false,
  "st": {
   "t-ed-inv": "ongoing",
-  "t-bt-stick": "canceled"
+  "t-bt-stick": "canceled",
+  "t-bt-merch": "ongoing"
  },
  "links": {},
  "t-ed-inv": false,
@@ -32,5 +33,6 @@
     "ts": 1790671535639
    }
   ]
- }
+ },
+ "t-bt-merch": false
 }

@@ -102,5 +102,14 @@
   }
  },
  "order": {},
- "t-bt-pon": false
+ "t-bt-pon": false,
+ "clients": [
+  {
+   "key": "armi-dbi",
+   "name": "Armi",
+   "c": "#F4A6C6",
+   "code": "kjrw2apvd9"
+  }
+ ],
+ "events": {}
 }

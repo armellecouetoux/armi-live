@@ -111,5 +111,16 @@
    "code": "kjrw2apvd9"
   }
  ],
- "events": {}
+ "events": {
+  "armi-dbi": [
+   {
+    "key": "e-6kvy3ibl",
+    "name": "Tareas",
+    "d": "2026-12-31",
+    "d2": "",
+    "url": "",
+    "meta": ""
+   }
+  ]
+ }
 }

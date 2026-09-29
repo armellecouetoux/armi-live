@@ -1,0 +1,21 @@
+# Master to-do · Agenda de clientes Q4
+
+Panel de ARMI con la agenda y las tareas por cliente (Rocket Digital, Shopify) y una pestaña de Inicio que lo resume todo.
+
+**Web:** https://armellecouetoux.github.io/master-to-do/
+
+## Cómo se guardan los cambios
+
+- Checks, estados (Pendiente, On going, Prioritario, Canceled, Done) y enlaces se guardan en `state.json`, en este repositorio.
+- Cualquier dispositivo que abra la web lee `state.json`, así que todos ven lo mismo.
+- Para **guardar** cambios, cada navegador necesita un token de GitHub (pulsa *Sincronizar dispositivos* al final de la página):
+  1. GitHub → Settings → Developer settings → Fine-grained tokens → *Generate new token*.
+  2. Repository access: *Only select repositories* → `master-to-do`.
+  3. Permissions → Contents: *Read and write*.
+- El token se queda solo en ese navegador; nunca se sube al repositorio.
+- Sin token, los cambios se guardan solo en ese navegador.
+
+## Archivos
+
+- `index.html` — la página.
+- `state.json` — el estado de las tareas (lo escribe la página; no hace falta editarlo a mano).

@@ -4,7 +4,8 @@
  "st": {
   "t-ed-inv": "ongoing",
   "t-bt-stick": "canceled",
-  "t-bt-merch": "ongoing"
+  "t-bt-merch": "ongoing",
+  "t-bt-net": "ongoing"
  },
  "links": {},
  "t-ed-inv": false,
@@ -34,5 +35,6 @@
    }
   ]
  },
- "t-bt-merch": false
+ "t-bt-merch": false,
+ "t-bt-net": false
 }

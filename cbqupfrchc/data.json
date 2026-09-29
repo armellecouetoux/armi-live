@@ -48,6 +48,11 @@
    }
   ]
  },
- "edit": {},
+ "edit": {
+  "t-es-llav": {
+   "t": "Llaveros",
+   "o": "Armelle"
+  }
+ },
  "order": {}
 }

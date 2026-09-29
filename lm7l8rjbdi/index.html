@@ -141,6 +141,19 @@ body.c-rocket{--accent:#AAB6FF; --accent-soft:rgba(170,182,255,.14); --orb-a:#4C
 .readonly .task label, .readonly .task input{cursor:default}
 .readonly .st{appearance:none; -webkit-appearance:none; background-image:none; padding-right:9px}
 
+/* Share with client */
+.sharewrap{display:grid; gap:10px; justify-items:start}
+.sharebtn{appearance:none; display:inline-flex; align-items:center; gap:8px; border:1px solid var(--accent); background:var(--accent-soft); color:var(--accent); font-family:var(--f-body); font-size:13px; font-weight:700; padding:8px 14px; border-radius:999px; cursor:pointer; transition:background .2s, color .2s}
+.sharebtn::before{content:"↗"; font-size:12px}
+.sharebtn:hover, .sharebtn[aria-expanded="true"]{background:var(--accent); color:var(--bg)}
+.sharebtn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.sharepop{border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:16px; display:grid; gap:10px; width:min(520px, 100%); animation:rise .3s var(--ease) both}
+.sp-t{margin:0; font-weight:700; color:var(--ink)} .sp-d{margin:0; font-size:13px; color:var(--muted)}
+.sp-row{display:flex; gap:8px}
+.sp-url{flex:1; min-width:0; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; color:var(--ink); font-family:var(--f-body); font-size:13px; padding:8px 10px}
+.sp-copy{appearance:none; border:0; border-radius:8px; background:var(--accent); color:var(--bg); font-family:var(--f-body); font-size:12px; font-weight:700; padding:8px 14px; cursor:pointer; white-space:nowrap}
+.sp-acts{display:flex; flex-wrap:wrap; gap:14px} .sp-acts a{font-size:12.5px; font-weight:700; color:var(--accent); text-decoration:none} .sp-acts a:hover{text-decoration:underline}
+
 /* Home */
 body.c-home{--accent:#F0D88A; --accent-soft:rgba(240,216,138,.14); --orb-a:#6A55C9; --orb-b:#A0672A; --glow:rgba(240,216,138,.06)}
 .tab[data-tab="home"]{--dot:#F0D88A}
@@ -810,6 +823,35 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     if (!focus.length){ var li = el('li'); li.style.gridTemplateColumns = '1fr'; li.appendChild(el('span','empty','Marca tareas como Prioritario u On going y aparecerán aquí.')); fo.appendChild(li); }
   }
 
+
+  // ---------- Share button per client tab ----------
+  var SHARE_BASE = 'https://armellecouetoux.github.io/master-to-do/';
+  if (!VIEW) panels.forEach(function(panel){
+    var client = panel.dataset.client, code = SHARES[client]; if (!code) return;
+    var url = SHARE_BASE + code + '/', name = (CL[client] || {}).name || client;
+    var head = panel.querySelector('header'), wrap = el('div','sharewrap');
+    var btn = el('button','sharebtn','Compartir con el cliente'); btn.type = 'button'; btn.setAttribute('aria-expanded','false');
+    var pop = el('div','sharepop'); pop.hidden = true;
+    pop.appendChild(el('p','sp-t','Enlace de solo lectura para ' + name));
+    pop.appendChild(el('p','sp-d','Muestra solo esta pestaña, sin notas ni otras pestañas, y se actualiza cuando guardas cambios.'));
+    var row = el('div','sp-row');
+    var inp = el('input','sp-url'); inp.type = 'text'; inp.readOnly = true; inp.value = url; inp.id = 'share-' + client; inp.setAttribute('aria-label','Enlace para compartir');
+    var copy = el('button','sp-copy','Copiar'); copy.type = 'button';
+    row.append(inp, copy); pop.appendChild(row);
+    var acts = el('div','sp-acts');
+    var msg = 'Hola, aquí tenéis la agenda y el estado de las tareas de ' + name + ', se actualiza en tiempo real: ' + url;
+    [['Abrir vista ↗', url], ['WhatsApp ↗', 'https://wa.me/?text=' + encodeURIComponent(msg)], ['Email ↗', 'mailto:?subject=' + encodeURIComponent('Agenda ' + name) + '&body=' + encodeURIComponent(msg)]]
+      .forEach(function(a){ var l = el('a', null, a[0]); l.href = a[1]; l.target = '_blank'; l.rel = 'noopener'; acts.appendChild(l); });
+    pop.appendChild(acts);
+    wrap.append(btn, pop); head.appendChild(wrap);
+    btn.addEventListener('click', function(){ pop.hidden = !pop.hidden; btn.setAttribute('aria-expanded', String(!pop.hidden)); if (!pop.hidden) inp.select(); });
+    copy.addEventListener('click', function(){
+      function done(){ copy.textContent = 'Copiado ✓'; setTimeout(function(){ copy.textContent = 'Copiar'; }, 1800); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function(){ inp.select(); document.execCommand && document.execCommand('copy'); done(); });
+      else { inp.select(); try { document.execCommand('copy'); } catch(e){} done(); }
+    });
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !pop.hidden){ pop.hidden = true; btn.setAttribute('aria-expanded','false'); btn.focus(); } });
+  });
 
   function counts(panel){
     var bx = panel.querySelectorAll('.task input[type=checkbox]'), open = 0, total = 0, prio = 0;

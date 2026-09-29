@@ -18,7 +18,7 @@
   var t = ''; try { t = localStorage.getItem('armi-gh-token') || ''; } catch(e){}
   if (!t) return;
   var H = {'Accept':'application/vnd.github+json', 'Authorization':'Bearer ' + t};
-  var API = 'https://api.github.com/repos/armellecouetoux/master-to-do';
+  var API = 'https://api.github.com/repos/armellecouetoux/armi-live';
   try {
     var r = await fetch(API, {headers: H, cache: 'no-store'}); if (!r.ok) return;
     var repo = await r.json(); if (!repo.permissions || !repo.permissions.push) return;

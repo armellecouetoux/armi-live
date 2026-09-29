@@ -434,10 +434,10 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   <footer><span>Preparado por ARMI · actualizado 28 sept 2026</span><span class="syncbar"><span class="status" id="status">Cargando…</span> <button type="button" class="syncbtn" id="sync-open">Sincronizar dispositivos</button></span></footer>
   <div class="syncpanel" id="sync-panel" hidden>
     <h2>Sincronizar entre dispositivos</h2>
-    <p>Los cambios se guardan en el archivo <code>state.json</code> de tu repositorio <b>master-to-do</b>. Para poder escribir en él, cada dispositivo necesita un token de GitHub (solo hace falta pegarlo una vez por navegador).</p>
+    <p>Los cambios se guardan en el archivo <code>state.json</code> de tu repositorio <b>armi-live</b>. Para poder escribir en él, cada dispositivo necesita un token de GitHub (solo hace falta pegarlo una vez por navegador).</p>
     <ol>
-      <li>Abre <a href="https://github.com/settings/personal-access-tokens/new?name=master-to-do%20sync&amp;description=Agenda%20de%20clientes%20ARMI&amp;target_name=armellecouetoux&amp;expires_in=365&amp;contents=write" target="_blank" rel="noopener">este enlace a GitHub</a>: el token ya viene con nombre, duración de un año y permiso de escritura en <i>Contents</i>.</li>
-      <li>En <b>Repository access</b> elige <i>Only select repositories</i> → <b>master-to-do</b>.</li>
+      <li>Abre <a href="https://github.com/settings/personal-access-tokens/new?name=armi-live%20sync&amp;description=Agenda%20de%20clientes%20ARMI&amp;target_name=armellecouetoux&amp;expires_in=365&amp;contents=write" target="_blank" rel="noopener">este enlace a GitHub</a>: el token ya viene con nombre, duración de un año y permiso de escritura en <i>Contents</i>.</li>
+      <li>En <b>Repository access</b> elige <i>Only select repositories</i> → <b>armi-live</b>.</li>
       <li>Comprueba que <b>Contents</b> esté en <i>Read and write</i>, pulsa <b>Generate token</b> y cópialo aquí abajo.</li>
     </ol>
     <form id="sync-form" class="lform">
@@ -530,9 +530,9 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       '<script type="application/json" id="state">' + json + '<\/script>\n' + APP_SRC + '\n</body></html>';
   }
 
-  // ---------- Sync: state.json in GitHub (armellecouetoux/master-to-do) ----------
+  // ---------- Sync: state.json in GitHub (armellecouetoux/armi-live) ----------
   var DATA_PATH = window.ARMI_DATA || 'd/3unwb8j9lfbwts0b.json';
-  var GH_BASE = 'https://api.github.com/repos/armellecouetoux/master-to-do/contents/';
+  var GH_BASE = 'https://api.github.com/repos/armellecouetoux/armi-live/contents/';
   var GH_API = GH_BASE + DATA_PATH;
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
@@ -623,7 +623,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       try { await pushRemote(false); pending = false; setStatus('Guardado y sincronizado'); statusEl.classList.add('ok'); }
       catch(e){
         pending = false;
-        if (e && (e.status === 401 || e.status === 403 || e.status === 404)) setStatus('GitHub rechazó el guardado: revisa que el token tenga Contents → Read and write en master-to-do', true);
+        if (e && (e.status === 401 || e.status === 403 || e.status === 404)) setStatus('GitHub rechazó el guardado: revisa que el token tenga Contents → Read and write en armi-live', true);
         else setStatus('No se pudo sincronizar; está guardado en este navegador. Se reintentará con el próximo cambio', true);
       }
     }, 1200);
@@ -643,9 +643,9 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     try { localStorage.setItem(TK_KEY, v); } catch(err){ sErr.textContent = 'Este navegador no permite guardar el token.'; sErr.hidden = false; return; }
     sErr.textContent = 'Comprobando…'; sErr.hidden = false;
     try {
-      var r = await fetch('https://api.github.com/repos/armellecouetoux/master-to-do', {headers: ghHeaders(), cache: 'no-store'});
+      var r = await fetch('https://api.github.com/repos/armellecouetoux/armi-live', {headers: ghHeaders(), cache: 'no-store'});
       var j = r.ok ? await r.json() : null;
-      if (!j || !j.permissions || !j.permissions.push){ localStorage.removeItem(TK_KEY); sErr.textContent = 'Ese token no puede escribir en master-to-do. Revisa el paso 2 y 3.'; return; }
+      if (!j || !j.permissions || !j.permissions.push){ localStorage.removeItem(TK_KEY); sErr.textContent = 'Ese token no puede escribir en armi-live. Revisa el paso 2 y 3.'; return; }
       panel.hidden = true; await pullRemote(); syncLabel();
     } catch(err){ sErr.textContent = 'No se pudo comprobar el token. Revisa tu conexión.'; }
   });
@@ -959,7 +959,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
 
 
   // ---------- Share button per client tab ----------
-  var SHARE_BASE = 'https://armellecouetoux.github.io/master-to-do/';
+  var SHARE_BASE = 'https://armellecouetoux.github.io/armi-live/';
   if (!VIEW) panels.forEach(function(panel){
     var client = panel.dataset.client, code = SHARES[client]; if (!code) return;
     var url = SHARE_BASE + code + '/', name = (CL[client] || {}).name || client;

@@ -134,6 +134,10 @@ body.c-rocket{--accent:#AAB6FF; --accent-soft:rgba(170,182,255,.14); --orb-a:#4C
 .readonly .note input, .readonly .note textarea{pointer-events:none}
 @media (max-width:560px){ .note-head{grid-template-columns:1fr auto} .note-title{grid-column:1 / -1; grid-row:2} }
 
+.ro-badge{margin-left:6px; padding:2px 8px; border-radius:999px; border:1px solid var(--line); color:var(--ink); letter-spacing:.06em}
+.readonly .task label, .readonly .task input{cursor:default}
+.readonly .st{appearance:none; -webkit-appearance:none; background-image:none; padding-right:9px}
+
 /* Home */
 body.c-home{--accent:#F0D88A; --accent-soft:rgba(240,216,138,.14); --orb-a:#6A55C9; --orb-b:#A0672A; --glow:rgba(240,216,138,.06)}
 .tab[data-tab="home"]{--dot:#F0D88A}
@@ -443,6 +447,18 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var LS_KEY = 'armi-agenda-state';
   try { var saved = localStorage.getItem(LS_KEY); if (saved) state = JSON.parse(saved) || state; } catch(e){}
 
+  // Read-only share view (/rocket/, /shopify/): only one client's tab, nothing editable, no notes
+  var VIEW = window.ARMI_VIEW || null;
+  if (VIEW){
+    document.querySelectorAll('.panel').forEach(function(p){ if (p.dataset.client !== VIEW) p.remove(); });
+    var nav = document.querySelector('.tabs'); if (nav) nav.remove();
+    ['sync-open','sync-panel'].forEach(function(id){ var e = document.getElementById(id); if (e){ e.hidden = true; e.style.display = 'none'; } });
+    var eb = document.querySelector('.panel .eyebrow'); if (eb){ var b = document.createElement('span'); b.className = 'ro-badge'; b.textContent = 'Solo lectura'; eb.appendChild(b); }
+    var ld = document.querySelector('.panel .lede'); if (ld) ld.textContent = 'Agenda y estado de las tareas, actualizado en tiempo real por ARMI. Los nombres con ↗ abren la landing de cada activación.';
+    var ft = document.querySelector('footer span'); if (ft) ft.textContent = 'Compartido por ARMI';
+    document.title = (document.querySelector('.panel .eyebrow span') || {}).textContent + ' · Agenda';
+  }
+
   var MS = 86400000;
   var now = new Date(); var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   var fmt = new Intl.DateTimeFormat('es-ES',{day:'numeric', month:'short'});
@@ -453,7 +469,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   function showTab(name, remember){
     var found = false;
     tabs.forEach(function(t){ var on = t.dataset.tab === name; t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; if (on) found = true; });
-    if (!found) return showTab('home', false);
+    if (!found && !VIEW) return showTab('home', false);
     allPanels.forEach(function(p){ p.hidden = p.dataset.client !== name; });
     document.body.className = 'c-' + name + (readOnly ? ' readonly' : '');
     if (remember){ try { localStorage.setItem('armi-tab', name); } catch(e){} }
@@ -508,7 +524,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
   function ghHeaders(){ var h = {'Accept':'application/vnd.github+json'}; var t = token(); if (t) h.Authorization = 'Bearer ' + t; return h; }
-  function syncLabel(){ setStatus(token() ? 'Sincronizado entre dispositivos' : 'Guardado solo en este navegador', false); if (token()) statusEl.classList.add('ok'); }
+  function syncLabel(){ if (VIEW){ setStatus('Solo lectura · se actualiza automáticamente'); return; } setStatus(token() ? 'Sincronizado entre dispositivos' : 'Guardado solo en este navegador', false); if (token()) statusEl.classList.add('ok'); }
 
   async function fetchRemote(){
     var r = await fetch(GH_API + '?ref=main&t=' + Date.now(), {headers: ghHeaders(), cache: 'no-store'});
@@ -583,7 +599,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     document.querySelectorAll('.task input[type=checkbox]').forEach(function(b){ b.checked = !!state[b.id]; b.disabled = true; });
     document.querySelectorAll('.st').forEach(function(x){ x.disabled = true; });
     document.body.classList.add('readonly');
-    document.querySelectorAll('.lform').forEach(function(f){ renderLinks(f.closest('li.task')); });
+    document.querySelectorAll('li.task .lform').forEach(function(f){ renderLinks(f.closest('li.task')); });
     panels.forEach(summary);
   }
 
@@ -753,7 +769,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     (state.custom[row.dataset.key] || []).forEach(function(task){ ul.appendChild(customLi(row.dataset.key, task)); });
   });
   document.querySelectorAll('li.task').forEach(setupTask);
-  document.querySelectorAll('.row[data-key]').forEach(addTaskButton);
+  if (!VIEW) document.querySelectorAll('.row[data-key]').forEach(addTaskButton);
 
   // ---------- Meeting notes per tab ----------
   if (!state.notes || typeof state.notes !== 'object') state.notes = {};
@@ -791,7 +807,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     if (!has && !e) list.appendChild(el('p','empty','Aún no hay notas. Pulsa “+ Nueva nota” para empezar.'));
     if (has && e) e.remove();
   }
-  allPanels.forEach(function(panel){
+  if (!VIEW) allPanels.forEach(function(panel){
     var key = panel.dataset.client;
     var sec = el('section','notes h-section');
     var hd = el('div','h-head'); hd.appendChild(el('h2', null, key === 'home' ? 'Notas generales' : 'Notas de reuniones'));
@@ -816,7 +832,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var CL = {rocket:{name:'Rocket Digital', c:'#AAB6FF'}, shopify:{name:'Shopify', c:'#8EE6B4'}};
   var dfmt = new Intl.DateTimeFormat('es-ES',{day:'2-digit', month:'short'});
   var h = now.getHours();
-  document.getElementById('hello').innerHTML = (h < 6 ? 'Buenas noches' : h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches') + ', <em>Armi</em>';
+  var helloEl = document.getElementById('hello'); if (helloEl) helloEl.innerHTML = (h < 6 ? 'Buenas noches' : h < 14 ? 'Buenos días' : h < 21 ? 'Buenas tardes' : 'Buenas noches') + ', <em>Armi</em>';
   function el(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
   function goTo(client, target){
     showTab(client, true);
@@ -915,9 +931,10 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   }
   panels.forEach(summary);
 
-  var start = (location.hash || '').replace('#','');
+  var start = VIEW ? '' : (location.hash || '').replace('#','');
   if (!start){ try { start = localStorage.getItem('armi-tab') || ''; } catch(e){} }
-  showTab(start || 'home', false);
+  if (VIEW){ readOnly = true; lockBoxes(); }
+  showTab(VIEW || start || 'home', false);
   syncLabel(); pullRemote();
 })();
 </script>

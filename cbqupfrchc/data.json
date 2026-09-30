@@ -54,5 +54,17 @@
    "o": "Armelle"
   }
  },
- "order": {}
+ "order": {},
+ "events": {
+  "rocket": [
+   {
+    "key": "e-xixpn2zr",
+    "name": "Partners",
+    "d": "2026-11-30",
+    "d2": "",
+    "url": "",
+    "meta": ""
+   }
+  ]
+ }
 }

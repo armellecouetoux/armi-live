@@ -194,7 +194,22 @@
    "o": "Armelle"
   }
  },
- "order": {},
+ "order": {
+  "r-bt": [
+   "c-muny1ofr0i2f",
+   "t-bt-inv",
+   "t-bt-pon",
+   "t-bt-ps21",
+   "t-bt-net",
+   "t-bt-merch",
+   "t-bt-stick",
+   "t-bt-lany",
+   "c-mumg60hdofv8",
+   "c-mumg67kgtbua",
+   "c-mumgnbkxaz1o",
+   "c-mumgxeg9hkqg"
+  ]
+ },
  "t-bt-pon": false,
  "clients": [
   {

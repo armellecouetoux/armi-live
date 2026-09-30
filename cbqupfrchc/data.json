@@ -4,12 +4,13 @@
   "t-cq-who": "ongoing",
   "t-ed-inv": "ongoing",
   "c-munyaq8f11ht": "priority",
+  "c-muny1ofr0i2f": "priority",
+  "t-bt-inv": "ongoing",
   "t-bt-pon": "ongoing",
   "t-bt-net": "ongoing",
   "t-bt-merch": "ongoing",
   "t-bt-stick": "canceled",
   "t-bt-lany": "ongoing",
-  "c-muny1ofr0i2f": "priority",
   "t-es-llav": "ongoing"
  },
  "links": {
@@ -89,7 +90,22 @@
    "o": "Armelle"
   }
  },
- "order": {},
+ "order": {
+  "r-bt": [
+   "c-muny1ofr0i2f",
+   "t-bt-inv",
+   "t-bt-pon",
+   "t-bt-ps21",
+   "t-bt-net",
+   "t-bt-merch",
+   "t-bt-stick",
+   "t-bt-lany",
+   "c-mumg60hdofv8",
+   "c-mumg67kgtbua",
+   "c-mumgnbkxaz1o",
+   "c-mumgxeg9hkqg"
+  ]
+ },
  "events": {
   "rocket": [
    {

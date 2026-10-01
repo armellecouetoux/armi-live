@@ -340,6 +340,25 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
 .ib-txt{display:grid; gap:2px; min-width:0} .ib-txt b{font-size:17px; font-weight:800} .ib-txt span{font-size:13px; color:var(--muted)}
 .ib-go{font-size:13px; font-weight:800; color:var(--accent); white-space:nowrap}
 @media (max-width:560px){ .inbox-card{grid-template-columns:auto minmax(0,1fr)} .ib-go{grid-column:2} }
+
+/* Folded (complete) and archived activations */
+.done-sum{display:none; align-items:center; flex-wrap:wrap; gap:8px 12px; font-size:13px; color:var(--ok, #8EE6B4); font-weight:700}
+.row.complete .done-sum, .row.archived .done-sum{display:flex}
+.row.archived .done-sum{color:var(--muted)}
+.row.complete:not(.open) .body > :not(.ev):not(.done-sum), .row.archived:not(.open) .body > :not(.ev):not(.done-sum){display:none}
+.row.complete:not(.open), .row.archived:not(.open){padding-block:16px}
+.row.complete:not(.open) .date .d, .row.archived:not(.open) .date .d{font-size:24px; opacity:.6}
+.row.complete:not(.open) .date .chip, .row.archived .date .chip{display:none}
+.row.complete:not(.open) .ev-name, .row.archived:not(.open) .ev-name{font-size:19px; opacity:.7}
+.ds-btn{appearance:none; border:1px solid var(--line); background:transparent; color:var(--muted); font-family:var(--f-body); font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:999px; cursor:pointer}
+.ds-btn:hover{color:var(--accent); border-color:var(--accent)}
+.ds-btn:disabled{opacity:.5}
+details.archive{border-top:1px solid var(--line); padding-top:14px}
+details.archive > summary{cursor:pointer; font-size:12.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); list-style:none}
+details.archive > summary::-webkit-details-marker{display:none}
+details.archive > summary::before{content:"▸ "; display:inline-block; transition:transform .2s}
+details.archive[open] > summary::before{transform:rotate(90deg)}
+ol.timeline.arch{border-top:0; margin-top:8px}
 </style>
 <main class="page">
 
@@ -413,6 +432,25 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     });
   })();
 
+  // Archived activations live in a folded list under each timeline
+  if (!state.archived || typeof state.archived !== 'object') state.archived = {};
+  function archiveList(panel){
+    var ol = panel.querySelector('ol.timeline.arch'); if (ol) return ol;
+    var main = panel.querySelector('ol.timeline:not(.arch)');
+    var d = document.createElement('details'); d.className = 'archive';
+    var sm = document.createElement('summary'); d.appendChild(sm);
+    ol = document.createElement('ol'); ol.className = 'timeline arch'; d.appendChild(ol);
+    var anchor = panel.querySelector('.addev') || main;
+    anchor.parentNode.insertBefore(d, anchor.nextSibling);
+    return ol;
+  }
+  function archiveLabel(panel){ var d = panel.querySelector('details.archive'); if (!d) return; var n = d.querySelectorAll('li.row').length; d.hidden = !n; d.querySelector('summary').textContent = 'Archivadas · ' + n; }
+  document.querySelectorAll('li.row[data-key]').forEach(function(row){
+    if (!state.archived[row.dataset.key]) return;
+    var panel = row.closest('.panel'); row.classList.add('archived'); archiveList(panel).appendChild(row);
+  });
+  document.querySelectorAll('.panel').forEach(archiveLabel);
+
   // Read-only share view (/rocket/, /shopify/): only one client's tab, nothing editable, no notes
   var VIEW = window.ARMI_VIEW || null;
   if (VIEW){
@@ -453,7 +491,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
 
   // Countdown chips + next event, per panel
   panels.forEach(function(panel){
-    var next = null, rows = panel.querySelectorAll('.row');
+    var next = null, rows = panel.querySelectorAll('.row:not(.archived)');
     rows.forEach(function(r){
       var p = r.dataset.date.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]);
       var diff = Math.round((d - today)/MS), chip = r.querySelector('.chip');
@@ -487,7 +525,7 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
   function canon(o){ if (Array.isArray(o)) return o.map(canon); if (o && typeof o === 'object'){ var r = {}; Object.keys(o).sort().forEach(function(k){ r[k] = canon(o[k]); }); return r; } return o; }
-  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; if (!Array.isArray(o.clients)) o.clients = []; if (!o.events || typeof o.events !== 'object') o.events = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
+  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; if (!Array.isArray(o.clients)) o.clients = []; if (!o.archived || typeof o.archived !== 'object') o.archived = {}; if (!o.events || typeof o.events !== 'object') o.events = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
   function stable(o){ return JSON.stringify(canon(norm(JSON.parse(JSON.stringify(o || {}))))); }
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
@@ -545,6 +583,8 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     var shared = (state.notes[client] || []).filter(function(n){ return n.shared; }).map(function(n){ return {id: n.id, d: n.d, title: n.title, body: n.body}; });
     if (shared.length){ sub.notes = {}; sub.notes[client] = shared; }
     if (state.events[client] && state.events[client].length){ sub.events = {}; sub.events[client] = state.events[client]; }
+    var arch = {}; panel.querySelectorAll('li.row[data-key]').forEach(function(r){ if (state.archived[r.dataset.key]) arch[r.dataset.key] = true; });
+    if (Object.keys(arch).length) sub.archived = arch;
     var meta = state.clients.filter(function(c){ return c.key === client; });
     if (meta.length) sub.clients = [{key: meta[0].key, name: meta[0].name, c: meta[0].c}];
     return sub;
@@ -962,11 +1002,11 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
       clients.appendChild(card);
       requestAnimationFrame(function(){ setTimeout(function(){ pbi.style.width = Math.max(pct, 2) + '%'; }, quiet ? 0 : 400); });
 
-      panel.querySelectorAll('.row').forEach(function(r){
+      panel.querySelectorAll('.row:not(.archived)').forEach(function(r){
         var p = r.dataset.date.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]);
         if (d >= today) events.push({d:d, name:r.querySelector('.ev-name').textContent.trim(), key:key, when:r.querySelector('.date .d').textContent + ' ' + r.querySelector('.date .m').textContent.split('·')[0].trim()});
       });
-      panel.querySelectorAll('li.task').forEach(function(li){
+      panel.querySelectorAll('.row:not(.archived) li.task').forEach(function(li){
         var cb = li.querySelector('input[type=checkbox]'), v = statusOf(cb.id);
         if (v === 'priority' || v === 'ongoing'){
           var row = li.closest('.row');
@@ -1057,8 +1097,44 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     requestAnimationFrame(tick);
   })();
 
+  // ---------- Fold activations whose tasks are all done; archive them ----------
+  function refreshRows(panel){
+    panel.querySelectorAll('li.row[data-key]').forEach(function(row){
+      var total = 0, done = 0;
+      row.querySelectorAll('li.task input[type=checkbox]').forEach(function(cb){
+        if (statusOf(cb.id) === 'canceled') return; total++; if (cb.checked) done++;
+      });
+      var complete = total > 0 && done === total;
+      row.classList.toggle('complete', complete);
+      var ds = row.querySelector('.done-sum');
+      if (!ds){
+        ds = el('div','done-sum');
+        var tx = el('span','ds-t');
+        var tg = el('button','ds-btn','Ver tareas'); tg.type = 'button';
+        tg.addEventListener('click', function(){ var o = row.classList.toggle('open'); tg.textContent = o ? 'Plegar' : 'Ver tareas'; });
+        ds.append(tx, tg);
+        if (!VIEW){
+          var ar = el('button','ds-btn ds-arch'); ar.type = 'button';
+          ar.addEventListener('click', async function(){
+            var key = row.dataset.key, on = !row.classList.contains('archived');
+            if (on) state.archived[key] = true; else delete state.archived[key];
+            if (token()){ ar.disabled = true; ar.textContent = on ? 'Archivando…' : 'Restaurando…'; if (await saveNow()) return goReload(panel.dataset.client); ar.disabled = false; }
+            else scheduleSave();
+            row.classList.toggle('archived', on); row.classList.remove('open');
+            if (on) archiveList(panel).appendChild(row); else { var main = panel.querySelector('ol.timeline:not(.arch)'); main.appendChild(row); sortRows(main); }
+            archiveLabel(panel); summary(panel); renderHome(true); refreshRows(panel);
+          });
+          ds.appendChild(ar);
+        }
+        row.querySelector('.ev').insertAdjacentElement('afterend', ds);
+      }
+      ds.querySelector('.ds-t').textContent = complete ? '✓ ' + done + (done === 1 ? ' tarea hecha' : ' tareas hechas') : (row.classList.contains('archived') ? 'Archivada · ' + done + ' de ' + total + ' hechas' : '');
+      var arb = ds.querySelector('.ds-arch'); if (arb) arb.textContent = row.classList.contains('archived') ? 'Restaurar' : 'Archivar';
+    });
+  }
+
   function counts(panel){
-    var bx = panel.querySelectorAll('.task input[type=checkbox]'), open = 0, total = 0, prio = 0;
+    var bx = panel.querySelectorAll('.row:not(.archived) .task input[type=checkbox]'), open = 0, total = 0, prio = 0;
     bx.forEach(function(b){
       var v = statusOf(b.id); if (v === 'canceled') return;
       total++; if (!b.checked) open++; if (v === 'priority') prio++;
@@ -1072,10 +1148,12 @@ footer{font-family:var(--f-mono); font-size:11.5px; color:var(--muted); display:
     requestAnimationFrame(function(){ setTimeout(function(){ bar.style.width = Math.max(pct, 2) + '%'; }, 450); });
   }
   function summary(panel){
+    refreshRows(panel);
     var c = counts(panel), s = panel.querySelector('.summary'), next = panel._next;
     s.innerHTML = '';
     function pill(html){ var e = document.createElement('span'); e.className = 'pill'; e.innerHTML = html; s.appendChild(e); }
-    pill('<strong>' + panel._rows + '</strong> ' + (panel._rows === 1 ? 'activación' : 'activaciones'));
+    var nRows = panel.querySelectorAll('.row:not(.archived)').length;
+    pill('<strong>' + nRows + '</strong> ' + (nRows === 1 ? 'activación' : 'activaciones'));
     pill('<strong>' + c.open + '</strong> de ' + c.total + ' tareas abiertas');
     if (c.prio) pill('<strong style="color:#FF9E7A">' + c.prio + '</strong> ' + (c.prio === 1 ? 'prioritaria' : 'prioritarias'));
     if (next) pill('Próxima: ' + next.name + ' · <strong>' + (next.diff === 0 ? 'hoy' : 'en ' + next.diff + ' d') + '</strong>');

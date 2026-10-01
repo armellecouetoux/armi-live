@@ -204,6 +204,10 @@
   "t-es-llav": {
    "t": "Llaveros",
    "o": "Armelle"
+  },
+  "t-bt-lany": {
+   "t": "Crear tarjetones lanyards",
+   "o": "Armi"
   }
  },
  "order": {

@@ -11,6 +11,7 @@
   "t-bt-merch": "ongoing",
   "t-bt-stick": "canceled",
   "t-bt-lany": "ongoing",
+  "c-muo9tlk12il7": "ongoing",
   "t-es-llav": "ongoing"
  },
  "links": {
@@ -71,6 +72,11 @@
    {
     "id": "c-muo9tlk12il7",
     "t": "Regalos Speakers",
+    "o": ""
+   },
+   {
+    "id": "c-mupa9jy8j0hk",
+    "t": "Escribir partners si quieren goodies.",
     "o": ""
    }
   ],

@@ -99,6 +99,10 @@
  "t-cq-who": true,
  "c-munyaq8f11ht": true,
  "edit": {
+  "t-bt-lany": {
+   "t": "Crear tarjetones lanyards",
+   "o": "Armi"
+  },
   "t-es-llav": {
    "t": "Llaveros",
    "o": "Armelle"

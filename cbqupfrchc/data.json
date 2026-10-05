@@ -4,8 +4,8 @@
   "t-cq-who": "ongoing",
   "t-ed-inv": "ongoing",
   "c-munyaq8f11ht": "priority",
-  "t-bt-inv": "ongoing",
   "t-bt-pon": "ongoing",
+  "t-bt-inv": "ongoing",
   "t-bt-net": "ongoing",
   "t-bt-merch": "ongoing",
   "t-bt-lany": "ongoing",
@@ -106,9 +106,8 @@
  },
  "order": {
   "r-bt": [
-   "c-muny1ofr0i2f",
-   "t-bt-inv",
    "t-bt-pon",
+   "t-bt-inv",
    "t-bt-ps21",
    "t-bt-net",
    "t-bt-merch",

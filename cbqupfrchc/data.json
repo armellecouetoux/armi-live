@@ -4,7 +4,6 @@
   "t-cq-who": "ongoing",
   "t-ed-inv": "ongoing",
   "c-munyaq8f11ht": "priority",
-  "c-muny1ofr0i2f": "priority",
   "t-bt-inv": "ongoing",
   "t-bt-pon": "ongoing",
   "t-bt-net": "ongoing",
@@ -61,11 +60,6 @@
     "o": "Armi"
    },
    {
-    "id": "c-muny1ofr0i2f",
-    "t": "Pedir a OM la pantalla del Madnum",
-    "o": "Armi"
-   },
-   {
     "id": "c-muo9tlk12il7",
     "t": "Regalos Speakers",
     "o": "Armi"
@@ -98,7 +92,6 @@
  },
  "t-cq-who": true,
  "c-munyaq8f11ht": true,
- "c-muny1ofr0i2f": true,
  "edit": {
   "t-bt-lany": {
    "t": "Crear tarjetones lanyards",

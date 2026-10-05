@@ -15,7 +15,8 @@
   "c-munzeyk4pbrf": "ongoing",
   "t-bt-inv": "ongoing",
   "c-muo9tlk12il7": "ongoing",
-  "c-mumgxeg9hkqg": "ongoing"
+  "c-mumgxeg9hkqg": "ongoing",
+  "s-pos-pant": "ongoing"
  },
  "links": {
   "t-bt-pon": [
@@ -335,5 +336,6 @@
  "c-muo25l00foua": true,
  "c-muo27eziikx8": true,
  "c-muo25t7d73m4": true,
- "s-pos-cobro": true
+ "s-pos-cobro": true,
+ "s-pos-pant": false
 }

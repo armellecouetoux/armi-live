@@ -374,6 +374,55 @@ ol.timeline.arch{border-top:0; margin-top:8px}
 .rl-btn:hover{color:var(--accent)} .rl-btn:last-child{padding-right:9px} .rl-btn:last-child:hover{color:var(--urgent)}
 .rl-empty{font-size:12.5px; color:var(--done)}
 .rlinks .lform{margin-top:2px}
+
+/* ===== Activation header: fold toggle + links right under the title ===== */
+.ev{display:flex; align-items:center; flex-wrap:wrap; gap:6px 10px}
+.fold-btn{appearance:none; width:26px; height:26px; border-radius:8px; border:1px solid var(--line); background:var(--surface); color:var(--muted); display:grid; place-items:center; cursor:pointer; flex:0 0 auto; transition:transform .3s var(--ease), color .2s, border-color .2s}
+.fold-btn span{display:block; font-size:13px; line-height:1; transition:transform .3s var(--ease)}
+.fold-btn[aria-expanded="false"] span{transform:rotate(-90deg)}
+.fold-btn:hover{color:var(--accent); border-color:var(--accent)}
+.fold-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.fold-count{font-size:11.5px; font-weight:800; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:999px; font-variant-numeric:tabular-nums}
+.row.folded .body > :not(.ev):not(.done-sum):not(.rlinks){display:none}
+.row.folded{padding-block:16px}
+.row.complete:not(.open) .body > .rlinks, .row.archived:not(.open) .body > .rlinks{display:grid}
+.row:not(.folded) .body > ul.tasks, .row.open .body > ul.tasks{animation:rise .35s var(--ease) both}
+
+.rlinks{margin-left:0; padding:8px 10px; border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius:12px; background:linear-gradient(110deg, var(--accent-soft), transparent 70%); position:relative; overflow:hidden; animation:rise .5s var(--ease) both}
+.rlinks::after{content:""; position:absolute; inset:0; background:linear-gradient(105deg, transparent 35%, rgba(255,255,255,.07) 50%, transparent 65%); transform:translateX(-100%); animation:rlSweep 7s ease-in-out 1.2s infinite; pointer-events:none}
+@keyframes rlSweep{0%,70%{transform:translateX(-100%)} 100%{transform:translateX(100%)}}
+.rl-head{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.rl-title{font-size:10.5px; font-weight:800; letter-spacing:.14em; color:var(--accent)}
+.rl-list{display:flex; flex-wrap:wrap; gap:6px; flex:1 1 auto; min-width:0}
+.rl-item{background:var(--accent); border-color:var(--accent); animation:rlPop .45s var(--ease) both; transition:transform .25s var(--ease), box-shadow .25s}
+.rl-item a{color:var(--bg); font-weight:800}
+.rl-item a:hover{color:var(--bg); text-decoration:underline}
+.rl-item .rl-btn{color:color-mix(in srgb, var(--bg) 65%, transparent)}
+.rl-item .rl-btn:hover{color:var(--bg)}
+.rl-item:hover{transform:translateY(-2px); box-shadow:0 8px 20px -8px var(--accent)}
+@keyframes rlPop{from{opacity:0; transform:translateY(6px) scale(.94)} to{opacity:1; transform:none}}
+.rl-add{position:relative; z-index:1}
+.rl-empty{color:var(--muted)}
+
+/* ===== Tasks: one clear line each, colour by status ===== */
+ul.tasks{gap:0; border-top:1px solid rgba(255,255,255,.07)}
+ul.tasks > li.task{padding:9px 10px 9px 12px; border-bottom:1px solid rgba(255,255,255,.07); position:relative; transition:background .25s}
+ul.tasks > li.task::before{content:""; position:absolute; left:0; top:8px; bottom:8px; width:3px; border-radius:3px; background:var(--sc, transparent); transition:background .25s}
+ul.tasks > li.task:hover{background:rgba(255,255,255,.025)}
+li.task.is-pending{--sc:rgba(255,255,255,.18)}
+li.task.is-ongoing{--sc:#8FC7FF; background:linear-gradient(90deg, rgba(143,199,255,.09), transparent 55%)}
+li.task.is-priority{--sc:#FF9E7A; background:linear-gradient(90deg, rgba(255,158,122,.12), transparent 55%)}
+li.task.is-priority .txt{color:#FFE3D8}
+li.task.is-done{--sc:#8EE6B4; opacity:.62}
+li.task.is-done:hover{opacity:.9}
+li.task.is-canceled{--sc:rgba(255,255,255,.08); opacity:.45}
+.task label{align-items:center}
+.task .extras{padding-left:29px}
+
+.rlinks.is-empty{padding:0; border:0; background:none; animation:none}
+.rlinks.is-empty::after, .rlinks.is-empty .rl-title{display:none}
+.rlinks.is-empty .rl-add{opacity:.55; font-size:11.5px}
+.rlinks.is-empty .rl-add:hover{opacity:1}
 </style>
 <main class="page">
 
@@ -693,6 +742,9 @@ ol.timeline.arch{border-top:0; margin-top:8px}
     sel.value = v; sel.className = 'st v-' + v;
     li.classList.toggle('is-priority', v === 'priority');
     li.classList.toggle('is-canceled', v === 'canceled');
+    li.classList.toggle('is-ongoing', v === 'ongoing');
+    li.classList.toggle('is-done', v === 'done');
+    li.classList.toggle('is-pending', v === 'pending');
   }
   function setupStatus(li){
     var label = li.querySelector('label'), cb = li.querySelector('input[type=checkbox]');
@@ -910,15 +962,16 @@ ol.timeline.arch{border-top:0; margin-top:8px}
   if (!state.rowLinks || typeof state.rowLinks !== 'object') state.rowLinks = {};
   function renderRowLinks(row){
     var key = row.dataset.key, body = row.querySelector('.body'), box = body.querySelector(':scope > .rlinks');
-    if (!box){ box = el('div','rlinks'); var at = body.querySelector(':scope > .addtask'); body.insertBefore(box, at || null); }
+    if (!box){ box = el('div','rlinks'); var ev = body.querySelector(':scope > .ev'); ev.insertAdjacentElement('afterend', box); }
     box.innerHTML = '';
     var list = state.rowLinks[key] || [];
     box.hidden = VIEW && !list.length;
-    var hd = el('div','rl-head'); hd.appendChild(el('span','rl-title','Enlaces útiles'));
+    box.classList.toggle('is-empty', !list.length);
+    var hd = el('div','rl-head'); hd.appendChild(el('span','rl-title','Enlaces'));
+    var wrap = el('div','rl-list'); hd.appendChild(wrap);
     box.appendChild(hd);
-    var wrap = el('div','rl-list'); box.appendChild(wrap);
     list.forEach(function(l, i){
-      var item = el('span','rl-item');
+      var item = el('span','rl-item'); item.style.animationDelay = (i * 60) + 'ms';
       var a = el('a', null, (l.l || shortLabel(l.u)) + ' ↗'); a.href = l.u; a.target = '_blank'; a.rel = 'noopener'; a.title = l.u;
       item.appendChild(a);
       if (!VIEW){
@@ -930,7 +983,7 @@ ol.timeline.arch{border-top:0; margin-top:8px}
       }
       wrap.appendChild(item);
     });
-    if (!list.length && !VIEW) wrap.appendChild(el('span','rl-empty','Guarda aquí briefs, carpetas, decks, presupuestos…'));
+
     if (!VIEW){
       var add = el('button','rl-add','+ enlace útil'); add.type = 'button';
       add.addEventListener('click', function(){ openRowLinkForm(row, -1); });
@@ -961,6 +1014,36 @@ ol.timeline.arch{border-top:0; margin-top:8px}
     });
   }
   document.querySelectorAll('li.row[data-key]').forEach(renderRowLinks);
+
+
+  // ---------- Fold / unfold each activation ----------
+  var FOLD_KEY = 'armi-folded' + (VIEW ? '-' + VIEW : ''), folded = {};
+  try { folded = JSON.parse(localStorage.getItem(FOLD_KEY) || '{}') || {}; } catch(e){ folded = {}; }
+  function isFolded(row){ return (row.classList.contains('complete') || row.classList.contains('archived')) ? !row.classList.contains('open') : row.classList.contains('folded'); }
+  function paintFold(row){
+    var b = row.querySelector('.fold-btn'); if (!b) return;
+    var f = isFolded(row); b.setAttribute('aria-expanded', String(!f)); b.title = f ? 'Desplegar' : 'Plegar';
+    var t = 0, d = 0; row.querySelectorAll('li.task input[type=checkbox]').forEach(function(cb){ if (statusOf(cb.id) === 'canceled') return; t++; if (cb.checked) d++; });
+    var c = row.querySelector('.fold-count'); if (c){ c.textContent = d + '/' + t; c.hidden = !f || !t; }
+  }
+  document.querySelectorAll('li.row[data-key]').forEach(function(row){
+    var ev = row.querySelector('.ev'); if (!ev) return;
+    if (folded[row.dataset.key]) row.classList.add('folded');
+    var b = el('button','fold-btn'); b.type = 'button'; b.innerHTML = '<span aria-hidden="true">▾</span>'; b.setAttribute('aria-label','Plegar o desplegar ' + ev.querySelector('.ev-name').textContent.trim());
+    var c = el('span','fold-count'); c.hidden = true;
+    ev.insertBefore(b, ev.firstChild); ev.appendChild(c);
+    b.addEventListener('click', function(){
+      if (row.classList.contains('complete') || row.classList.contains('archived')){
+        var o = row.classList.toggle('open'); var tg = row.querySelector('.done-sum .ds-btn'); if (tg) tg.textContent = o ? 'Plegar' : 'Ver tareas';
+      } else {
+        var on = row.classList.toggle('folded');
+        if (on) folded[row.dataset.key] = 1; else delete folded[row.dataset.key];
+        try { localStorage.setItem(FOLD_KEY, JSON.stringify(folded)); } catch(e){}
+      }
+      paintFold(row);
+    });
+    paintFold(row);
+  });
 
   if (!VIEW && window.Sortable) document.querySelectorAll('.row ul.tasks').forEach(function(ul){
     Sortable.create(ul, {handle: '.drag', animation: 180, ghostClass: 'drag-ghost', onEnd: function(){ saveOrder(ul); }});
@@ -1183,7 +1266,7 @@ ol.timeline.arch{border-top:0; margin-top:8px}
         ds = el('div','done-sum');
         var tx = el('span','ds-t');
         var tg = el('button','ds-btn','Ver tareas'); tg.type = 'button';
-        tg.addEventListener('click', function(){ var o = row.classList.toggle('open'); tg.textContent = o ? 'Plegar' : 'Ver tareas'; });
+        tg.addEventListener('click', function(){ var o = row.classList.toggle('open'); tg.textContent = o ? 'Plegar' : 'Ver tareas'; paintFold(row); });
         ds.append(tx, tg);
         if (!VIEW){
           var ar = el('button','ds-btn ds-arch'); ar.type = 'button';
@@ -1202,6 +1285,7 @@ ol.timeline.arch{border-top:0; margin-top:8px}
       }
       ds.querySelector('.ds-t').textContent = complete ? '✓ ' + done + (done === 1 ? ' tarea hecha' : ' tareas hechas') : (row.classList.contains('archived') ? 'Archivada · ' + done + ' de ' + total + ' hechas' : '');
       var arb = ds.querySelector('.ds-arch'); if (arb) arb.textContent = row.classList.contains('archived') ? 'Restaurar' : 'Archivar';
+      paintFold(row);
     });
   }
 

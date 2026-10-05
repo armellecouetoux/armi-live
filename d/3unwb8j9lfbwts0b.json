@@ -245,6 +245,12 @@
    "c-mupa9jy8j0hk",
    "c-mupa9yxg0v72",
    "t-bt-stick"
+  ],
+  "e-yzinlxh7": [
+   "c-muo25l00foua",
+   "c-muo27eziikx8",
+   "c-muo25t7d73m4",
+   "c-muv8ug0abate"
   ]
  },
  "t-bt-pon": false,
@@ -327,5 +333,6 @@
  "c-mupa9yxg0v72": true,
  "c-mupa9jy8j0hk": true,
  "c-muo25l00foua": true,
- "c-muo27eziikx8": true
+ "c-muo27eziikx8": true,
+ "c-muo25t7d73m4": true
 }

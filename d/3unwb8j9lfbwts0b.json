@@ -14,7 +14,6 @@
   "c-mumy0agjsir5": "ongoing",
   "c-munyaq8f11ht": "priority",
   "c-munzeyk4pbrf": "ongoing",
-  "c-muny1ofr0i2f": "priority",
   "t-bt-inv": "ongoing",
   "c-muo9tlk12il7": "ongoing",
   "c-mumgxeg9hkqg": "ongoing"
@@ -56,11 +55,6 @@
    {
     "id": "c-mumgxeg9hkqg",
     "t": "Confirmar contratos e importes con Reyes",
-    "o": "Armi"
-   },
-   {
-    "id": "c-muny1ofr0i2f",
-    "t": "Pedir a OM la pantalla del Madnum",
     "o": "Armi"
    },
    {
@@ -308,7 +302,6 @@
  "c-mumy0agjsir5": false,
  "c-munyaq8f11ht": true,
  "c-munzeyk4pbrf": false,
- "c-muny1ofr0i2f": true,
  "t-bt-inv": false,
  "c-muo9tlk12il7": false,
  "archived": {}

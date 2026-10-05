@@ -227,9 +227,8 @@
  },
  "order": {
   "r-bt": [
-   "c-muny1ofr0i2f",
-   "t-bt-inv",
    "t-bt-pon",
+   "t-bt-inv",
    "t-bt-ps21",
    "t-bt-net",
    "t-bt-merch",

@@ -3,7 +3,6 @@
  "t-es-stand": false,
  "st": {
   "t-ed-inv": "ongoing",
-  "t-bt-stick": "canceled",
   "t-bt-merch": "ongoing",
   "t-bt-net": "ongoing",
   "t-bt-lany": "ongoing",
@@ -39,7 +38,7 @@
   ]
  },
  "t-ed-inv": false,
- "t-bt-stick": false,
+ "t-bt-stick": true,
  "custom": {
   "r-bt": [
    {
@@ -304,5 +303,6 @@
  "c-munzeyk4pbrf": false,
  "t-bt-inv": false,
  "c-muo9tlk12il7": false,
- "archived": {}
+ "archived": {},
+ "rowLinks": {}
 }

@@ -304,5 +304,12 @@
  "t-bt-inv": false,
  "c-muo9tlk12il7": false,
  "archived": {},
- "rowLinks": {}
+ "rowLinks": {
+  "r-bt": [
+   {
+    "u": "https://rock.et/pages/bold-talks",
+    "l": "LANDING"
+   }
+  ]
+ }
 }

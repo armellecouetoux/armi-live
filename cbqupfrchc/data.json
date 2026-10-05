@@ -11,7 +11,6 @@
   "t-bt-lany": "ongoing",
   "c-mumgxeg9hkqg": "ongoing",
   "c-muo9tlk12il7": "ongoing",
-  "t-bt-stick": "canceled",
   "t-es-llav": "ongoing"
  },
  "links": {
@@ -92,6 +91,7 @@
  },
  "t-cq-who": true,
  "c-munyaq8f11ht": true,
+ "t-bt-stick": true,
  "edit": {
   "t-bt-lany": {
    "t": "Crear tarjetones lanyards",

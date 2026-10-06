@@ -19,7 +19,8 @@
   "s-pos-pant": "ongoing",
   "t-sh-inv": "ongoing",
   "t-sh-list": "ongoing",
-  "t-es-stand": "ongoing"
+  "t-es-stand": "ongoing",
+  "s-pos-catering": "ongoing"
  },
  "links": {
   "t-bt-pon": [
@@ -377,5 +378,6 @@
  "c-munuj610hv7z": true,
  "c-muvaatffry4o": false,
  "c-mumjf403jh35": true,
- "s-pos-dims": true
+ "s-pos-dims": true,
+ "s-pos-catering": false
 }

@@ -452,6 +452,102 @@ html[data-theme="light"] .note-date, html[data-theme="light"] .evform input[type
 .theme-btn:hover{transform:rotate(-15deg) scale(1.06); border-color:var(--accent)}
 .theme-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 body, .card, .kpi, .note, .ccard, .pill, .tab, .rlinks, ul.tasks > li.task{transition:background-color .35s, color .35s, border-color .35s}
+
+/* ===== Minimal dashboard (oct 2026): no checkbox, status first, calmer surfaces ===== */
+:root{--stw:104px}
+body{font-size:15.5px}
+.page{gap:48px}
+/* background: two soft colour glows that drift, no grain, no ring */
+.aura-grain{display:none}
+.aura-ring{opacity:.18; filter:blur(80px)}
+.aura-glow{opacity:.10}
+@keyframes auraBreath{from{opacity:.12} to{opacity:.22}}
+@keyframes glowPulse{from{opacity:.06} to{opacity:.12}}
+html[data-theme="light"] .aura-ring{opacity:.10}
+html[data-theme="light"] .aura-glow{opacity:.05}
+.row::before{display:none}
+.row{padding-block:32px}
+ol.timeline, .row{border-color:var(--hair)}
+
+/* checkbox stays in the markup as the data carrier, but is invisible */
+.task label{display:block}
+.task label > input[type=checkbox]{position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; margin:0}
+.readonly .task label{cursor:default}
+.task label{cursor:default}
+
+/* task line: status pill first, then the text */
+ul.tasks{border-top:0; gap:2px}
+ul.tasks > li.task{padding:8px 8px 8px 0; border-bottom:0; border-radius:10px; background:none}
+ul.tasks > li.task::before{display:none}
+ul.tasks > li.task:hover{background:var(--hover)}
+li.task.is-ongoing, li.task.is-priority{background:none}
+.tline{align-items:center; gap:12px}
+.tline > .st{order:-1; width:var(--stw); text-align:left}
+.tline > :not(.st):not(label){order:2}
+.tline > label{order:1; flex:1 1 auto}
+.task .txt{font-size:15.5px; line-height:1.45}
+.st{font-size:11.5px; font-weight:800; letter-spacing:.01em; padding:5px 22px 5px 10px; border:0; background-color:var(--surface-2); color:var(--muted); transition:color .3s, background-color .3s, transform .25s var(--ease)}
+.st:hover{transform:translateY(-1px)}
+.st.v-pending{color:var(--muted)}
+.st.v-ongoing{color:var(--ongoing); background-color:var(--ongoing-soft)}
+.st.v-priority{color:var(--bg); background-color:var(--priority)}
+.st.v-done{color:var(--ok); background-color:var(--ok-soft)}
+.st.v-canceled{color:var(--done); background-color:transparent; border:1px dashed var(--hair-2)}
+.st.v-priority{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23111'/%3E%3C/svg%3E")}
+li.task.is-priority .txt{color:var(--ink); font-weight:700}
+li.task.is-done, li.task.is-canceled{opacity:1}
+li.task.is-done .txt{color:var(--muted); background-size:100% 1.5px}
+li.task.is-canceled .txt{color:var(--done)}
+li.task.is-done:hover{opacity:1}
+.owner{border:0; background:var(--surface-2); color:var(--muted); border-radius:6px; padding:2px 7px}
+/* status change: a short pulse so the change is felt */
+.st{animation:none}
+li.task.flash .st{animation:stPop .45s var(--ease)}
+@keyframes stPop{40%{transform:scale(1.08)}}
+/* extras, forms and "+ tarea" line up with the text, not the pill */
+.task .extras, .editform, .body > .lform{padding-left:calc(var(--stw) + 12px)}
+.addtask{margin-left:calc(var(--stw) + 12px); border-style:solid; border-color:transparent; padding-left:0}
+.addtask:hover, .addtask:focus-visible{border-color:transparent; padding-left:0}
+
+/* cards: borderless, soft */
+.kpi, .ccard, .inbox-card, .note, .sharepop, .syncpanel{border-color:transparent}
+.kpi{padding:18px 18px 16px; border-radius:16px}
+.kpi b{font-size:36px}
+.ccard{border-radius:16px}
+.ccard::before{height:4px}
+.ccard:hover{border-color:transparent; box-shadow:0 14px 30px -18px var(--c)}
+html[data-theme="light"] .kpi, html[data-theme="light"] .ccard, html[data-theme="light"] .inbox-card, html[data-theme="light"] .note{box-shadow:0 1px 2px rgba(20,20,30,.05), 0 8px 24px -16px rgba(20,20,30,.18)}
+.upcoming li, .focus li{border-bottom-color:var(--hair)}
+.feed a.it{border-bottom-color:var(--hair)}
+
+/* activation header */
+.fold-btn{border-color:transparent; background:var(--surface-2)}
+a.ev-name{text-decoration-color:transparent}
+a.ev-name:hover{text-decoration-color:var(--accent)}
+.rlinks.is-empty{justify-self:start}
+.rlinks{border:0; background:var(--accent-soft)}
+.meta{font-size:12.5px}
+
+.kpi span::before{content:""; display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:7px; vertical-align:1px; background:var(--k, var(--accent))}
+.kpi:nth-child(2){--k:var(--ongoing)} .kpi:nth-child(3){--k:var(--priority)} .kpi:nth-child(4){--k:var(--ok)}
+li.task.is-done .txt{background-size:0 0; text-decoration:line-through; text-decoration-thickness:1.5px; text-decoration-color:var(--done)}
+.owner{display:inline-block; text-decoration:none}
+@media (max-width:560px){
+  .tline{flex-wrap:wrap; row-gap:6px}
+  .tline > label{flex:1 1 calc(100% - var(--stw) - 10px); min-width:0}
+  li.task:not(.tools) .tline > :not(.st):not(label){display:none!important}
+  li.task.tools .tline > :not(.st):not(label){opacity:1}
+  li.task.tools .tline > .addlink{margin-left:calc(var(--stw) + 10px)}
+  li.task.tools{background:var(--hover)}
+  .task .extras, .editform, .body > .lform{padding-left:0}
+  .addtask{margin-left:0}
+}
+@media (max-width:560px){
+  :root{--stw:88px}
+  .st{font-size:11px; padding:5px 18px 5px 8px; background-position:right 6px center}
+  .task .txt{font-size:15px}
+  .tline{gap:10px}
+}
 </style>
 <main class="page">
 
@@ -460,7 +556,7 @@ body, .card, .kpi, .note, .ccard, .pill, .tab, .rlinks, ul.tasks > li.task{trans
   <header>
     <div class="eyebrow"><span>Rocket Digital</span><span>·</span><span>Founders</span><span>·</span><span class="today">Q4 2026</span></div>
     <h1>Agenda Q4: <em>cinco activaciones</em> en cinco semanas</h1>
-    <p class="lede">Lo que viene y lo que hay que mover ya. <b>Los nombres con ↗</b> abren la landing de cada activación, usa <b>+ tarea</b> y <b>+ enlace</b> para añadir tareas y enlaces y cambia el <b>estado</b> de cada tarea a la derecha.</p>
+    <p class="lede">Lo que viene y lo que hay que mover ya. <b>Los nombres con ↗</b> abren la landing de cada activación, usa <b>+ tarea</b> y <b>+ enlace</b> para añadir tareas y enlaces y cambia el <b>estado</b> de cada tarea a la izquierda.</p>
     <div class="summary"></div>
     <div class="progress" aria-hidden="true"><i></i></div>
   </header>
@@ -871,13 +967,17 @@ body, .card, .kpi, .note, .ccard, .pill, .tab, .rlinks, ul.tasks > li.task{trans
     var sel = document.createElement('select'); sel.className = 'st'; sel.id = 'st-' + cb.id; sel.setAttribute('aria-label', 'Estado de la tarea');
     ST.forEach(function(o){ var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; sel.appendChild(op); });
     line.appendChild(sel);
+    // No checkbox: the status alone marks a task done. Clicking the text no longer toggles anything.
+    cb.tabIndex = -1; cb.setAttribute('aria-hidden', 'true');
+    label.addEventListener('click', function(e){ if (e.target.closest('a')) return; e.preventDefault(); if (!readOnly) li.classList.toggle('tools'); });
     sel.addEventListener('change', function(){
       if (readOnly){ paintTask(li); return; }
       var v = sel.value;
       if (v === 'done'){ state[cb.id] = true; }
       else { state[cb.id] = false; if (v === 'pending') delete state.st[cb.id]; else state.st[cb.id] = v; }
       cb.checked = !!state[cb.id];
-      paintTask(li); summary(li.closest('.panel')); renderHome(true); scheduleSave();
+      paintTask(li); li.classList.remove('flash'); void li.offsetWidth; li.classList.add('flash');
+      summary(li.closest('.panel')); renderHome(true); scheduleSave();
     });
     cb.addEventListener('change', function(){
       if (!cb.checked && state.st[cb.id] === 'canceled') delete state.st[cb.id];

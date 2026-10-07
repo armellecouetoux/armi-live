@@ -18,6 +18,8 @@
  "s-pos-agenda": true,
  "s-pos-dims": true,
  "s-pos-cobro": true,
+ "s-pos-catering": true,
+ "s-pos-venue": true,
  "edit": {},
  "order": {}
 }

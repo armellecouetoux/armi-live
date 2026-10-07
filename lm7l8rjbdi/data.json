@@ -21,5 +21,13 @@
  "s-pos-catering": true,
  "s-pos-venue": true,
  "edit": {},
- "order": {}
+ "order": {},
+ "rowLinks": {
+  "s-pos": [
+   {
+    "u": "https://docs.google.com/presentation/d/1eOmg67Rangn5KoPUY6B-euLdeNDc925vZDVo3vT0St8/edit?slide=id.g3e730dbc39a_1_98#slide=id.g3e730dbc39a_1_98",
+    "l": "Deck"
+   }
+  ]
+ }
 }

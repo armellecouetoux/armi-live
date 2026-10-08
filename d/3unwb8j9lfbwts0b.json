@@ -428,6 +428,11 @@
  "c-muy125j770tw": true,
  "c-mun3llmvrpac": true,
  "c-muz85gh7gdcp": true,
- "evstate": {},
+ "evstate": {
+  "r-ed": {
+   "s": "postponed",
+   "d": "2026-12-02"
+  }
+ },
  "c-muv9xu1hcodf": false
 }

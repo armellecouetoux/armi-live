@@ -11,6 +11,7 @@
   "t-bt-lany": "ongoing",
   "c-mumgxeg9hkqg": "ongoing",
   "c-muo9tlk12il7": "ongoing",
+  "c-muz85gh7gdcp": "priority",
   "t-es-stand": "ongoing",
   "t-es-llav": "ongoing",
   "t-sh-list": "ongoing",
@@ -154,6 +155,14 @@
    "c-mupa9jy8j0hk",
    "c-mupa9yxg0v72",
    "t-bt-stick"
+  ],
+  "r-es": [
+   "c-muz85gh7gdcp",
+   "t-es-pon",
+   "t-es-stand",
+   "t-es-llav",
+   "t-es-pos",
+   "c-mumjf403jh35"
   ]
  },
  "events": {

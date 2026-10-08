@@ -574,7 +574,7 @@ h1 .w{display:inline-block; opacity:0; transform:translateY(.35em); filter:blur(
 h1 em .w{animation-name:wordIn}
 /* scroll reveal */
 .rv{opacity:0; transform:translateY(28px); filter:blur(6px); transition:opacity .9s var(--ease), transform .9s var(--ease), filter .9s var(--ease); animation:none!important}
-.rv.in{opacity:1; transform:none; filter:blur(0)}
+.rv.in{opacity:1; transform:none; filter:none}
 /* soft lift on interactive surfaces */
 .kpi, .ccard, .inbox-card{transition:transform .5s var(--ease), box-shadow .5s var(--ease), background-color .35s}
 .kpi:hover{transform:translateY(-3px)}
@@ -589,6 +589,28 @@ h1 em .w{animation-name:wordIn}
 /* top scroll progress line */
 .scrollbar{position:fixed; left:0; top:0; height:2px; width:100%; transform-origin:0 50%; transform:scaleX(var(--sp,0)); background:linear-gradient(90deg, var(--accent), var(--ongoing)); z-index:60; pointer-events:none; opacity:.8}
 @media (prefers-reduced-motion:reduce){ .rv{opacity:1; transform:none; filter:none} h1 .w{opacity:1; transform:none; filter:none} }
+
+/* ===== Activation status: postponed / canceled + menu ===== */
+.ev-tag{font-size:11.5px; font-weight:500; padding:3px 10px; border-radius:999px; background:var(--surface-2); color:var(--muted); white-space:nowrap; animation:rise .5s var(--ease) both}
+.row.postponed .ev-tag{color:var(--ongoing); background:var(--ongoing-soft)}
+.row.canceled .ev-tag{color:var(--priority); background:var(--priority-soft)}
+.row.canceled .ev-name{text-decoration:line-through; text-decoration-thickness:1.5px; text-decoration-color:var(--done)}
+.row.tbd .date .d{color:var(--muted)}
+.ev-menu-wrap{position:relative; display:inline-flex}
+.ev-more{appearance:none; border:0; background:transparent; color:var(--muted); font:inherit; font-size:18px; line-height:1; width:30px; height:28px; border-radius:8px; cursor:pointer; opacity:.55; transition:opacity .2s, background .2s, color .2s}
+.row:hover .ev-more, .ev-more:focus-visible, .ev-more[aria-expanded="true"]{opacity:1}
+.ev-more:hover, .ev-more[aria-expanded="true"]{background:var(--surface-2); color:var(--ink)}
+.ev-menu{position:absolute; top:calc(100% + 6px); left:0; z-index:40; min-width:200px; display:grid; padding:6px; border-radius:14px; background:var(--surface); border:1px solid var(--hair); box-shadow:0 18px 40px -16px rgba(0,0,0,.45); animation:menuIn .22s var(--ease) both}
+@keyframes menuIn{from{opacity:0; transform:translateY(-4px) scale(.98)} to{opacity:1; transform:none}}
+.ev-mi{appearance:none; border:0; background:transparent; color:var(--ink); font:inherit; font-size:14px; text-align:left; padding:9px 12px; border-radius:9px; cursor:pointer}
+.ev-mi:hover, .ev-mi:focus-visible{background:var(--surface-2); outline:none}
+.ev-mi.danger{color:var(--priority)}
+.ppform{align-items:center}
+.ppform input[type=date]{flex:0 1 180px}
+.pp-l{font-size:13px; color:var(--muted)}
+html[data-theme="light"] .ppform input[type=date]{color-scheme:light}
+@media (hover:none){ .ev-more{opacity:1} }
+li.row.menu-open{z-index:30}
 </style>
 <main class="page">
 
@@ -697,6 +719,34 @@ h1 em .w{animation-name:wordIn}
     });
   })();
 
+  // ---------- Activation status: postponed (with or without new date) / canceled ----------
+  if (!state.evstate || typeof state.evstate !== 'object') state.evstate = {};
+  var MONL = ['ene','feb','mar','abr','may','jun','jul','ago','sept','oct','nov','dic'];
+  function fmtShort(x){ var d = pd(x); return d.getDate() + ' ' + MONL[d.getMonth()]; }
+  function isCanceled(k){ return !!(state.evstate[k] && state.evstate[k].s === 'canceled'); }
+  document.querySelectorAll('li.row[data-key]').forEach(function(row){
+    var es = state.evstate[row.dataset.key]; if (!es) return;
+    var orig = row.dataset.date; row.dataset.orig = orig;
+    var tag = mk('span','ev-tag');
+    if (es.s === 'canceled'){ row.classList.add('canceled'); tag.textContent = 'Cancelada'; }
+    else if (es.s === 'postponed'){
+      row.classList.add('postponed');
+      if (es.d){
+        row.dataset.date = es.d; var a = pd(es.d);
+        row.querySelector('.date .d').textContent = String(a.getDate()).padStart(2, '0');
+        row.querySelector('.date .m').textContent = MON[a.getMonth()] + ' · ' + WD[a.getDay()];
+        tag.textContent = 'Pospuesta · antes ' + fmtShort(orig);
+      } else {
+        row.classList.add('tbd'); row.dataset.date = '9999-12-31';
+        row.querySelector('.date .d').textContent = '—';
+        row.querySelector('.date .m').textContent = 'Fecha por definir';
+        tag.textContent = 'Pospuesta';
+      }
+    } else return;
+    row.querySelector('.ev').appendChild(tag);
+  });
+  document.querySelectorAll('ol.timeline').forEach(sortRows);
+
   // Archived activations live in a folded list under each timeline
   if (!state.archived || typeof state.archived !== 'object') state.archived = {};
   function archiveList(panel){
@@ -709,9 +759,9 @@ h1 em .w{animation-name:wordIn}
     anchor.parentNode.insertBefore(d, anchor.nextSibling);
     return ol;
   }
-  function archiveLabel(panel){ var d = panel.querySelector('details.archive'); if (!d) return; var n = d.querySelectorAll('li.row').length; d.hidden = !n; d.querySelector('summary').textContent = 'Archivadas · ' + n; }
+  function archiveLabel(panel){ var d = panel.querySelector('details.archive'); if (!d) return; var n = d.querySelectorAll('li.row').length; d.hidden = !n; d.querySelector('summary').textContent = 'Archivadas y canceladas · ' + n; }
   document.querySelectorAll('li.row[data-key]').forEach(function(row){
-    if (!state.archived[row.dataset.key]) return;
+    if (!state.archived[row.dataset.key] && !isCanceled(row.dataset.key)) return;
     var panel = row.closest('.panel'); row.classList.add('archived'); archiveList(panel).appendChild(row);
   });
   document.querySelectorAll('.panel').forEach(archiveLabel);
@@ -756,7 +806,8 @@ h1 em .w{animation-name:wordIn}
 
   // Countdown chips + next event, per panel
   panels.forEach(function(panel){
-    var next = null, rows = panel.querySelectorAll('.row:not(.archived)');
+    var next = null, rows = panel.querySelectorAll('.row:not(.archived):not(.tbd)');
+    panel.querySelectorAll('.row.tbd:not(.archived) .chip').forEach(function(c){ c.textContent = 'Sin fecha'; });
     rows.forEach(function(r){
       var p = r.dataset.date.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]);
       var diff = Math.round((d - today)/MS), chip = r.querySelector('.chip');
@@ -790,7 +841,7 @@ h1 em .w{animation-name:wordIn}
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
   function canon(o){ if (Array.isArray(o)) return o.map(canon); if (o && typeof o === 'object'){ var r = {}; Object.keys(o).sort().forEach(function(k){ r[k] = canon(o[k]); }); return r; } return o; }
-  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; if (!Array.isArray(o.clients)) o.clients = []; if (!o.archived || typeof o.archived !== 'object') o.archived = {}; if (!o.rowLinks || typeof o.rowLinks !== 'object') o.rowLinks = {}; Object.keys(o.rowLinks).forEach(function(k){ if (!o.rowLinks[k] || !o.rowLinks[k].length) delete o.rowLinks[k]; }); if (!o.events || typeof o.events !== 'object') o.events = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
+  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; if (!Array.isArray(o.clients)) o.clients = []; if (!o.archived || typeof o.archived !== 'object') o.archived = {}; if (!o.rowLinks || typeof o.rowLinks !== 'object') o.rowLinks = {}; Object.keys(o.rowLinks).forEach(function(k){ if (!o.rowLinks[k] || !o.rowLinks[k].length) delete o.rowLinks[k]; }); if (!o.events || typeof o.events !== 'object') o.events = {}; if (!o.evstate || typeof o.evstate !== 'object') o.evstate = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
   function stable(o){ return JSON.stringify(canon(norm(JSON.parse(JSON.stringify(o || {}))))); }
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
@@ -850,6 +901,7 @@ h1 em .w{animation-name:wordIn}
     if (state.events[client] && state.events[client].length){ sub.events = {}; sub.events[client] = state.events[client]; }
     var arch = {}; panel.querySelectorAll('li.row[data-key]').forEach(function(r){ if (state.archived[r.dataset.key]) arch[r.dataset.key] = true; if (state.rowLinks[r.dataset.key]) (sub.rowLinks = sub.rowLinks || {})[r.dataset.key] = state.rowLinks[r.dataset.key]; });
     if (Object.keys(arch).length) sub.archived = arch;
+    panel.querySelectorAll('li.row[data-key]').forEach(function(r){ var k = r.dataset.key; if (state.evstate[k]) (sub.evstate = sub.evstate || {})[k] = state.evstate[k]; });
     var meta = state.clients.filter(function(c){ return c.key === client; });
     if (meta.length) sub.clients = [{key: meta[0].key, name: meta[0].name, c: meta[0].c}];
     return sub;
@@ -1365,7 +1417,7 @@ h1 em .w{animation-name:wordIn}
       clients.appendChild(card);
       requestAnimationFrame(function(){ setTimeout(function(){ pbi.style.width = Math.max(pct, 2) + '%'; }, quiet ? 0 : 400); });
 
-      panel.querySelectorAll('.row:not(.archived)').forEach(function(r){
+      panel.querySelectorAll('.row:not(.archived):not(.tbd)').forEach(function(r){
         var p = r.dataset.date.split('-'), d = new Date(+p[0], +p[1]-1, +p[2]);
         if (d >= today) events.push({d:d, name:r.querySelector('.ev-name').textContent.trim(), key:key, when:r.querySelector('.date .d').textContent + ' ' + r.querySelector('.date .m').textContent.split('·')[0].trim()});
       });
@@ -1480,7 +1532,7 @@ h1 em .w{animation-name:wordIn}
           var ar = el('button','ds-btn ds-arch'); ar.type = 'button';
           ar.addEventListener('click', async function(){
             var key = row.dataset.key, on = !row.classList.contains('archived');
-            if (on) state.archived[key] = true; else delete state.archived[key];
+            if (on) state.archived[key] = true; else { delete state.archived[key]; if (isCanceled(key)) delete state.evstate[key]; }
             if (token()){ ar.disabled = true; ar.textContent = on ? 'Archivando…' : 'Restaurando…'; if (await saveNow()) return goReload(panel.dataset.client); ar.disabled = false; }
             else scheduleSave();
             row.classList.toggle('archived', on); row.classList.remove('open');
@@ -1491,8 +1543,8 @@ h1 em .w{animation-name:wordIn}
         }
         row.querySelector('.ev').insertAdjacentElement('afterend', ds);
       }
-      ds.querySelector('.ds-t').textContent = complete ? '✓ ' + done + (done === 1 ? ' tarea hecha' : ' tareas hechas') : (row.classList.contains('archived') ? 'Archivada · ' + done + ' de ' + total + ' hechas' : '');
-      var arb = ds.querySelector('.ds-arch'); if (arb) arb.textContent = row.classList.contains('archived') ? 'Restaurar' : 'Archivar';
+      ds.querySelector('.ds-t').textContent = complete ? '✓ ' + done + (done === 1 ? ' tarea hecha' : ' tareas hechas') : (row.classList.contains('archived') ? (row.classList.contains('canceled') ? 'Cancelada' : 'Archivada') + ' · ' + done + ' de ' + total + ' hechas' : '');
+      var arb = ds.querySelector('.ds-arch'); if (arb) arb.textContent = row.classList.contains('canceled') ? 'Reactivar' : row.classList.contains('archived') ? 'Restaurar' : 'Archivar';
       paintFold(row);
     });
   }
@@ -1665,6 +1717,62 @@ h1 em .w{animation-name:wordIn}
     paint(); document.body.appendChild(b);
   })();
 
+
+
+  // ---------- Per-activation menu: postpone, cancel, archive ----------
+  if (!VIEW) document.querySelectorAll('li.row[data-key]').forEach(function(row){
+    var ev = row.querySelector('.ev'); if (!ev) return;
+    var key = row.dataset.key, panel = row.closest('.panel');
+    var wrap = el('span','ev-menu-wrap'), more = el('button','ev-more','⋯'); more.type = 'button';
+    more.setAttribute('aria-label','Opciones de la activación'); more.setAttribute('aria-haspopup','true'); more.setAttribute('aria-expanded','false');
+    var menu = el('div','ev-menu'); menu.hidden = true; wrap.append(more, menu);
+    var fold = ev.querySelector('.fold-count'); ev.insertBefore(wrap, ev.querySelector('.ev-tag') || fold || null);
+    async function commit(fn){
+      fn(); menu.hidden = true;
+      if (token()){ setStatus('Guardando…'); if (await saveNow()) goReload(panel.dataset.client); else setStatus('No se pudo guardar. Inténtalo de nuevo.', true); }
+      else { scheduleSave(); goReload(panel.dataset.client); }
+    }
+    function item(label, fn, cls){ var b = el('button','ev-mi' + (cls ? ' ' + cls : ''), label); b.type = 'button'; b.setAttribute('role','menuitem'); b.addEventListener('click', fn); menu.appendChild(b); }
+    function postponeForm(){
+      menu.hidden = true; more.setAttribute('aria-expanded','false');
+      if (row.querySelector('.ppform')) return;
+      row.classList.remove('folded');
+      var f = el('form','lform ppform'), d = el('input'); d.type = 'date'; d.setAttribute('aria-label','Nueva fecha');
+      var es = state.evstate[key]; d.value = es && es.d ? es.d : (row.dataset.orig || row.dataset.date);
+      var ok = el('button','ok','Posponer'); ok.type = 'submit';
+      var nd = el('button','cancel','Aún sin fecha'); nd.type = 'button';
+      var cx = el('button','cancel','Cerrar'); cx.type = 'button';
+      var lb = el('span','pp-l','Nueva fecha');
+      f.append(lb, d, ok, nd, cx);
+      ev.insertAdjacentElement('afterend', f); d.focus();
+      cx.addEventListener('click', function(){ f.remove(); });
+      nd.addEventListener('click', function(){ commit(function(){ state.evstate[key] = {s:'postponed'}; delete state.archived[key]; }); });
+      f.addEventListener('submit', function(e){ e.preventDefault(); if (!d.value) return; commit(function(){
+        var orig = row.dataset.orig || row.dataset.date;
+        if (d.value === orig) delete state.evstate[key]; else state.evstate[key] = {s:'postponed', d:d.value};
+        delete state.archived[key];
+      }); });
+    }
+    function build(){
+      menu.innerHTML = '';
+      var es = state.evstate[key], arch = !!state.archived[key];
+      if (es && es.s === 'canceled'){ item('Reactivar', function(){ commit(function(){ delete state.evstate[key]; delete state.archived[key]; }); }); return; }
+      if (arch){ item('Restaurar', function(){ commit(function(){ delete state.archived[key]; }); }); return; }
+      item(es && es.s === 'postponed' ? 'Cambiar fecha…' : 'Posponer…', postponeForm);
+      if (es && es.s === 'postponed') item('Quitar aplazamiento', function(){ commit(function(){ delete state.evstate[key]; }); });
+      item('Archivar', function(){ commit(function(){ state.archived[key] = true; }); });
+      item('Cancelar activación', function(){ commit(function(){ state.evstate[key] = {s:'canceled'}; }); }, 'danger');
+    }
+    more.addEventListener('click', function(e){
+      e.stopPropagation();
+      var open = menu.hidden; document.querySelectorAll('.ev-menu').forEach(function(m){ m.hidden = true; });
+      document.querySelectorAll('.ev-more').forEach(function(m){ m.setAttribute('aria-expanded','false'); });
+      document.querySelectorAll('li.row.menu-open').forEach(function(r){ r.classList.remove('menu-open'); });
+      if (open){ build(); menu.hidden = false; more.setAttribute('aria-expanded','true'); row.classList.add('menu-open'); }
+    });
+  });
+  document.addEventListener('click', function(e){ if (e.target.closest('.ev-menu')) return; document.querySelectorAll('.ev-menu').forEach(function(m){ m.hidden = true; }); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') document.querySelectorAll('.ev-menu').forEach(function(m){ m.hidden = true; }); });
 
   // ---------- Landing-style motion: headline words, scroll reveal, count-up, scroll line ----------
   (function motion(){

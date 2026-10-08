@@ -3,8 +3,6 @@
   "c-munzeyk4pbrf": "ongoing",
   "t-cq-who": "ongoing",
   "c-muv9xu1hcodf": "ongoing",
-  "t-ed-inv": "ongoing",
-  "c-munyaq8f11ht": "priority",
   "t-bt-pon": "ongoing",
   "t-bt-inv": "ongoing",
   "t-bt-net": "ongoing",
@@ -14,20 +12,22 @@
   "c-muo9tlk12il7": "ongoing",
   "c-muz85gh7gdcp": "priority",
   "t-es-stand": "ongoing",
-  "t-es-llav": "ongoing",
+  "t-es-llav": "priority",
   "t-sh-list": "ongoing",
-  "t-sh-inv": "ongoing"
+  "t-sh-inv": "ongoing",
+  "t-ed-inv": "ongoing",
+  "c-munyaq8f11ht": "priority"
  },
  "links": {
-  "t-ed-inv": [
-   {
-    "u": "https://docs.google.com/spreadsheets/d/17q0OEYVv7DuufdQdpMexpcJCHjisfybH2iDhq1Dz9bw/edit?gid=574689200#gid=574689200",
-    "l": "Excel"
-   }
-  ],
   "t-bt-pon": [
    {
     "u": "https://docs.google.com/spreadsheets/d/1L5tBEQsBq9yfWhcrCv8aDo0rRtcQt589wFqRGxH5_JY/edit?gid=490323778#gid=490323778",
+    "l": "Excel"
+   }
+  ],
+  "t-ed-inv": [
+   {
+    "u": "https://docs.google.com/spreadsheets/d/17q0OEYVv7DuufdQdpMexpcJCHjisfybH2iDhq1Dz9bw/edit?gid=574689200#gid=574689200",
     "l": "Excel"
    }
   ]
@@ -44,13 +44,6 @@
    {
     "id": "c-muv9xu1hcodf",
     "t": "Lista de leads.",
-    "o": ""
-   }
-  ],
-  "r-ed": [
-   {
-    "id": "c-munyaq8f11ht",
-    "t": "Laura: agrega a la lista las marcas que tiene en mente.",
     "o": ""
    }
   ],
@@ -119,10 +112,16 @@
     "t": "Crear página Stamp directorio de Partners",
     "o": "Armi"
    }
+  ],
+  "r-ed": [
+   {
+    "id": "c-munyaq8f11ht",
+    "t": "Laura: agrega a la lista las marcas que tiene en mente.",
+    "o": ""
+   }
   ]
  },
  "t-cq-who": true,
- "c-munyaq8f11ht": true,
  "t-bt-ps21": true,
  "t-bt-net": true,
  "c-mumgxeg9hkqg": true,
@@ -133,6 +132,7 @@
  "c-muz85gh7gdcp": true,
  "c-mumjf403jh35": true,
  "c-munuj610hv7z": true,
+ "c-munyaq8f11ht": true,
  "edit": {
   "t-bt-lany": {
    "t": "Crear tarjetones lanyards",

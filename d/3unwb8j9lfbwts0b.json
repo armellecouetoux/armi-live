@@ -263,7 +263,7 @@
   ]
  },
  "t-bt-merch": false,
- "t-bt-net": false,
+ "t-bt-net": true,
  "t-bt-lany": false,
  "s-pos-agenda": true,
  "c-mumgxeg9hkqg": true,

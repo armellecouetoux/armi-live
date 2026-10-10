@@ -301,6 +301,10 @@
   "t-bt-lany": {
    "t": "Crear tarjetones lanyards",
    "o": "Armi"
+  },
+  "s-pos-pant": {
+   "t": "Pantalla 01 - Videowall vertical",
+   "o": ""
   }
  },
  "order": {

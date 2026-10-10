@@ -35,7 +35,12 @@
  "s-pos-venue": true,
  "c-mv0mvdvks9np": true,
  "c-mv0mv632atua": true,
- "edit": {},
+ "edit": {
+  "s-pos-pant": {
+   "t": "Pantalla 01 - Videowall vertical",
+   "o": ""
+  }
+ },
  "order": {
   "s-pos": [
    "s-pos-agenda",

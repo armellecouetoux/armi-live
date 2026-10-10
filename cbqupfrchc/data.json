@@ -230,6 +230,9 @@
    }
   ]
  },
+ "archived": {
+  "r-cq": true
+ },
  "evstate": {
   "r-ed": {
    "s": "postponed",

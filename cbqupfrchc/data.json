@@ -1,8 +1,6 @@
 {
  "st": {
   "c-munzeyk4pbrf": "ongoing",
-  "t-cq-who": "ongoing",
-  "c-muv9xu1hcodf": "ongoing",
   "t-bt-pon": "ongoing",
   "t-bt-inv": "ongoing",
   "t-bt-net": "ongoing",
@@ -17,7 +15,9 @@
   "t-sh-list": "ongoing",
   "t-sh-inv": "ongoing",
   "t-ed-inv": "ongoing",
-  "c-munyaq8f11ht": "priority"
+  "c-munyaq8f11ht": "priority",
+  "t-cq-who": "ongoing",
+  "c-muv9xu1hcodf": "ongoing"
  },
  "links": {
   "t-bt-pon": [
@@ -39,13 +39,6 @@
     "id": "c-munzeyk4pbrf",
     "t": "Seguimiento Post-Events",
     "o": "Rocket"
-   }
-  ],
-  "r-cq": [
-   {
-    "id": "c-muv9xu1hcodf",
-    "t": "Lista de leads.",
-    "o": ""
    }
   ],
   "r-bt": [
@@ -98,6 +91,11 @@
     "id": "c-mv0pptz623y2",
     "t": "Crea Post Estaré en Bold Talks",
     "o": ""
+   },
+   {
+    "id": "c-mv69d48rkvc6",
+    "t": "Montar Reu Lucila Organización Event",
+    "o": ""
    }
   ],
   "r-es": [
@@ -130,10 +128,15 @@
     "t": "Laura: agrega a la lista las marcas que tiene en mente.",
     "o": ""
    }
+  ],
+  "r-cq": [
+   {
+    "id": "c-muv9xu1hcodf",
+    "t": "Lista de leads.",
+    "o": ""
+   }
   ]
  },
- "t-cq-who": true,
- "c-muv9xu1hcodf": true,
  "t-bt-ps21": true,
  "t-bt-net": true,
  "c-mumgxeg9hkqg": true,
@@ -147,6 +150,8 @@
  "c-mumjf403jh35": true,
  "c-munuj610hv7z": true,
  "c-munyaq8f11ht": true,
+ "t-cq-who": true,
+ "c-muv9xu1hcodf": true,
  "edit": {
   "t-bt-lany": {
    "t": "Crear tarjetones lanyards",

@@ -611,6 +611,20 @@ h1 em .w{animation-name:wordIn}
 html[data-theme="light"] .ppform input[type=date]{color-scheme:light}
 @media (hover:none){ .ev-more{opacity:1} }
 li.row.menu-open{z-index:30}
+
+/* ===== Rich notes: bold / italic ===== */
+.note-body.rich{min-height:96px; white-space:pre-wrap; word-break:break-word; cursor:text}
+.note-body.rich:empty::before{content:attr(data-ph); color:var(--done); pointer-events:none}
+.note-body b, .note-body strong{font-weight:600; color:var(--ink)}
+.note-body i, .note-body em{font-style:italic}
+.note-tools{display:flex; gap:4px; opacity:.45; transition:opacity .25s}
+.note:focus-within .note-tools, .note:hover .note-tools{opacity:1}
+.nt-btn{appearance:none; width:30px; height:28px; border:0; border-radius:8px; background:transparent; color:var(--muted); font-family:Georgia, "Times New Roman", serif; font-size:15px; cursor:pointer; transition:background .2s, color .2s}
+.nt-bold{font-weight:700} .nt-italic{font-style:italic}
+.nt-btn:hover{background:var(--surface-2); color:var(--ink)}
+.nt-btn.on{background:var(--accent-soft); color:var(--accent)}
+.readonly .note-tools{display:none}
+.readonly .note-body.rich{pointer-events:none}
 </style>
 <main class="page">
 
@@ -1277,6 +1291,35 @@ li.row.menu-open{z-index:30}
   if (!state.notes || typeof state.notes !== 'object') state.notes = {};
   var ndF = new Intl.DateTimeFormat('es-ES',{weekday:'short', day:'numeric', month:'short', year:'numeric'});
   function isoToday(){ var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 10); }
+  // Notes keep a light markup in the saved text: **negrita** and _cursiva_
+  function mdEsc(x){ return String(x).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function mdToHtml(x){
+    x = mdEsc(x || '');
+    x = x.replace(/\*\*([\s\S]+?)\*\*/g, '<b>$1</b>');
+    x = x.replace(/(^|[\s(>*])_([^_\n]+?)_(?=$|[\s.,;:!?)<*])/gm, '$1<i>$2</i>');
+    return x.replace(/\n/g, '<br>');
+  }
+  function htmlToMd(node){
+    var out = '';
+    [].forEach.call(node.childNodes, function(n){
+      if (n.nodeType === 3){ out += n.nodeValue.replace(/ /g, ' '); return; }
+      if (n.nodeType !== 1) return;
+      var tag = n.tagName;
+      if (tag === 'BR'){ out += '\n'; return; }
+      var block = tag === 'DIV' || tag === 'P' || tag === 'LI';
+      if (block && out && !/\n$/.test(out)) out += '\n';
+      var fw = n.style && n.style.fontWeight, inner = htmlToMd(n);
+      var bold = tag === 'B' || tag === 'STRONG' || fw === 'bold' || +fw >= 600, ital = tag === 'I' || tag === 'EM' || (n.style && n.style.fontStyle === 'italic');
+      if ((bold || ital) && inner.trim()){
+        var m = inner.match(/^(\s*)([\s\S]*?)(\s*)$/), core = m[2];
+        if (ital) core = '_' + core + '_'; if (bold) core = '**' + core + '**';
+        inner = m[1] + core + m[3];
+      }
+      out += inner;
+      if (block && !/\n$/.test(out)) out += '\n';
+    });
+    return out;
+  }
   function grow(ta){ ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, 96) + 'px'; }
   function noteCard(key, n, list){
     var card = el('article','note'); card.dataset.id = n.id;
@@ -1291,14 +1334,25 @@ li.row.menu-open{z-index:30}
       sh.addEventListener('click', function(){ if (readOnly) return; var x = find(); if (!x) return; x.shared = !x.shared; x.ts = Date.now(); paintShare(); scheduleSave(); });
       head.insertBefore(sh, del); setTimeout(paintShare, 0);
     }
-    var ta = el('textarea','note-body'); ta.placeholder = 'Asistentes, acuerdos, próximos pasos…'; ta.value = n.body || ''; ta.id = 'nb-' + n.id; ta.setAttribute('aria-label','Notas');
+    var ta = el('div','note-body rich'); ta.contentEditable = 'true'; ta.dataset.ph = 'Asistentes, acuerdos, próximos pasos…'; ta.innerHTML = mdToHtml(n.body || ''); ta.id = 'nb-' + n.id; ta.setAttribute('aria-label','Notas'); ta.setAttribute('role','textbox'); ta.setAttribute('aria-multiline','true');
+    var tb = el('div','note-tools');
+    [['bold','B','Negrita (Ctrl/⌘ + B)'],['italic','I','Cursiva (Ctrl/⌘ + I)']].forEach(function(x){
+      var b = el('button','nt-btn nt-' + x[0], x[1]); b.type = 'button'; b.title = x[2]; b.setAttribute('aria-label', x[2]);
+      b.addEventListener('mousedown', function(e){ e.preventDefault(); });
+      b.addEventListener('click', function(){ if (readOnly) return; if (document.activeElement !== ta) ta.focus(); document.execCommand(x[0]); syncBody(); paintTools(); });
+      tb.appendChild(b);
+    });
+    function paintTools(){ tb.querySelector('.nt-bold').classList.toggle('on', document.queryCommandState('bold')); tb.querySelector('.nt-italic').classList.toggle('on', document.queryCommandState('italic')); }
+    document.addEventListener('selectionchange', function(){ if (document.activeElement === ta) paintTools(); });
     var meta = el('div','note-meta', n.ts ? 'Editada ' + new Date(n.ts).toLocaleString('es-ES',{day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '');
-    card.append(head, ta, meta);
+    card.append(head, tb, ta, meta);
     function find(){ return (state.notes[key] || []).find(function(x){ return x.id === n.id; }); }
     function upd(field, v){ if (readOnly) return; var x = find(); if (!x) return; x[field] = v; x.ts = Date.now(); meta.textContent = 'Editada ahora'; scheduleSave(); }
     d.addEventListener('change', function(){ upd('d', d.value); });
     t.addEventListener('input', function(){ upd('title', t.value); });
-    ta.addEventListener('input', function(){ grow(ta); upd('body', ta.value); });
+    function syncBody(){ if (!ta.textContent) ta.innerHTML = ''; upd('body', htmlToMd(ta).replace(/\n+$/, '')); }
+    ta.addEventListener('input', syncBody);
+    ta.addEventListener('paste', function(e){ e.preventDefault(); var t = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, t); });
     var armed;
     del.addEventListener('click', function(){
       if (readOnly) return;
@@ -1307,7 +1361,6 @@ li.row.menu-open{z-index:30}
       if (!state.notes[key].length) delete state.notes[key];
       card.remove(); emptyState(list, key); scheduleSave();
     });
-    requestAnimationFrame(function(){ grow(ta); });
     return card;
   }
   function emptyState(list, key){
@@ -1326,7 +1379,7 @@ li.row.menu-open{z-index:30}
       var dd = n.d ? new Date(n.d + 'T12:00:00') : null;
       h.appendChild(el('span','note-date', dd ? ndF.format(dd) : ''));
       h.appendChild(el('span','note-title', n.title || 'Reunión'));
-      c.appendChild(h); c.appendChild(el('div','note-body ro', n.body || '')); list.appendChild(c);
+      c.appendChild(h); var nb = el('div','note-body ro'); nb.innerHTML = mdToHtml(n.body || ''); c.appendChild(nb); list.appendChild(c);
     });
   });
   if (!VIEW) allPanels.forEach(function(panel){

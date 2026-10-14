@@ -356,7 +356,7 @@
    }
   ]
  },
- "t-bt-merch": false,
+ "t-bt-merch": true,
  "t-bt-net": true,
  "t-bt-lany": false,
  "s-pos-agenda": true,

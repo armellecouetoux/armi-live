@@ -157,7 +157,7 @@
    },
    {
     "id": "c-mv2kcm5y34jr",
-    "t": "Pantalla 02 - Monitores Entrada (1-7)",
+    "t": "Actualizar Pantalla 02 - Monitores Entrada (1-7)",
     "o": ""
    },
    {
@@ -379,7 +379,7 @@
    "o": "Armi"
   },
   "s-pos-pant": {
-   "t": "Pantalla 01 - Videowall vertical",
+   "t": "Actualizar Pantalla 01 - Videowall vertical",
    "o": ""
   }
  },

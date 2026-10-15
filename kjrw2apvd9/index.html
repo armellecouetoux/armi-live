@@ -640,6 +640,80 @@ li.row.menu-open{z-index:30}
 .nfold-all{appearance:none; border:0; background:transparent; color:var(--muted); font:inherit; font-size:12.5px; cursor:pointer; padding:4px 8px; border-radius:8px; margin-left:auto}
 .nfold-all:hover{color:var(--accent); background:var(--surface-2)}
 .notes .h-head{align-items:center}
+
+/* ===== Compact task list ===== */
+ul.tasks{gap:0}
+ul.tasks > li.task{padding:4px 8px 4px 0; border-radius:8px}
+.task .txt{font-size:15px; line-height:1.4}
+.st{padding:3px 20px 3px 9px; font-size:11px}
+.task{gap:3px}
+.tline{gap:10px}
+.addtask{margin-top:4px}
+.body{gap:10px}
+.row{padding-block:26px}
+li.task.hl{background:var(--accent-soft)!important; transition:background .3s}
+
+/* ===== View switcher ===== */
+.vsw{display:inline-flex; justify-self:start; gap:2px; padding:3px; border-radius:999px; background:var(--surface); border:1px solid var(--hair)}
+.vsw button{appearance:none; border:0; background:transparent; color:var(--muted); font:inherit; font-size:13px; font-weight:500; padding:6px 14px; border-radius:999px; cursor:pointer; transition:background .3s var(--ease), color .2s}
+.vsw button:hover{color:var(--ink)}
+.vsw button[aria-pressed="true"]{background:var(--ink); color:var(--bg)}
+.vkan, .vcal{display:none}
+.panel.view-kanban .vkan{display:grid}
+.panel.view-cal .vcal{display:grid}
+.panel.view-kanban ol.timeline, .panel.view-cal ol.timeline, .panel.view-kanban details.archive, .panel.view-cal details.archive, .panel.view-kanban .addev, .panel.view-cal .addev, .panel.view-kanban .evform, .panel.view-cal .evform{display:none!important}
+
+/* Kanban */
+.vkan{grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; align-items:start; animation:rise .5s var(--ease) both}
+.kcol{background:var(--surface); border-radius:16px; padding:10px; display:grid; gap:8px; min-width:0}
+.kcol-h{display:flex; align-items:center; gap:8px; padding:4px 6px 6px; font-size:13px; font-weight:500}
+.kdot{width:8px; height:8px; border-radius:50%; background:var(--muted)}
+.k-ongoing .kdot{background:var(--ongoing)} .k-priority .kdot{background:var(--priority)} .k-done .kdot{background:var(--ok)}
+.kn{margin-left:auto; font-size:12px; color:var(--muted); font-variant-numeric:tabular-nums}
+.kcards{display:grid; gap:6px; min-height:40px; align-content:start}
+.kcard{background:var(--bg); border:1px solid var(--hair); border-radius:12px; padding:9px 10px; display:grid; gap:6px; cursor:grab; transition:transform .25s var(--ease), box-shadow .25s; animation:rise .4s var(--ease) both}
+html[data-theme="light"] .kcard{background:var(--surface-2)}
+.kcard:hover{transform:translateY(-2px); box-shadow:0 10px 24px -16px rgba(0,0,0,.5)}
+.kt{font-size:14px; line-height:1.35}
+.kt .owner{font-size:10.5px; margin-left:2px}
+.km{display:flex; gap:6px; font-size:11.5px; color:var(--muted); min-width:0}
+.kev{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0}
+.kwhen{margin-left:auto; white-space:nowrap}
+.kcard .st{justify-self:start; width:auto}
+.k-done .kt{color:var(--muted); text-decoration:line-through; text-decoration-color:var(--done)}
+.kempty{margin:0; text-align:center; color:var(--done); font-size:13px; padding:8px 0}
+.readonly .kcard{cursor:default}
+@media (max-width:760px){ .vkan{grid-template-columns:repeat(4, 78vw); overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px} .kcol{scroll-snap-align:start} }
+
+/* Calendar / planning */
+.vcal{gap:12px; animation:rise .5s var(--ease) both}
+.cal-h{display:flex; align-items:center; gap:6px}
+.cal-t{font-family:var(--f-display); font-size:22px; font-weight:400; letter-spacing:-.02em; margin-right:auto}
+.cal-nav, .cal-today{appearance:none; border:0; background:var(--surface); color:var(--ink); font:inherit; font-size:14px; height:32px; min-width:32px; padding:0 10px; border-radius:999px; cursor:pointer}
+.cal-nav:hover, .cal-today:hover{background:var(--surface-2)}
+.cal-g{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); border-radius:16px; overflow:hidden; background:var(--hair); gap:1px; border:1px solid var(--hair)}
+.cal-wd{background:var(--surface); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); padding:8px 8px 6px}
+.cal-d{background:var(--surface); min-height:92px; padding:6px 4px 6px; display:flex; flex-direction:column; gap:3px; min-width:0}
+.cal-d.we{background:color-mix(in srgb, var(--surface) 92%, var(--ink) 3%)}
+.cal-d.out{opacity:.45}
+.cal-n{font-size:12px; color:var(--muted); padding:0 4px; font-variant-numeric:tabular-nums}
+.cal-d.today .cal-n{color:var(--bg); background:var(--accent); border-radius:999px; align-self:flex-start; padding:1px 7px}
+.cal-ev{appearance:none; border:0; font:inherit; text-align:left; display:flex; align-items:center; gap:4px; font-size:11.5px; line-height:1.25; padding:3px 6px; border-radius:6px; background:color-mix(in srgb, var(--c) 22%, transparent); color:var(--ink); border-left:3px solid var(--c); cursor:pointer; min-width:0; transition:filter .2s, transform .2s var(--ease)}
+.cal-ev:hover{filter:brightness(1.1); transform:translateY(-1px)}
+.cal-ev.cont{border-left-color:transparent; border-radius:0 6px 6px 0}
+.cal-ev.post{background-image:repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--c) 18%, transparent) 6px 8px)}
+.ce-n{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0}
+.ce-c{margin-left:auto; font-size:10px; color:var(--muted); font-variant-numeric:tabular-nums}
+.cal-foot{margin:0; font-size:12.5px; color:var(--muted)}
+.planning .vcal{display:grid}
+@media (max-width:560px){ .cal-d{min-height:64px; padding:4px 2px} .cal-ev{font-size:10px; padding:2px 4px} .ce-c{display:none} .cal-wd{font-size:9.5px; padding:6px 4px; letter-spacing:.06em} }
+
+.cal-list{display:none; list-style:none; margin:0; padding:0}
+.cal-list li{display:grid; grid-template-columns:76px minmax(0,1fr) auto; gap:10px; align-items:baseline; padding:9px 0 9px 10px; border-bottom:1px solid var(--hair); border-left:3px solid var(--c)}
+.cl-d{font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums}
+.cl-n{font-size:14.5px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cl-o{font-size:12px; color:var(--muted)}
+@media (max-width:560px){ .cal-list{display:block} }
 </style>
 <main class="page">
 
@@ -1847,6 +1921,153 @@ li.row.menu-open{z-index:30}
   });
   document.addEventListener('click', function(e){ if (e.target.closest('.ev-menu')) return; document.querySelectorAll('.ev-menu').forEach(function(m){ m.hidden = true; }); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') document.querySelectorAll('.ev-menu').forEach(function(m){ m.hidden = true; }); });
+
+
+  // ---------- Views per client: Lista · Kanban · Calendario (+ planning on Inicio) ----------
+  (function views(){
+    var VKEY = 'armi-view' + (VIEW ? '-' + VIEW : ''), vpref = {};
+    try { vpref = JSON.parse(localStorage.getItem(VKEY) || '{}') || {}; } catch(e){}
+    var COLS = [['pending','Pendiente'],['ongoing','On going'],['priority','Prioritario'],['done','Done']];
+    var MONF = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    function evRows(panel){ return [].slice.call(panel.querySelectorAll('ol.timeline:not(.arch) > li.row[data-key]')).filter(function(r){ return !r.classList.contains('archived'); }); }
+    function rowName(r){ var n = r.querySelector('.ev-name'); return n ? n.textContent.trim() : ''; }
+    function rowRange(r){
+      if (r.classList.contains('tbd')) return null;
+      var d1 = r.dataset.date, d2 = '';
+      var ck = r.closest('.panel').dataset.client, list = (state.events && state.events[ck]) || [];
+      list.forEach(function(e){ if (e.key === r.dataset.key && e.d2 && !(state.evstate[r.dataset.key] && state.evstate[r.dataset.key].d)) d2 = e.d2; });
+      if (!d2){ var dd = (r.querySelector('.date .d') || {}).textContent || ''; var m = dd.match(/^(\d+)\D+(\d+)$/); if (m){ var a = pd(d1); var b = new Date(a.getFullYear(), a.getMonth(), +m[2]); if (b < a) b.setMonth(b.getMonth() + 1); d2 = b.getFullYear() + '-' + String(b.getMonth() + 1).padStart(2, '0') + '-' + String(b.getDate()).padStart(2, '0'); } }
+      return {a: pd(d1), b: d2 ? pd(d2) : pd(d1)};
+    }
+    function openCount(r){ var n = 0; r.querySelectorAll('li.task input[type=checkbox]').forEach(function(cb){ var v = statusOf(cb.id); if (v !== 'done' && v !== 'canceled') n++; }); return n; }
+
+    function setView(panel, v){
+      ['list','kanban','cal'].forEach(function(x){ panel.classList.toggle('view-' + x, x === v); });
+      panel.querySelectorAll('.vsw button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.v === v)); });
+      vpref[panel.dataset.client] = v; try { localStorage.setItem(VKEY, JSON.stringify(vpref)); } catch(e){}
+      if (v === 'kanban') renderKanban(panel);
+      if (v === 'cal') renderCal(panel.querySelector('.vcal'), [panel]);
+    }
+
+    function renderKanban(panel){
+      var box = panel.querySelector('.vkan'); box.innerHTML = '';
+      var cols = {};
+      COLS.forEach(function(c){
+        var col = el('div','kcol k-' + c[0]), h = el('div','kcol-h'); h.append(el('span','kdot'), el('span','kname', c[1]), el('span','kn','0'));
+        var ul = el('div','kcards'); ul.dataset.st = c[0]; col.append(h, ul); box.appendChild(col); cols[c[0]] = ul;
+      });
+      evRows(panel).forEach(function(r){
+        var rn = rowName(r), rg = rowRange(r);
+        var when = rg ? rg.a.getDate() + ' ' + MONL[rg.a.getMonth()] : 'Sin fecha';
+        r.querySelectorAll('li.task').forEach(function(li){
+          var cb = li.querySelector('input[type=checkbox]'), v = statusOf(cb.id); if (v === 'canceled') return;
+          var tp = taskParts(li), card = el('div','kcard'); card.dataset.id = cb.id;
+          var t = el('div','kt', tp.t); if (tp.o){ t.appendChild(document.createTextNode(' ')); t.appendChild(el('span','owner', tp.o)); }
+          var m = el('div','km'); m.append(el('span','kev', rn), el('span','kwhen', when));
+          card.append(t, m);
+          if (!(readOnly || VIEW)){
+            var sel = el('select','st v-' + v); sel.setAttribute('aria-label','Estado');
+            ST.forEach(function(o){ var op = el('option', null, o[1]); op.value = o[0]; sel.appendChild(op); });
+            sel.value = v; card.appendChild(sel);
+            sel.addEventListener('change', function(){ moveTo(cb.id, sel.value, panel); });
+          }
+          card.addEventListener('dblclick', function(){ setView(panel, 'list'); goRow(r, li); });
+          cols[v].appendChild(card);
+        });
+      });
+      box.querySelectorAll('.kcol').forEach(function(col){ var n = col.querySelectorAll('.kcard').length; col.querySelector('.kn').textContent = n; if (!n) col.querySelector('.kcards').appendChild(el('p','kempty','—')); });
+      if (window.Sortable && !(readOnly || VIEW)) box.querySelectorAll('.kcards').forEach(function(ul){
+        Sortable.create(ul, {group:'kan-' + panel.dataset.client, animation:180, ghostClass:'drag-ghost', filter:'select,.kempty', preventOnFilter:false,
+          onAdd: function(e){ moveTo(e.item.dataset.id, e.to.dataset.st, panel); }});
+      });
+    }
+    function moveTo(id, v, panel){
+      var src = document.getElementById('st-' + id); if (!src) return;
+      src.value = v; src.dispatchEvent(new Event('change', {bubbles:true}));
+      renderKanban(panel);
+    }
+    function goRow(r, li){ setTimeout(function(){ (li || r).scrollIntoView({behavior:'smooth', block:'center'}); (li || r).classList.add('hl'); setTimeout(function(){ (li || r).classList.remove('hl'); }, 1600); }, 80); }
+
+    function renderCal(box, pnls){
+      if (!box) return;
+      var items = [];
+      pnls.forEach(function(panel){
+        var ck = panel.dataset.client;
+        evRows(panel).forEach(function(r){ var rg = rowRange(r); if (rg) items.push({a: rg.a, b: rg.b, name: rowName(r), ck: ck, row: r, open: openCount(r), post: r.classList.contains('postponed')}); });
+      });
+      var cur = box._m || (function(){ var t = new Date(), up = items.filter(function(i){ return i.b >= new Date(t.getFullYear(), t.getMonth(), t.getDate()); }).sort(function(x, y){ return x.a - y.a; })[0]; var d = up && (up.a.getMonth() !== t.getMonth() && items.every(function(i){ return i.a.getMonth() !== t.getMonth() || i.a.getFullYear() !== t.getFullYear(); })) ? up.a : t; return new Date(d.getFullYear(), d.getMonth(), 1); })();
+      box._m = cur; box.innerHTML = '';
+      var hd = el('div','cal-h'), prev = el('button','cal-nav','‹'), next = el('button','cal-nav','›'), today = el('button','cal-today','Hoy');
+      prev.type = next.type = today.type = 'button'; prev.setAttribute('aria-label','Mes anterior'); next.setAttribute('aria-label','Mes siguiente');
+      hd.append(el('div','cal-t', MONF[cur.getMonth()] + ' ' + cur.getFullYear()), today, prev, next);
+      prev.addEventListener('click', function(){ box._m = new Date(cur.getFullYear(), cur.getMonth() - 1, 1); renderCal(box, pnls); });
+      next.addEventListener('click', function(){ box._m = new Date(cur.getFullYear(), cur.getMonth() + 1, 1); renderCal(box, pnls); });
+      today.addEventListener('click', function(){ var t = new Date(); box._m = new Date(t.getFullYear(), t.getMonth(), 1); renderCal(box, pnls); });
+      var grid = el('div','cal-g');
+      ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].forEach(function(d){ grid.appendChild(el('div','cal-wd', d)); });
+      var start = new Date(cur.getFullYear(), cur.getMonth(), 1), off = (start.getDay() + 6) % 7; start.setDate(1 - off);
+      var t0 = new Date(); t0 = new Date(t0.getFullYear(), t0.getMonth(), t0.getDate());
+      var weeks = Math.ceil((off + new Date(cur.getFullYear(), cur.getMonth() + 1, 0).getDate()) / 7);
+      for (var i = 0; i < weeks * 7; i++){
+        var day = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+        var c = el('div','cal-d' + (day.getMonth() !== cur.getMonth() ? ' out' : '') + (+day === +t0 ? ' today' : '') + (day.getDay() % 6 === 0 ? ' we' : ''));
+        c.appendChild(el('span','cal-n', String(day.getDate())));
+        items.forEach(function(it){
+          if (day < it.a || day > it.b) return;
+          var first = +day === +it.a || day.getDay() === 1;
+          var chip = el('button','cal-ev' + (it.post ? ' post' : '') + (first ? '' : ' cont')); chip.type = 'button';
+          chip.style.setProperty('--c', tc(it.ck));
+          chip.title = it.name + (CL[it.ck] ? ' · ' + CL[it.ck].name : '') + ' · ' + it.open + ' tareas abiertas';
+          chip.appendChild(el('span','ce-n', first ? it.name : ' '));
+          if (first && it.open) chip.appendChild(el('span','ce-c', String(it.open)));
+          chip.addEventListener('click', function(){ var p = it.row.closest('.panel'); if (p.hidden) showTab(it.ck, true); setView(p, 'list'); goRow(it.row); });
+          c.appendChild(chip);
+        });
+        grid.appendChild(c);
+      }
+      box.append(hd, grid);
+      var mStart = new Date(cur.getFullYear(), cur.getMonth(), 1), mEnd = new Date(cur.getFullYear(), cur.getMonth() + 1, 0);
+      var inM = items.filter(function(it){ return it.b >= mStart && it.a <= mEnd; }).sort(function(x, y){ return x.a - y.a; });
+      if (inM.length){
+        var ag = el('ol','cal-list');
+        inM.forEach(function(it){
+          var li = el('li'); li.style.setProperty('--c', tc(it.ck));
+          var dd = it.a.getDate() + (+it.b !== +it.a ? '–' + it.b.getDate() + (it.b.getMonth() !== it.a.getMonth() ? ' ' + MONL[it.b.getMonth()] : '') : '') + ' ' + MONL[it.a.getMonth()];
+          var bt = el('button','linkbtn cl-n', it.name); bt.type = 'button';
+          bt.addEventListener('click', function(){ var p = it.row.closest('.panel'); if (p.hidden) showTab(it.ck, true); setView(p, 'list'); goRow(it.row); });
+          li.append(el('span','cl-d', dd), bt, el('span','cl-o', it.open ? it.open + ' abiertas' : '✓'));
+          ag.appendChild(li);
+        });
+        box.appendChild(ag);
+      }
+      var outside = items.filter(function(it){ return it.b < new Date(cur.getFullYear(), cur.getMonth(), 1) || it.a > new Date(cur.getFullYear(), cur.getMonth() + 1, 0); }).length;
+      if (!items.length) box.appendChild(el('p','empty','No hay activaciones con fecha.'));
+      else if (outside === items.length) box.appendChild(el('p','empty','Nada este mes · usa ‹ › para ver otros meses.'));
+      var tbd = 0; pnls.forEach(function(p){ tbd += p.querySelectorAll('ol.timeline:not(.arch) > li.row.tbd').length; });
+      if (tbd) box.appendChild(el('p','cal-foot', tbd + (tbd === 1 ? ' activación pospuesta sin fecha' : ' activaciones pospuestas sin fecha') + ' (no aparecen en el calendario).'));
+    }
+
+    panels.forEach(function(panel){
+      var tl = panel.querySelector('ol.timeline:not(.arch)'); if (!tl) return;
+      var sw = el('div','vsw'); sw.setAttribute('role','group'); sw.setAttribute('aria-label','Vista');
+      [['list','Lista'],['kanban','Kanban'],['cal','Calendario']].forEach(function(x){ var b = el('button', null, x[1]); b.type = 'button'; b.dataset.v = x[0]; b.addEventListener('click', function(){ setView(panel, x[0]); }); sw.appendChild(b); });
+      var kan = el('div','vkan'), cal = el('div','vcal');
+      tl.parentNode.insertBefore(sw, tl); tl.parentNode.insertBefore(kan, tl); tl.parentNode.insertBefore(cal, tl);
+      panel.addEventListener('change', function(e){ if (e.target.matches('ol.timeline .st') && panel.classList.contains('view-kanban') && !e.target.closest('.vkan')) renderKanban(panel); });
+      setView(panel, vpref[panel.dataset.client] || 'list');
+    });
+
+    // Inicio: planning of every client's activations
+    var home = document.getElementById('p-home');
+    if (home && !VIEW){
+      var sec = el('div','h-section planning'); sec.appendChild(el('h2', null, 'Planning'));
+      var box = el('div','vcal'); sec.appendChild(box);
+      var grid = home.querySelector('.h-grid'); if (grid) grid.insertAdjacentElement('afterend', sec); else home.appendChild(sec);
+      var draw = function(){ renderCal(box, [].slice.call(panels)); };
+      draw();
+      tabs.forEach(function(t){ t.addEventListener('click', function(){ if (t.dataset.tab === 'home') draw(); }); });
+    }
+  })();
 
   // ---------- Landing-style motion: headline words, scroll reveal, count-up, scroll line ----------
   (function motion(){

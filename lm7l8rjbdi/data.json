@@ -3,7 +3,7 @@
   "s-pos-agenda": "ongoing",
   "s-pos-catering": "ongoing",
   "s-pos-venue": "ongoing",
-  "s-pos-pant": "ongoing",
+  "s-pos-pant": "priority",
   "c-mv2kcm5y34jr": "ongoing",
   "c-mv2kpb7bs8js": "ongoing",
   "s-pos-lany-d": "ongoing",
@@ -44,7 +44,7 @@
    },
    {
     "id": "c-mv2kcm5y34jr",
-    "t": "Pantalla 02 - Monitores Entrada (1-7)",
+    "t": "Actualizar Pantalla 02 - Monitores Entrada (1-7)",
     "o": ""
    },
    {
@@ -73,7 +73,7 @@
  "s-pos-tarj": true,
  "edit": {
   "s-pos-pant": {
-   "t": "Pantalla 01 - Videowall vertical",
+   "t": "Actualizar Pantalla 01 - Videowall vertical",
    "o": ""
   }
  },

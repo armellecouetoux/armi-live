@@ -10,6 +10,7 @@
   "c-muo9tlk12il7": "ongoing",
   "c-mumg60hdofv8": "ongoing",
   "c-mv86bzf2myyy": "priority",
+  "c-mv9n8j23kqyl": "priority",
   "c-muz85gh7gdcp": "priority",
   "t-es-stand": "ongoing",
   "t-es-llav": "ongoing",
@@ -111,6 +112,11 @@
    {
     "id": "c-mv86bzf2myyy",
     "t": "Actualizar landing con topic Drelife",
+    "o": ""
+   },
+   {
+    "id": "c-mv9n8j23kqyl",
+    "t": "Actualizar landing mesa Nacho",
     "o": ""
    }
   ],

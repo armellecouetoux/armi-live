@@ -625,6 +625,21 @@ li.row.menu-open{z-index:30}
 .nt-btn.on{background:var(--accent-soft); color:var(--accent)}
 .readonly .note-tools{display:none}
 .readonly .note-body.rich{pointer-events:none}
+
+/* ===== Fold notes ===== */
+.note-head{display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px}
+.note-head .note-title{flex:1 1 200px}
+.note.ro .note-head .note-title{flex:1 1 auto}
+.nfold-btn{width:26px; height:26px}
+.note-prev{display:none; appearance:none; border:0; background:none; padding:0 0 0 36px; text-align:left; font:inherit; font-size:13.5px; line-height:1.5; color:var(--muted); cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:100%}
+.note-prev:hover{color:var(--ink)}
+.note.nfold{gap:4px; padding-block:10px}
+.note.nfold > :not(.note-head):not(.note-prev){display:none}
+.note.nfold .note-prev{display:block}
+.note.nfold .note-head .deltask, .note.nfold .note-share{opacity:.7}
+.nfold-all{appearance:none; border:0; background:transparent; color:var(--muted); font:inherit; font-size:12.5px; cursor:pointer; padding:4px 8px; border-radius:8px; margin-left:auto}
+.nfold-all:hover{color:var(--accent); background:var(--surface-2)}
+.notes .h-head{align-items:center}
 </style>
 <main class="page">
   <nav class="tabs" role="tablist" aria-label="Clientes">
@@ -1495,6 +1510,45 @@ li.row.menu-open{z-index:30}
     return out;
   }
   function grow(ta){ ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, 96) + 'px'; }
+  // Fold / unfold each note (remembered per device)
+  var NFOLD_KEY = 'armi-notes-folded' + (VIEW ? '-' + VIEW : ''), nfold = {};
+  try { nfold = JSON.parse(localStorage.getItem(NFOLD_KEY) || '{}') || {}; } catch(e){ nfold = {}; }
+  function saveNfold(){ try { localStorage.setItem(NFOLD_KEY, JSON.stringify(nfold)); } catch(e){} }
+  function notePlain(card){ var b = card.querySelector('.note-body'); return (b ? b.textContent : '').replace(/\s+/g, ' ').trim(); }
+  function setNoteFold(card, on){
+    var id = card.dataset.id, b = card.querySelector('.nfold-btn');
+    card.classList.toggle('nfold', on);
+    if (on) nfold[id] = 1; else delete nfold[id];
+    if (b){ b.setAttribute('aria-expanded', String(!on)); b.title = on ? 'Desplegar nota' : 'Plegar nota'; }
+    var pv = card.querySelector('.note-prev'); if (pv){ var t = notePlain(card); pv.textContent = t ? (t.length > 140 ? t.slice(0, 140) + '…' : t) : 'Sin texto'; }
+  }
+  function noteFold(card){
+    var head = card.querySelector('.note-head');
+    var b = el('button','fold-btn nfold-btn'); b.type = 'button'; b.innerHTML = '<span aria-hidden="true">▾</span>'; b.setAttribute('aria-label','Plegar o desplegar la nota');
+    head.insertBefore(b, head.firstChild);
+    var pv = el('button','note-prev'); pv.type = 'button'; pv.title = 'Desplegar nota';
+    head.insertAdjacentElement('afterend', pv);
+    function toggle(){ setNoteFold(card, !card.classList.contains('nfold')); saveNfold(); refreshFoldAll(card.closest('section.notes')); }
+    b.addEventListener('click', toggle); pv.addEventListener('click', toggle);
+    setNoteFold(card, !!nfold[card.dataset.id]);
+    return card;
+  }
+  function refreshFoldAll(sec){
+    if (!sec) return; var all = sec.querySelector('.nfold-all'); if (!all) return;
+    var cards = sec.querySelectorAll('article.note'); all.hidden = cards.length < 2;
+    var anyOpen = [].some.call(cards, function(c){ return !c.classList.contains('nfold'); });
+    all.textContent = anyOpen ? 'Plegar todas' : 'Desplegar todas';
+  }
+  function addFoldAll(sec){
+    var hd = sec.querySelector('.h-head'); if (!hd){ hd = el('div','h-head'); var h2 = sec.querySelector('h2'); sec.insertBefore(hd, h2); hd.appendChild(h2); }
+    var all = el('button','nfold-all'); all.type = 'button';
+    var add = hd.querySelector('.addtask'); if (add) hd.insertBefore(all, add); else hd.appendChild(all);
+    all.addEventListener('click', function(){
+      var cards = sec.querySelectorAll('article.note'), anyOpen = [].some.call(cards, function(c){ return !c.classList.contains('nfold'); });
+      cards.forEach(function(c){ setNoteFold(c, anyOpen); }); saveNfold(); refreshFoldAll(sec);
+    });
+    refreshFoldAll(sec);
+  }
   function noteCard(key, n, list){
     var card = el('article','note'); card.dataset.id = n.id;
     var head = el('div','note-head');
@@ -1502,6 +1556,7 @@ li.row.menu-open{z-index:30}
     var t = el('input','note-title'); t.type = 'text'; t.placeholder = 'Reunión con…'; t.value = n.title || ''; t.id = 'nt-' + n.id; t.setAttribute('aria-label','Título de la nota'); t.maxLength = 120;
     var del = el('button','deltask','×'); del.type = 'button'; del.setAttribute('aria-label','Borrar nota'); del.style.opacity = '1';
     head.append(d, t, del);
+    card.appendChild(head);
     if (key !== 'home'){
       var sh = el('button','note-share'); sh.type = 'button';
       function paintShare(){ var on = !!(find() || n).shared; sh.textContent = on ? '👁 Visible para el cliente' : 'Privada'; sh.classList.toggle('on', on); card.classList.toggle('is-shared', on); sh.setAttribute('aria-pressed', String(on)); }
@@ -1519,7 +1574,7 @@ li.row.menu-open{z-index:30}
     function paintTools(){ tb.querySelector('.nt-bold').classList.toggle('on', document.queryCommandState('bold')); tb.querySelector('.nt-italic').classList.toggle('on', document.queryCommandState('italic')); }
     document.addEventListener('selectionchange', function(){ if (document.activeElement === ta) paintTools(); });
     var meta = el('div','note-meta', n.ts ? 'Editada ' + new Date(n.ts).toLocaleString('es-ES',{day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}) : '');
-    card.append(head, tb, ta, meta);
+    card.append(tb, ta, meta); noteFold(card);
     function find(){ return (state.notes[key] || []).find(function(x){ return x.id === n.id; }); }
     function upd(field, v){ if (readOnly) return; var x = find(); if (!x) return; x[field] = v; x.ts = Date.now(); meta.textContent = 'Editada ahora'; scheduleSave(); }
     d.addEventListener('change', function(){ upd('d', d.value); });
@@ -1533,7 +1588,7 @@ li.row.menu-open{z-index:30}
       if (!del.classList.contains('armed')){ del.classList.add('armed'); del.textContent = 'Borrar'; clearTimeout(armed); armed = setTimeout(function(){ del.classList.remove('armed'); del.textContent = '×'; }, 3000); return; }
       state.notes[key] = (state.notes[key] || []).filter(function(x){ return x.id !== n.id; });
       if (!state.notes[key].length) delete state.notes[key];
-      card.remove(); emptyState(list, key); scheduleSave();
+      var sec0 = card.closest('section.notes'); delete nfold[n.id]; saveNfold(); card.remove(); emptyState(list, key); refreshFoldAll(sec0); scheduleSave();
     });
     return card;
   }
@@ -1546,14 +1601,14 @@ li.row.menu-open{z-index:30}
     var notes = (state.notes[VIEW] || []).slice().sort(function(a,b){ return (b.d || '').localeCompare(a.d || ''); });
     if (!notes.length) return;
     var sec = el('section','notes h-section'), list = el('div','note-list');
-    sec.appendChild(el('h2', null, 'Notas de reuniones')); sec.appendChild(list); panel.appendChild(sec);
+    sec.appendChild(el('h2', null, 'Notas de reuniones')); sec.appendChild(list); panel.appendChild(sec); setTimeout(function(){ addFoldAll(sec); }, 0);
     notes.forEach(function(n){
       var c = el('article','note ro');
       var h = el('div','note-head');
       var dd = n.d ? new Date(n.d + 'T12:00:00') : null;
       h.appendChild(el('span','note-date', dd ? ndF.format(dd) : ''));
       h.appendChild(el('span','note-title', n.title || 'Reunión'));
-      c.appendChild(h); var nb = el('div','note-body ro'); nb.innerHTML = mdToHtml(n.body || ''); c.appendChild(nb); list.appendChild(c);
+      c.dataset.id = n.id; c.appendChild(h); var nb = el('div','note-body ro'); nb.innerHTML = mdToHtml(n.body || ''); c.appendChild(nb); list.appendChild(c); noteFold(c);
     });
   });
   if (!VIEW) allPanels.forEach(function(panel){
@@ -1566,13 +1621,13 @@ li.row.menu-open{z-index:30}
     panel.appendChild(sec);
     (state.notes[key] || []).slice().sort(function(a,b){ return (b.d || '').localeCompare(a.d || '') || (b.ts || 0) - (a.ts || 0); })
       .forEach(function(n){ list.appendChild(noteCard(key, n, list)); });
-    emptyState(list, key);
+    emptyState(list, key); addFoldAll(sec);
     add.addEventListener('click', function(){
       if (readOnly) return;
       var n = {id: 'n-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), d: isoToday(), title: '', body: '', ts: Date.now()};
       (state.notes[key] = state.notes[key] || []).push(n);
       var card = noteCard(key, n, list); list.prepend(card); emptyState(list, key);
-      card.querySelector('.note-title').focus(); scheduleSave();
+      refreshFoldAll(sec); card.querySelector('.note-title').focus(); scheduleSave();
     });
   });
 

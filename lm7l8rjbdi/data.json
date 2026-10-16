@@ -5,12 +5,12 @@
   "s-pos-venue": "ongoing",
   "s-pos-pant": "priority",
   "c-mv2kcm5y34jr": "priority",
+  "c-mvatfvzbp9t6": "priority",
   "c-mv2kpb7bs8js": "ongoing",
   "s-pos-lany-d": "ongoing",
   "s-pos-lany-p": "ongoing",
   "s-pos-tarj": "ongoing",
   "c-mumgnny9tohq": "canceled",
-  "c-mvatfvzbp9t6": "priority",
   "c-mvatg1ctbo94": "priority",
   "c-mvatg3jz19sg": "priority",
   "c-mvatg5vb2j8s": "priority"
@@ -114,12 +114,16 @@
    "s-pos-efra",
    "s-pos-pant",
    "c-mv2kcm5y34jr",
+   "c-mvatfvzbp9t6",
    "c-mv2kof2dsdd1",
    "c-mv2kpb7bs8js",
    "s-pos-lany-d",
    "s-pos-lany-p",
    "s-pos-tarj",
-   "c-mumgnny9tohq"
+   "c-mumgnny9tohq",
+   "c-mvatg1ctbo94",
+   "c-mvatg3jz19sg",
+   "c-mvatg5vb2j8s"
   ]
  },
  "rowLinks": {

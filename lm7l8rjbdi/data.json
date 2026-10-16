@@ -80,6 +80,11 @@
     "id": "c-mvatg5vb2j8s",
     "t": "Actualizar Pantalla 07 - Monitores Entrada (1-7)",
     "o": ""
+   },
+   {
+    "id": "c-mvaz075gpzy4",
+    "t": "Mandar ROS Pau",
+    "o": ""
    }
   ]
  },

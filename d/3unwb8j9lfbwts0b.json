@@ -35,7 +35,9 @@
   "c-mv9n8j23kqyl": "ongoing",
   "c-mv9zser5yinh": "priority",
   "c-mv9zsnynfeo4": "priority",
-  "c-mvatfvzbp9t6": "priority"
+  "c-mvatfvzbp9t6": "priority",
+  "c-mvatg1ctbo94": "priority",
+  "c-mvatg3jz19sg": "priority"
  },
  "links": {
   "t-bt-pon": [
@@ -623,5 +625,7 @@
  "c-mv9n8j23kqyl": true,
  "c-mv9zser5yinh": true,
  "c-mv9zsnynfeo4": false,
- "c-mvatfvzbp9t6": false
+ "c-mvatfvzbp9t6": false,
+ "c-mvatg1ctbo94": false,
+ "c-mvatg3jz19sg": false
 }

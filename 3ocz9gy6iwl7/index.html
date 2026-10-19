@@ -2113,6 +2113,37 @@ li.task.peek{animation:peekOut 1.4s var(--ease) both}
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape') document.querySelectorAll('.ev-menu').forEach(function(m){ m.hidden = true; }); });
 
 
+
+  // ---------- Auto-sort tasks by status: Pendiente > Prioritario > On going > Done > Canceled ----------
+  (function autoSort(){
+    var RANK = {pending:0, priority:1, ongoing:2, done:3, canceled:4};
+    function rankOf(li){ var cb = li.querySelector('input[type=checkbox]'); return cb ? (RANK[statusOf(cb.id)] != null ? RANK[statusOf(cb.id)] : 0) : 0; }
+    function sortTasks(ul, animate){
+      var items = [].slice.call(ul.querySelectorAll(':scope > li.task')); if (items.length < 2) return;
+      var sorted = items.map(function(li, i){ return {li: li, i: i, r: rankOf(li)}; }).sort(function(a, b){ return a.r - b.r || a.i - b.i; });
+      if (sorted.every(function(x, i){ return x.i === i; })) return;
+      var before = animate ? items.map(function(li){ return li.getBoundingClientRect().top; }) : null;
+      var anchor = ul.querySelector(':scope > :not(li.task)');
+      sorted.forEach(function(x){ ul.insertBefore(x.li, anchor); });
+      if (!animate) return;
+      items.forEach(function(li, i){
+        var dy = before[i] - li.getBoundingClientRect().top; if (!dy) return;
+        li.animate([{transform:'translateY(' + dy + 'px)'}, {transform:'none'}], {duration:420, easing:'cubic-bezier(.2,.8,.2,1)'});
+      });
+    }
+    document.querySelectorAll('li.row ul.tasks').forEach(function(ul){
+      sortTasks(ul, false);
+      // new tasks (+ tarea) drop into their status group
+      new MutationObserver(function(ms){ if (ms.some(function(m){ return [].some.call(m.addedNodes, function(n){ return n.nodeType === 1 && n.matches('li.task') && !n.dataset.sorted; }); })) setTimeout(function(){ ul.querySelectorAll(':scope > li.task').forEach(function(li){ li.dataset.sorted = 1; }); sortTasks(ul, true); }, 0); }).observe(ul, {childList:true});
+      ul.querySelectorAll(':scope > li.task').forEach(function(li){ li.dataset.sorted = 1; });
+    });
+    document.addEventListener('change', function(e){
+      if (!e.target.matches('li.task .st')) return;
+      var ul = e.target.closest('ul.tasks'); if (!ul) return;
+      setTimeout(function(){ sortTasks(ul, !matchMedia('(prefers-reduced-motion: reduce)').matches); }, 0);
+    });
+  })();
+
   // ---------- Views per client: Lista · Kanban · Calendario (+ planning on Inicio) ----------
   (function views(){
     var VKEY = 'armi-view' + (VIEW ? '-' + VIEW : ''), vpref = {};

@@ -1,10 +1,10 @@
 {
  "st": {
   "c-munzeyk4pbrf": "ongoing",
-  "c-mv69db835rnk": "ongoing",
-  "t-bt-lany": "ongoing",
   "t-bt-pon": "ongoing",
   "t-bt-inv": "ongoing",
+  "t-bt-lany": "ongoing",
+  "c-mv69db835rnk": "ongoing",
   "c-mv9zsnynfeo4": "ongoing",
   "t-bt-net": "ongoing",
   "t-bt-merch": "ongoing",
@@ -136,6 +136,11 @@
    {
     "id": "c-mvgl3ts3y4oa",
     "t": "Mandar reminder partners registro",
+    "o": ""
+   },
+   {
+    "id": "c-mvhntav4zpi0",
+    "t": "Mandar msj Maria Velasco aviso llaveros - Lucila",
     "o": ""
    }
   ],

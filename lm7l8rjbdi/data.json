@@ -93,7 +93,6 @@
    }
   ]
  },
- "c-mvaz075gpzy4": true,
  "s-pos-agenda": true,
  "s-pos-dims": true,
  "s-pos-cobro": true,
@@ -112,6 +111,7 @@
  "s-pos-lany-d": true,
  "s-pos-lany-p": true,
  "s-pos-tarj": true,
+ "c-mvaz075gpzy4": true,
  "edit": {
   "s-pos-pant": {
    "t": "Actualizar Pantalla 01 - Videowall vertical",

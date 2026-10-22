@@ -1,6 +1,5 @@
 {
  "st": {
-  "c-mvi5aq3dpmrk": "ongoing",
   "s-pos-agenda": "ongoing",
   "s-pos-catering": "ongoing",
   "s-pos-venue": "ongoing",
@@ -14,6 +13,7 @@
   "s-pos-lany-d": "ongoing",
   "s-pos-lany-p": "ongoing",
   "s-pos-tarj": "ongoing",
+  "c-mvi5aq3dpmrk": "ongoing",
   "c-mumgnny9tohq": "canceled"
  },
  "links": {
@@ -124,8 +124,6 @@
    }
   ]
  },
- "c-mvi5aq3dpmrk": true,
- "c-mvaz0cy9zhzj": true,
  "s-pos-agenda": true,
  "s-pos-dims": true,
  "s-pos-cobro": true,
@@ -145,6 +143,8 @@
  "s-pos-lany-p": true,
  "s-pos-tarj": true,
  "c-mvaz075gpzy4": true,
+ "c-mvaz0cy9zhzj": true,
+ "c-mvi5aq3dpmrk": true,
  "edit": {
   "s-pos-pant": {
    "t": "Actualizar Pantalla 01 - Videowall vertical",

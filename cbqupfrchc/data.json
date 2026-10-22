@@ -6,7 +6,6 @@
   "t-bt-lany": "ongoing",
   "c-mv69db835rnk": "ongoing",
   "c-mv9zsnynfeo4": "ongoing",
-  "c-mvhntav4zpi0": "priority",
   "t-bt-net": "ongoing",
   "t-bt-merch": "ongoing",
   "c-mumgxeg9hkqg": "ongoing",
@@ -15,6 +14,7 @@
   "c-mv86bzf2myyy": "priority",
   "c-mv9n8j23kqyl": "ongoing",
   "c-mv9zser5yinh": "priority",
+  "c-mvhntav4zpi0": "priority",
   "c-mvhnu3j7e90m": "priority",
   "t-es-pos": "ongoing",
   "t-es-stand": "ongoing",
@@ -144,6 +144,11 @@
     "id": "c-mvhntav4zpi0",
     "t": "Mandar msj Maria Velasco aviso llaveros - Lucila",
     "o": ""
+   },
+   {
+    "id": "c-mvjersyjjg8b",
+    "t": "Quitar ecoalf de la landing",
+    "o": ""
    }
   ],
   "r-es": [
@@ -220,7 +225,6 @@
    }
   ]
  },
- "c-mvhntav4zpi0": true,
  "t-bt-ps21": true,
  "t-bt-net": true,
  "t-bt-merch": true,
@@ -238,6 +242,7 @@
  "c-mv86bzf2myyy": true,
  "c-mv9n8j23kqyl": true,
  "c-mv9zser5yinh": true,
+ "c-mvhntav4zpi0": true,
  "c-muz85gh7gdcp": true,
  "c-mumjf403jh35": true,
  "c-mvamvdfvs3so": true,

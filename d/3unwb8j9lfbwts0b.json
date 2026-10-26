@@ -623,7 +623,7 @@
    "c-mumgnny9tohq"
   ]
  },
- "t-bt-pon": false,
+ "t-bt-pon": true,
  "clients": [
   {
    "key": "armi-dbi",

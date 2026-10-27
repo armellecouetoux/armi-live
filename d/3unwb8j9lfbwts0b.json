@@ -567,7 +567,7 @@
  },
  "t-bt-merch": true,
  "t-bt-net": true,
- "t-bt-lany": false,
+ "t-bt-lany": true,
  "s-pos-agenda": true,
  "c-mumgxeg9hkqg": true,
  "t-es-llav": true,

@@ -124,12 +124,6 @@
    }
   ]
  },
- "c-mvi5awt0wtur": true,
- "c-mvi5at7vjinj": true,
- "c-mvi5arm4yw35": true,
- "c-mvi5ao11oeql": true,
- "c-mvhrpnt7r6e0": true,
- "s-pos-efra": true,
  "s-pos-agenda": true,
  "s-pos-dims": true,
  "s-pos-cobro": true,
@@ -148,9 +142,15 @@
  "s-pos-lany-d": true,
  "s-pos-lany-p": true,
  "s-pos-tarj": true,
+ "s-pos-efra": true,
  "c-mvaz075gpzy4": true,
  "c-mvaz0cy9zhzj": true,
+ "c-mvhrpnt7r6e0": true,
+ "c-mvi5ao11oeql": true,
  "c-mvi5aq3dpmrk": true,
+ "c-mvi5arm4yw35": true,
+ "c-mvi5at7vjinj": true,
+ "c-mvi5awt0wtur": true,
  "edit": {
   "s-pos-pant": {
    "t": "Actualizar Pantalla 01 - Videowall vertical",

@@ -86,6 +86,11 @@
     "id": "c-mvi45z5zcszd",
     "t": "Escribir mensaje a la gente que he conocido estos meses para solicitar si tienen necesidades",
     "o": ""
+   },
+   {
+    "id": "c-mvsno4hcrxn4",
+    "t": "Mail Lamis x Moddo",
+    "o": ""
    }
   ],
   "e-maq7n03d": [
@@ -111,11 +116,11 @@
    }
   ]
  },
- "c-mvmd7cga6i3f": true,
  "c-muo25l00foua": true,
  "c-muo27eziikx8": true,
  "c-muo25t7d73m4": true,
  "c-mv86b9na1615": true,
+ "c-mvmd7cga6i3f": true,
  "c-mumy0agjsir5": true,
  "c-mun3llmvrpac": true,
  "c-muo27n0vmwd1": true,

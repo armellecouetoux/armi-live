@@ -91,6 +91,16 @@
     "id": "c-mvsno4hcrxn4",
     "t": "Mail Lamis x Moddo",
     "o": ""
+   },
+   {
+    "id": "c-mvtlzh8umkfw",
+    "t": "Montar P&L",
+    "o": ""
+   },
+   {
+    "id": "c-mvtlzlpj4add",
+    "t": "Montar agente creativo con Claude",
+    "o": ""
    }
   ],
   "e-maq7n03d": [
@@ -121,13 +131,13 @@
  "c-muo25t7d73m4": true,
  "c-mv86b9na1615": true,
  "c-mvmd7cga6i3f": true,
- "c-mvsno4hcrxn4": true,
  "c-mumy0agjsir5": true,
  "c-mun3llmvrpac": true,
  "c-muo27n0vmwd1": true,
  "c-mvew4tgpmygs": true,
  "c-mvew4wy7ewq7": true,
  "c-mvi45hymov8c": true,
+ "c-mvsno4hcrxn4": true,
  "edit": {},
  "order": {
   "e-yzinlxh7": [

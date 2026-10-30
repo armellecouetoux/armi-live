@@ -531,7 +531,8 @@
     "d": "2026-10-30",
     "title": "Ejemplo",
     "body": "Si quiero tomar notas de reuniones la puedo compartir o no",
-    "ts": 1793391838849
+    "ts": 1793391840775,
+    "shared": true
    }
   ],
   "shopify": [

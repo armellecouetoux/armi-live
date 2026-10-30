@@ -730,6 +730,25 @@ li.task.peek{animation:peekOut 1.4s var(--ease) both}
 @media (max-width:560px){ .done-toggle{margin-left:0} }
 .tline{align-items:flex-start}
 .tline > .st{margin-top:1px}
+
+/* ===== Hide single done tasks ===== */
+.hidetask{align-self:center; appearance:none; border:0; background:transparent; color:var(--muted); font:inherit; font-size:12px; padding:2px 8px; border-radius:999px; cursor:pointer; opacity:0; transition:opacity .2s, background .2s, color .2s; flex:0 0 auto; order:2}
+li.task:hover .hidetask, .hidetask:focus-visible{opacity:1}
+.hidetask:hover{background:var(--surface-2); color:var(--ink)}
+li.task:not(.is-done):not(.is-canceled):not(.is-hidden) .hidetask{display:none}
+@media (hover:none){ .hidetask{opacity:1} }
+li.row:not(.show-done) ul.tasks > li.task.is-hidden:not(.peek){display:none}
+li.task.is-hidden{opacity:.6}
+/* ===== Hidden clients ===== */
+.tab.tab-hidden{display:none}
+.tabs.show-hidden .tab.tab-hidden{display:inline-flex; opacity:.55}
+.tab-hid{--dot:var(--muted); border:1px dashed var(--line); color:var(--muted)}
+.tab-hid::before{display:none}
+.tab-hid[aria-pressed="true"]{border-style:solid; color:var(--ink)}
+.hidc-btn{justify-self:start; appearance:none; border:1px solid var(--hair); background:transparent; color:var(--muted); font:inherit; font-size:13px; padding:6px 14px; border-radius:999px; cursor:pointer}
+.hidc-btn:hover{color:var(--ink); border-color:var(--hair-2)}
+.hidc-banner{display:flex; flex-wrap:wrap; align-items:center; gap:10px; font-size:13.5px; color:var(--muted); padding:10px 14px; border-radius:12px; background:var(--surface-2)}
+.hidc-show{appearance:none; border:0; background:var(--ink); color:var(--bg); font:inherit; font-size:12.5px; padding:5px 12px; border-radius:999px; cursor:pointer}
 </style>
 <main class="page">
 
@@ -960,7 +979,7 @@ li.task.peek{animation:peekOut 1.4s var(--ease) both}
   var TK_KEY = 'armi-gh-token', remoteSha = null, pending = false;
   function token(){ try { return localStorage.getItem(TK_KEY) || ''; } catch(e){ return ''; } }
   function canon(o){ if (Array.isArray(o)) return o.map(canon); if (o && typeof o === 'object'){ var r = {}; Object.keys(o).sort().forEach(function(k){ r[k] = canon(o[k]); }); return r; } return o; }
-  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; if (!Array.isArray(o.clients)) o.clients = []; if (!o.archived || typeof o.archived !== 'object') o.archived = {}; if (!o.rowLinks || typeof o.rowLinks !== 'object') o.rowLinks = {}; Object.keys(o.rowLinks).forEach(function(k){ if (!o.rowLinks[k] || !o.rowLinks[k].length) delete o.rowLinks[k]; }); if (!o.events || typeof o.events !== 'object') o.events = {}; if (!o.evstate || typeof o.evstate !== 'object') o.evstate = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
+  function norm(o){ o = o || {}; if (!o.st || typeof o.st !== 'object') o.st = {}; if (!o.links || typeof o.links !== 'object') o.links = {}; if (!o.custom || typeof o.custom !== 'object') o.custom = {}; if (!o.notes || typeof o.notes !== 'object') o.notes = {}; if (!o.edit || typeof o.edit !== 'object') o.edit = {}; if (!o.order || typeof o.order !== 'object') o.order = {}; if (!Array.isArray(o.clients)) o.clients = []; if (!o.archived || typeof o.archived !== 'object') o.archived = {}; if (!o.rowLinks || typeof o.rowLinks !== 'object') o.rowLinks = {}; Object.keys(o.rowLinks).forEach(function(k){ if (!o.rowLinks[k] || !o.rowLinks[k].length) delete o.rowLinks[k]; }); if (!o.events || typeof o.events !== 'object') o.events = {}; if (!o.evstate || typeof o.evstate !== 'object') o.evstate = {}; if (!o.hid || typeof o.hid !== 'object') o.hid = {}; if (!o.hidc || typeof o.hidc !== 'object') o.hidc = {}; Object.keys(o.links).forEach(function(k){ if (!o.links[k] || !o.links[k].length) delete o.links[k]; }); return o; }
   function stable(o){ return JSON.stringify(canon(norm(JSON.parse(JSON.stringify(o || {}))))); }
   function b64enc(str){ return btoa(unescape(encodeURIComponent(str))); }
   function b64dec(str){ return decodeURIComponent(escape(atob((str || '').replace(/\s/g, '')))); }
@@ -1598,11 +1617,15 @@ li.task.peek{animation:peekOut 1.4s var(--ease) both}
     else window.scrollTo({top:0, behavior:'smooth'});
   }
 
+  function isHidC(k){ return !!(state.hidc && state.hidc[k]); }
   function renderHome(quiet){
     var tOpen = 0, tPrio = 0, events = [], focus = [];
     var clients = document.getElementById('clients'); clients.innerHTML = '';
+    var nVisible = 0;
     panels.forEach(function(panel){
-      var key = panel.dataset.client, info = CL[key] || {name:key, c:'#ccc'}, c = counts(panel);
+      var key = panel.dataset.client, info = CL[key] || {name:key, c:'#ccc'};
+      if (isHidC(key)) return; nVisible++;
+      var c = counts(panel);
       tOpen += c.open; tPrio += c.prio;
       var pct = c.total ? Math.round((c.total - c.open) / c.total * 100) : 0;
       var card = el('button','ccard'); card.type = 'button'; card.style.setProperty('--c', tc(key));
@@ -1633,7 +1656,7 @@ li.task.peek{animation:peekOut 1.4s var(--ease) both}
     var k = document.getElementById('kpis'); k.innerHTML = '';
     function kpi(n, label, cls){ var d = el('div','kpi' + (cls ? ' ' + cls : '')); d.appendChild(el('b', null, String(n))); d.appendChild(el('span', null, label)); k.appendChild(d); }
     var nextEv = events[0], nd = nextEv ? Math.round((nextEv.d - today)/MS) : null;
-    kpi(panels.length, 'clientes activos');
+    kpi(nVisible, 'clientes activos');
     kpi(tOpen, 'tareas abiertas');
     kpi(tPrio, tPrio === 1 ? 'prioritaria' : 'prioritarias', tPrio ? 'warm' : '');
     kpi(nextEv ? (nd === 0 ? 'Hoy' : nd + ' d') : '—', nextEv ? 'hasta ' + nextEv.name : 'sin activaciones');
@@ -2026,16 +2049,50 @@ li.task.peek{animation:peekOut 1.4s var(--ease) both}
       var on = panel.classList.contains('hide-done');
       panel.querySelectorAll('li.row[data-key]').forEach(function(r){
         var ul = r.querySelector('ul.tasks'); if (!ul) return;
-        var n = ul.querySelectorAll(':scope > li.task.is-done, :scope > li.task.is-canceled').length;
+        var n = 0; ul.querySelectorAll(':scope > li.task').forEach(function(li){ var dc = li.classList.contains('is-done') || li.classList.contains('is-canceled'); if (on ? (dc || li.classList.contains('is-hidden')) : li.classList.contains('is-hidden')) n++; });
         var b = r.querySelector('.done-toggle');
         if (!b){
           b = el('button','done-toggle'); b.type = 'button'; ul.insertAdjacentElement('afterend', b);
           b.addEventListener('click', function(){ r.classList.toggle('show-done'); doneToggles(panel); });
         }
-        b.hidden = !on || !n;
-        b.textContent = r.classList.contains('show-done') ? 'Ocultar ' + n + (n === 1 ? ' hecha' : ' hechas') : '✓ ' + n + (n === 1 ? ' tarea hecha' : ' tareas hechas') + ' · ver';
+        b.hidden = !n;
+        b.textContent = r.classList.contains('show-done') ? 'Ocultar ' + n + (on ? (n === 1 ? ' hecha' : ' hechas') : (n === 1 ? ' tarea' : ' tareas')) : '✓ ' + n + (on ? (n === 1 ? ' tarea hecha' : ' tareas hechas') : (n === 1 ? ' tarea oculta' : ' tareas ocultas')) + ' · ver';
       });
     }
+    // Hide one finished task (synced). It comes back with "· ver" on its activation.
+    if (!state.hid || typeof state.hid !== 'object') state.hid = {};
+    function ensureHideBtn(li){
+      if (VIEW || readOnly) return;
+      var cb = li.querySelector('input[type=checkbox]'); if (!cb) return;
+      var b = li.querySelector('.hidetask');
+      if (!b){
+        var line = li.querySelector('.tline'); if (!line) return;
+        b = el('button','hidetask'); b.type = 'button';
+        line.insertBefore(b, line.querySelector('.st'));
+        b.addEventListener('click', function(){
+          var on = !state.hid[cb.id];
+          if (on) state.hid[cb.id] = 1; else delete state.hid[cb.id];
+          li.classList.toggle('is-hidden', on); paintHideBtn(li); scheduleSave();
+          var panel = li.closest('.panel'); if (panel) doneToggles(panel);
+        });
+      }
+      paintHideBtn(li);
+    }
+    function paintHideBtn(li){ var b = li.querySelector('.hidetask'); if (!b) return; var h = li.classList.contains('is-hidden'); b.textContent = h ? 'Mostrar' : 'Ocultar'; b.title = h ? 'Volver a mostrar esta tarea' : 'Ocultar esta tarea hecha'; }
+    document.querySelectorAll('li.row li.task').forEach(function(li){
+      var cb = li.querySelector('input[type=checkbox]'); if (!cb) return;
+      var v = statusOf(cb.id);
+      if (state.hid[cb.id] && v !== 'done' && v !== 'canceled'){ delete state.hid[cb.id]; }
+      li.classList.toggle('is-hidden', !!state.hid[cb.id]);
+      ensureHideBtn(li);
+    });
+    document.addEventListener('change', function(e){
+      if (!e.target.matches('li.task .st')) return;
+      var li = e.target.closest('li.task'), cb = li.querySelector('input[type=checkbox]');
+      if (e.target.value !== 'done' && e.target.value !== 'canceled' && state.hid[cb.id]){ delete state.hid[cb.id]; li.classList.remove('is-hidden'); scheduleSave(); }
+      ensureHideBtn(li);
+    });
+
     function setView(panel, v){
       ['list','kanban','cal'].forEach(function(x){ panel.classList.toggle('view-' + x, x === v); });
       panel.querySelectorAll('.vsw button').forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.v === v)); });
@@ -2174,10 +2231,50 @@ li.task.peek{animation:peekOut 1.4s var(--ease) both}
       var sec = el('div','h-section planning'); sec.appendChild(el('h2', null, 'Planning'));
       var box = el('div','vcal'); sec.appendChild(box);
       var grid = home.querySelector('.h-grid'); if (grid) grid.insertAdjacentElement('afterend', sec); else home.appendChild(sec);
-      var draw = function(){ renderCal(box, [].slice.call(panels)); };
+      var draw = function(){ renderCal(box, [].slice.call(panels).filter(function(p){ return !isHidC(p.dataset.client); })); };
+      window.__armiPlanning = draw;
       draw();
       tabs.forEach(function(t){ t.addEventListener('click', function(){ if (t.dataset.tab === 'home') draw(); }); });
     }
+  })();
+
+
+  // ---------- Hide a client with no open tasks (synced) ----------
+  if (!VIEW) (function hideClients(){
+    if (!state.hidc || typeof state.hidc !== 'object') state.hidc = {};
+    var nav = document.querySelector('.tabs'); if (!nav) return;
+    var pill = el('button','tab tab-hid'); pill.type = 'button';
+    var addBtn = nav.querySelector('.tab-add'); nav.insertBefore(pill, addBtn || null);
+    pill.addEventListener('click', function(){ nav.classList.toggle('show-hidden'); paintPill(); });
+    function paintPill(){
+      var n = Object.keys(state.hidc).filter(function(k){ return document.getElementById('tab-' + k); }).length;
+      pill.hidden = !n; pill.textContent = 'Ocultos · ' + n; pill.setAttribute('aria-pressed', String(nav.classList.contains('show-hidden'))); pill.title = nav.classList.contains('show-hidden') ? 'Esconder clientes ocultos' : 'Ver clientes ocultos';
+    }
+    function apply(panel){
+      var key = panel.dataset.client, hid = isHidC(key), tab = document.getElementById('tab-' + key);
+      if (tab) tab.classList.toggle('tab-hidden', hid);
+      panel.classList.toggle('is-hidc', hid);
+      var c = counts(panel), btn = panel.querySelector('.hidc-btn');
+      btn.hidden = hid || c.open > 0;
+      panel.querySelector('.hidc-banner').hidden = !hid;
+    }
+    panels.forEach(function(panel){
+      var key = panel.dataset.client, head = panel.querySelector('header'); if (!head) return;
+      var btn = el('button','hidc-btn','Ocultar cliente'); btn.type = 'button'; btn.title = 'No tiene tareas pendientes: puedes ocultarlo de las pestañas y del Inicio';
+      var ban = el('div','hidc-banner'); ban.append(el('span', null, 'Cliente oculto · no aparece en las pestañas ni en Inicio.'));
+      var show = el('button','hidc-show','Mostrar de nuevo'); show.type = 'button'; ban.appendChild(show);
+      head.append(btn); head.insertBefore(ban, head.firstChild);
+      btn.addEventListener('click', function(){
+        state.hidc[key] = 1; scheduleSave(); apply(panel); paintPill();
+        showTab('home', true); if (window.__armiPlanning) window.__armiPlanning();
+      });
+      show.addEventListener('click', function(){
+        delete state.hidc[key]; scheduleSave(); apply(panel); paintPill(); renderHome(true); if (window.__armiPlanning) window.__armiPlanning();
+      });
+      apply(panel);
+    });
+    paintPill();
+    document.addEventListener('change', function(e){ if (!e.target.matches('li.task .st')) return; var p = e.target.closest('.panel'); if (p && p.querySelector('.hidc-btn')) apply(p); });
   })();
 
   // ---------- Landing-style motion: headline words, scroll reveal, count-up, scroll line ----------

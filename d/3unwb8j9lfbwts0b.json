@@ -805,7 +805,7 @@
  "s-pos-cobro": true,
  "s-pos-pant": true,
  "t-sh-inv": false,
- "t-sh-list": false,
+ "t-sh-list": true,
  "c-munuj610hv7z": true,
  "c-muvaatffry4o": true,
  "c-mumjf403jh35": true,

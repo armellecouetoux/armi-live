@@ -1,6 +1,6 @@
 {
  "t-cq-who": true,
- "t-es-stand": false,
+ "t-es-stand": true,
  "st": {
   "t-ed-inv": "ongoing",
   "t-bt-merch": "ongoing",

@@ -1,0 +1,61 @@
+{
+ "v": 2,
+ "updatedAt": "2026-11-06T08:27:16.190837Z",
+ "clients": {
+  "list": [
+   {
+    "id": "c-santalo",
+    "name": "Santaló Candles",
+    "color": "#e07a2f"
+   }
+  ]
+ },
+ "ws": {
+  "c-santalo": {
+   "v": 2,
+   "isDemo": false,
+   "seq": 0,
+   "posts": [],
+   "pillars": [],
+   "team": [],
+   "lists": {
+    "channels": [
+     "Instagram",
+     "LinkedIn",
+     "TikTok",
+     "Blog",
+     "Newsletter",
+     "YouTube"
+    ],
+    "formats": [
+     "Carrusel",
+     "Reel",
+     "Post estático",
+     "Story",
+     "Vídeo",
+     "Artículo",
+     "Email",
+     "Live"
+    ],
+    "types": [
+     "Educativo",
+     "Inspiracional",
+     "Promocional",
+     "Entretenimiento",
+     "Comunidad",
+     "Corporativo"
+    ],
+    "objectives": [
+     "Awareness",
+     "Engagement",
+     "Tráfico",
+     "Consideración",
+     "Leads",
+     "Conversión",
+     "Fidelización"
+    ]
+   },
+   "updatedAt": "2026-11-06T08:27:16.190837Z"
+  }
+ }
+}

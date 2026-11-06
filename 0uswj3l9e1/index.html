@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Santaló Candles · Calendario editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#fbfbfa; --bg3:#f4f4f2; --line:#ebebea; --line2:#dededc;
+  --tx:#1f1f1e; --tx2:#5f5e5b; --tx3:#9b9a97; --acc:#2f2f2e; --accent:#5e6ad2;
+  --red:#d9473f; --redbg:#fdf0ef; --amber:#b7791f; --amberbg:#fdf6e7; --green:#2f8f5b;
+  --r:8px; --sh:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;font-size:13px;color:var(--tx);background:var(--bg);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+.app{display:flex;height:100vh;overflow:hidden}
+/* Sidebar */
+.side{width:232px;flex:none;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:12px 8px}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 8px 14px}
+.logo{width:26px;height:26px;border-radius:7px;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700;font-size:12px}
+.brand b{display:block;font-size:13px}
+.brand small{color:var(--tx3);font-size:11px}
+.nav{display:flex;flex-direction:column;gap:1px}
+.nav a{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:6px;color:var(--tx2);text-decoration:none;font-weight:500;cursor:pointer}
+.nav a:hover{background:var(--bg3);color:var(--tx)}
+.nav a.on{background:#ececea;color:var(--tx)}
+.nav a .ic{width:16px;text-align:center;opacity:.8}
+.nav a .ct{margin-left:auto;font-size:11px;color:var(--tx3);font-weight:500}
+.nav a .ct.red{color:var(--red)}
+.navlbl{font-size:11px;color:var(--tx3);padding:14px 9px 4px;font-weight:500}
+.side .foot{margin-top:auto;padding:10px 8px 2px;font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:6px}
+.dotst{width:7px;height:7px;border-radius:50%;background:var(--tx3);flex:none}
+.dotst.ok{background:var(--green)} .dotst.warn{background:var(--amber)} .dotst.err{background:var(--red)}
+.btn-new{margin:0 4px 12px;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--acc);color:#fff;border:0;border-radius:7px;padding:8px 10px;font-weight:600;cursor:pointer}
+.btn-new:hover{background:#000}
+/* Main */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.top{display:flex;align-items:center;gap:12px;padding:14px 28px;border-bottom:1px solid var(--line);min-height:56px}
+.top h1{font-size:16px;margin:0;font-weight:600}
+.top .sub{color:var(--tx3);font-size:12px}
+.top .sp{flex:1}
+.mob-toggle{display:none;border:1px solid var(--line);background:#fff;border-radius:6px;padding:5px 9px;cursor:pointer}
+.content{flex:1;overflow:auto;padding:20px 28px 60px}
+.demo-banner{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--amberbg);border:1px solid #f1dfb5;color:#7a5512;border-radius:var(--r);padding:9px 12px;margin-bottom:18px;font-size:12.5px}
+.demo-banner b{font-weight:600}
+.demo-banner .sp{flex:1}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);background:#fff;border-radius:6px;padding:6px 10px;cursor:pointer;font-weight:500;white-space:nowrap;line-height:1.2}
+.btn:hover{background:var(--bg3)}
+.btn.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+.btn.pri:hover{background:#000}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:var(--bg3)}
+.btn.danger{color:var(--red)}
+.btn.sm{padding:4px 8px;font-size:12px}
+.btn.icon{padding:5px 7px}
+.seg{display:inline-flex;border:1px solid var(--line2);border-radius:7px;padding:2px;background:var(--bg2)}
+.seg button{border:0;background:transparent;padding:5px 11px;border-radius:5px;cursor:pointer;font-weight:500;color:var(--tx2)}
+.seg button.on{background:#fff;color:var(--tx);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+/* Cards & KPIs */
+.grid{display:grid;gap:12px}
+.kpis{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.kpi{border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;background:#fff;cursor:pointer;transition:border-color .15s}
+.kpi:hover{border-color:var(--line2)}
+.kpi .l{color:var(--tx2);font-size:12px;display:flex;align-items:center;gap:6px}
+.kpi .v{font-size:24px;font-weight:600;margin-top:6px;letter-spacing:-.02em}
+.kpi .h{font-size:11px;color:var(--tx3);margin-top:2px}
+.kpi.alert .v{color:var(--red)}
+.card{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:16px}
+.card h3{margin:0 0 12px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card h3 .sp{flex:1}
+.card h3 small{font-weight:400;color:var(--tx3)}
+.two{grid-template-columns:1fr 1fr}
+.sec{margin-top:16px}
+/* bars */
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:160px 1fr 44px;gap:10px;align-items:center;font-size:12px}
+.bar .nm{color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.bar .tr{height:8px;background:var(--bg3);border-radius:4px;position:relative}
+.bar .fl{height:100%;border-radius:4px;background:var(--acc)}
+.bar .tg{position:absolute;top:-4px;width:2px;height:16px;background:var(--tx);border-radius:1px}
+.bar .n{text-align:right;color:var(--tx2);font-variant-numeric:tabular-nums}
+.pipe{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--bg3)}
+.pipe span{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px;color:var(--tx2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.sw{width:8px;height:8px;border-radius:2px;display:inline-block;flex:none}
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 7px;border-radius:20px;font-size:11.5px;font-weight:500;background:color-mix(in srgb,var(--c) 13%,#fff);color:color-mix(in srgb,var(--c) 75%,#000);white-space:nowrap;line-height:1.5}
+.badge i{width:6px;height:6px;border-radius:50%;background:var(--c);flex:none}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--tx2);white-space:nowrap}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--c);flex:none}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;background:var(--bg3);color:var(--tx2);font-size:11.5px;white-space:nowrap}
+.tag.red{background:var(--redbg);color:var(--red)}
+.tag.amber{background:var(--amberbg);color:var(--amber)}
+.av{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font-size:10px;font-weight:600;color:#fff;flex:none}
+/* filters */
+.fbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}
+.fbar .search{position:relative;flex:0 1 240px;min-width:160px}
+.fbar .search input{width:100%;padding:6px 10px 6px 28px}
+.fbar .search span{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--tx3)}
+.inp,.fbar input,.fbar select{border:1px solid var(--line2);border-radius:6px;padding:6px 8px;background:#fff;outline:none;min-width:0}
+.fbar select{max-width:150px}
+.fbar select.act,.fbar input.act{border-color:var(--accent);background:#f5f6fe}
+.inp:focus,.fbar input:focus,.fbar select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(94,106,210,.12)}
+.chk{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line2);border-radius:6px;cursor:pointer;background:#fff;user-select:none}
+.chk.act{border-color:var(--red);color:var(--red);background:var(--redbg)}
+/* tables */
+.tblwrap{border:1px solid var(--line);border-radius:var(--r);overflow:auto;background:#fff}
+table{border-collapse:collapse;width:100%}
+th{position:sticky;top:0;background:var(--bg2);text-align:left;font-weight:500;color:var(--tx2);font-size:12px;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;z-index:1}
+th.s{cursor:pointer;user-select:none}
+th.s:hover{color:var(--tx)}
+td{padding:4px 10px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fcfcfb}
+td .cell{border:1px solid transparent;background:transparent;border-radius:5px;padding:5px 6px;width:100%;outline:none;min-width:70px}
+td .cell:hover{border-color:var(--line)}
+td .cell:focus{border-color:var(--accent);background:#fff}
+td select.cell{min-width:118px;cursor:pointer;appearance:none;-webkit-appearance:none}
+td .ttl{min-width:240px;font-weight:500}
+td.id{color:var(--tx3);font-size:12px;font-variant-numeric:tabular-nums;cursor:pointer}
+td.id:hover{color:var(--accent)}
+td.late input{color:var(--red);font-weight:500}
+.rowact{display:flex;gap:2px;opacity:.45}
+tr:hover .rowact{opacity:1}
+.stsel{border-radius:20px!important;padding:3px 10px!important;font-size:11.5px;font-weight:500;min-width:110px!important}
+/* calendar */
+.calbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.calbar .lbl{font-size:15px;font-weight:600;min-width:170px;text-transform:capitalize}
+.calwrap{display:flex;gap:14px;align-items:flex-start}
+.calmain{flex:1;min-width:0}
+.month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
+.month .dh{padding:7px 8px;font-size:11.5px;color:var(--tx3);font-weight:500;background:var(--bg2);border-bottom:1px solid var(--line)}
+.month .c{min-height:118px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:5px;position:relative;display:flex;flex-direction:column;gap:3px}
+.month .c:nth-child(7n){border-right:0}
+.month .c.out{background:var(--bg2)}
+.month .c.out .dn{color:var(--tx3)}
+.month .c .dn{font-size:12px;font-weight:500;color:var(--tx2);display:flex;align-items:center;justify-content:space-between;height:22px;padding:0 2px}
+.month .c.today .dn b{background:var(--red);color:#fff;border-radius:11px;padding:1px 7px}
+.month .c .add{opacity:0;border:0;background:transparent;cursor:pointer;color:var(--tx3);font-size:15px;line-height:1;padding:0 4px;border-radius:4px}
+.month .c:hover .add{opacity:1}
+.month .c .add:hover{background:var(--bg3);color:var(--tx)}
+.ev{display:flex;align-items:center;gap:5px;font-size:11.5px;padding:3px 6px;border-radius:5px;background:var(--bg3);cursor:pointer;border-left:3px solid var(--c);overflow:hidden;white-space:nowrap}
+.ev:hover{background:#ececea}
+.ev .t{color:var(--tx3);font-variant-numeric:tabular-nums;flex:none}
+.ev .n{overflow:hidden;text-overflow:ellipsis;flex:1}
+.ev .s{width:7px;height:7px;border-radius:50%;background:var(--sc);flex:none}
+.ev.late{background:var(--redbg)}
+.more{font-size:11px;color:var(--tx3);padding:1px 6px;cursor:pointer}
+.more:hover{color:var(--tx)}
+.dragover{outline:2px dashed var(--accent);outline-offset:-3px;background:#f5f6fe!important}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.wcol{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);min-height:420px;display:flex;flex-direction:column}
+.wcol .wh{padding:9px 10px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:6px}
+.wcol .wh b{font-size:17px;font-weight:600}
+.wcol .wh span{color:var(--tx3);font-size:12px;text-transform:capitalize}
+.wcol.today .wh b{color:var(--red)}
+.wcol .wb{padding:7px;display:flex;flex-direction:column;gap:7px;flex:1}
+.wcol .wadd{margin-top:auto;border:1px dashed var(--line2);background:transparent;border-radius:6px;padding:6px;color:var(--tx3);cursor:pointer;font-size:12px}
+.wcol .wadd:hover{color:var(--tx);border-color:var(--tx3)}
+.kc{background:#fff;border:1px solid var(--line);border-radius:7px;padding:9px 10px;cursor:pointer;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 1px rgba(0,0,0,.02)}
+.kc:hover{border-color:var(--line2);box-shadow:var(--sh)}
+.kc .tt{font-weight:500;line-height:1.35;white-space:normal}
+.kc .mt{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--tx2)}
+.kc .mt .sp{flex:1}
+.kc.late{border-color:#f3c9c6}
+.unsched{width:230px;flex:none;border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);padding:10px;max-height:calc(100vh - 220px);overflow:auto}
+.unsched h4{margin:0 0 4px;font-size:12.5px;font-weight:600}
+.unsched p{margin:0 0 10px;font-size:11.5px;color:var(--tx3);line-height:1.4}
+.unsched .kc{margin-bottom:7px}
+.lgroup{margin-bottom:18px}
+.lgroup h4{font-size:12px;font-weight:600;margin:0 0 6px;color:var(--tx2);display:flex;align-items:center;gap:8px;text-transform:capitalize}
+.lrow{display:grid;grid-template-columns:52px 130px 1fr 150px 120px 120px;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-top:0;background:#fff;cursor:pointer}
+.lrow:first-of-type{border-top:1px solid var(--line);border-radius:var(--r) var(--r) 0 0}
+.lrow:last-child{border-radius:0 0 var(--r) var(--r)}
+.lrow:only-of-type{border-radius:var(--r)}
+.lrow:hover{background:#fcfcfb}
+.lrow .tm{color:var(--tx3);font-variant-numeric:tabular-nums}
+.lrow .tt{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow .sm{color:var(--tx3);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* kanban */
+.kanban{display:grid;grid-template-columns:repeat(7,minmax(210px,1fr));gap:10px;overflow-x:auto;padding-bottom:10px}
+.kcol{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;min-height:300px}
+.kcol .kh{display:flex;align-items:center;gap:7px;padding:10px 11px;font-weight:600;font-size:12.5px}
+.kcol .kh .n{color:var(--tx3);font-weight:500}
+.kcol .kb{padding:0 8px 8px;display:flex;flex-direction:column;gap:7px;flex:1}
+.flow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:11.5px;color:var(--tx3);margin-bottom:14px}
+.flow b{color:var(--tx2);font-weight:500}
+/* ideas */
+.capture{display:flex;gap:8px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:10px;margin-bottom:16px}
+.capture input[type=text]{flex:1 1 260px}
+.ideas{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.idea{border:1px solid var(--line);border-radius:var(--r);padding:12px;background:#fff;display:flex;flex-direction:column;gap:8px}
+.idea .tt{font-weight:600;cursor:pointer}
+.idea .tt:hover{color:var(--accent)}
+.idea .ds{color:var(--tx2);font-size:12px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.idea .ft{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:auto}
+/* pillars */
+.pillars{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.pil{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:#fff;display:flex;flex-direction:column;gap:8px;border-top:3px solid var(--c)}
+.pil h4{margin:0;font-size:14px;display:flex;align-items:center;gap:8px}
+.pil h4 .sp{flex:1}
+.pil dl{margin:0;display:grid;grid-template-columns:96px 1fr;gap:5px 10px;font-size:12px}
+.pil dt{color:var(--tx3)}
+.pil dd{margin:0;color:var(--tx2);line-height:1.45}
+.pil .pct{display:flex;gap:16px;padding-top:8px;border-top:1px solid var(--line);font-size:12px;color:var(--tx2)}
+.pil .pct b{font-size:16px;color:var(--tx);display:block;font-weight:600}
+.dist{display:grid;grid-template-columns:160px 1fr 70px 70px 90px;gap:10px;align-items:center;font-size:12px;padding:6px 0;border-bottom:1px solid var(--line)}
+.dist:last-child{border-bottom:0}
+.dist.h{color:var(--tx3);font-size:11.5px}
+/* drawer & modal */
+.scrim{position:fixed;inset:0;background:rgba(15,15,15,.28);z-index:40;opacity:0;pointer-events:none;transition:opacity .15s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(640px,100vw);background:#fff;z-index:50;box-shadow:-8px 0 30px rgba(0,0,0,.12);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .2s ease}
+.drawer.on{transform:none}
+.dhd{padding:14px 20px 10px;border-bottom:1px solid var(--line)}
+.dhd .row{display:flex;align-items:center;gap:8px}
+.dhd .row .sp{flex:1}
+.dhd .tinput{width:100%;font-size:19px;font-weight:600;border:0;outline:none;padding:8px 0 4px;letter-spacing:-.01em}
+.steps{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.steps button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:3px 9px;font-size:11.5px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;gap:5px}
+.steps button i{width:7px;height:7px;border-radius:50%;background:var(--c);opacity:.35}
+.steps button.done i{opacity:1}
+.steps button.on{border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);color:var(--tx);font-weight:600}
+.steps button.on i{opacity:1}
+.dbd{flex:1;overflow:auto;padding:6px 20px 30px}
+.dsec{margin-top:16px}
+.dsec h5{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);font-weight:600}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.fgrid .full{grid-column:1/-1}
+.fld label{display:block;font-size:11.5px;color:var(--tx2);margin-bottom:4px;font-weight:500}
+.fld .inp{width:100%}
+.fld textarea.inp{resize:vertical;min-height:64px;line-height:1.45}
+.fld .lk{font-size:11.5px;margin-left:6px}
+.dft{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:center;background:var(--bg2)}
+.dft .sp{flex:1}
+.dirty{font-size:11.5px;color:var(--amber)}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-48%);width:min(520px,94vw);max-height:88vh;overflow:auto;background:#fff;border-radius:12px;z-index:60;box-shadow:0 20px 60px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:all .15s}
+.modal.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.modal .mh{padding:16px 20px 4px;font-weight:600;font-size:15px}
+.modal .mb{padding:10px 20px;color:var(--tx2);line-height:1.5}
+.modal .mf{padding:12px 20px 16px;display:flex;gap:8px;justify-content:flex-end}
+.mscrim{z-index:55}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--acc);color:#fff;padding:9px 14px;border-radius:8px;font-size:12.5px;opacity:0;transition:all .2s;z-index:70;display:flex;gap:12px;align-items:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.toast button{background:transparent;border:0;color:#a5b4fc;cursor:pointer;font-weight:600}
+.empty{text-align:center;padding:40px 20px;color:var(--tx3);border:1px dashed var(--line2);border-radius:var(--r)}
+.mini{display:flex;flex-direction:column}
+.mini .it{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line);cursor:pointer}
+.mini .it:last-child{border-bottom:0}
+.mini .it:hover .tt{color:var(--accent)}
+.mini .dt{width:62px;flex:none;color:var(--tx3);font-size:12px;font-variant-numeric:tabular-nums}
+.mini .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.note{font-size:12px;color:var(--tx3);line-height:1.5}
+.warnbox{background:var(--amberbg);color:#7a5512;border-radius:6px;padding:8px 10px;font-size:12px;margin-bottom:12px}
+.setrow{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.setrow:last-child{border-bottom:0}
+.setrow .l b{display:block;font-weight:600;margin-bottom:3px}
+.setrow .l span{font-size:12px;color:var(--tx3);line-height:1.4}
+.setrow textarea{width:100%;min-height:56px}
+@media (max-width:980px){
+  .two{grid-template-columns:1fr}
+  .unsched{display:none}
+  .week{grid-template-columns:1fr}
+  .wcol{min-height:auto}
+  .lrow{grid-template-columns:48px 1fr 110px}
+  .lrow .hm{display:none}
+}
+@media (max-width:860px){
+  .side{position:fixed;z-index:45;top:0;bottom:0;left:0;transform:translateX(-100%);transition:transform .2s;box-shadow:var(--sh)}
+  .side.open{transform:none}
+  .side:not(.open){box-shadow:none;visibility:hidden}
+  .demo-banner .sp{display:none}
+  .mob-toggle{display:inline-block}
+  .top{padding:12px 16px}
+  .content{padding:16px}
+  .month .c{min-height:80px}
+  .month .ev .n,.month .ev .t{display:none}
+  .fgrid{grid-template-columns:1fr}
+  .dist{grid-template-columns:1fr 60px 60px}
+  .dist .dbar,.dist .dd{display:none}
+  .setrow{grid-template-columns:1fr}
+  .bar{grid-template-columns:90px 1fr 36px}
+}
+
+.tabs{display:flex;align-items:stretch;gap:2px;padding:8px 20px 0;border-bottom:1px solid var(--line);background:var(--bg2);overflow-x:auto;scrollbar-width:thin;flex:none}
+.tab{display:flex;align-items:center;gap:7px;padding:7px 12px 8px;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;cursor:pointer;color:var(--tx2);font-weight:500;white-space:nowrap;position:relative;top:1px;background:transparent;max-width:240px}
+.tab:hover{color:var(--tx);background:var(--bg3)}
+.tab.on{background:#fff;border-color:var(--line);color:var(--tx)}
+.tab .cd{width:8px;height:8px;border-radius:50%;flex:none}
+.tab .nm{overflow:hidden;text-overflow:ellipsis}
+.tab .mn{border:0;background:transparent;cursor:pointer;color:var(--tx3);padding:0 3px;border-radius:4px;font-size:14px;line-height:1}
+.tab .mn:hover{background:var(--bg3);color:var(--tx)}
+.tab .ct{font-size:11px;color:var(--tx3)}
+.tabadd{border:0;background:transparent;color:var(--tx3);cursor:pointer;padding:6px 10px;border-radius:6px;white-space:nowrap;font-weight:500}
+.tabadd:hover{color:var(--tx);background:var(--bg3)}
+.lang{display:inline-flex;border:1px solid var(--line2);border-radius:6px;overflow:hidden;margin-left:auto}
+.lang button{border:0;background:#fff;padding:3px 8px;font-size:11px;font-weight:600;cursor:pointer;color:var(--tx3)}
+.lang button.on{background:var(--acc);color:#fff}
+.side .foot{flex-wrap:wrap}
+.side .foot .syn{display:flex;align-items:center;gap:6px;flex:1 1 100%;margin-top:8px}
+.loadingws{padding:60px 20px;text-align:center;color:var(--tx3)}
+.menu{position:fixed;z-index:65;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--sh);padding:4px;min-width:170px;display:none}
+.menu.on{display:block}
+.menu button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:7px 10px;border-radius:5px;cursor:pointer}
+.menu button:hover{background:var(--bg3)}
+.menu button.danger{color:var(--red)}
+.radio{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.radio label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:7px;padding:9px 10px;cursor:pointer;font-weight:400!important;color:var(--tx)!important}
+.radio label small{display:block;color:var(--tx3)}
+@media (max-width:860px){.tabs{padding:6px 10px 0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side"></aside>
+  <main class="main">
+    <div class="tabs" id="tabs"></div>
+    <div class="top" id="top"></div>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="scrim mscrim" id="mscrim"></div>
+<div class="modal" id="modal"></div>
+<div class="menu" id="menu"></div>
+<div class="toast" id="toast"></div>
+<script>window.ECM_GH={repo:'armellecouetoux/armi-live',path:'0uswj3l9e1/data.json'};</script>
+<script>
+/* ============ I18N ============ */
+let LANG='es';
+try{const l=localStorage.getItem('ecm-lang');if(l==='en'||l==='es')LANG=l;else if((navigator.language||'').toLowerCase().startsWith('en'))LANG='en'}catch(e){}
+const TX={
+ newContent:['＋ Nuevo contenido','＋ New content'],new:['＋ Nuevo','＋ New'],
+ v_overview:['Overview','Overview'],v_calendar:['Editorial Calendar','Editorial Calendar'],v_database:['Content Database','Content Database'],v_ideas:['Banco de ideas','Idea bank'],v_workflow:['Production Workflow','Production Workflow'],v_pillars:['Content Pillars','Content Pillars'],v_team:['Equipo','Team'],v_ajustes:['Ajustes y datos','Settings & data'],
+ s_overview:['Visión general del plan editorial','Editorial plan at a glance'],s_calendar:['Planificación por mes, semana o listado','Plan by month, week or list'],s_database:['Todos los contenidos, editables en línea','All content, editable inline'],s_ideas:['Ideas sin fecha asignada','Ideas without a date'],s_workflow:['Idea → Briefing → Production → Review → Approved → Scheduled → Published','Idea → Briefing → Production → Review → Approved → Scheduled → Published'],s_pillars:['Pilares editoriales y equilibrio del calendario','Editorial pillars and calendar balance'],s_team:['Responsables y carga de trabajo','Owners and workload'],s_ajustes:['Cliente, listas, importación y exportación','Client, lists, import and export'],
+ strategy:['Estrategia','Strategy'],config:['Configuración','Configuration'],todayIs:['Hoy','Today'],
+ demoTitle:['Datos de ejemplo.','Sample data.'],demoText:['Cliente, personas y contenidos ficticios para mostrar cómo funciona. Edítalos o empieza con tu información real.','Fictitious client, people and content to show how it works. Edit them or start with your real information.'],
+ startBlank:['Empezar en blanco','Start blank'],keepHide:['Mantener y ocultar aviso','Keep and hide notice'],
+ k_planned:['Planificadas','Planned'],k_plannedH:['con fecha asignada','with a date'],k_month:['Este mes','This month'],k_pending:['Pendientes','Pending'],k_prod:['En producción','In production'],k_approved:['Aprobadas','Approved'],k_approvedH:['listas para programar','ready to schedule'],k_sched:['Programadas','Scheduled'],k_pub:['Publicadas','Published'],k_late:['Retrasadas','Delayed'],k_lateH:['fecha pasada sin publicar','past date, not published'],k_ideas:['Ideas sin fecha','Unscheduled ideas'],k_ideasH:['en el banco de ideas','in the idea bank'],
+ pipeline:['Estado del pipeline','Pipeline status'],items:['contenidos','items'],byChannel:['Distribución por canal','Distribution by channel'],byPillar:['Distribución por content pillar','Distribution by content pillar'],targetMark:['▏= % objetivo','▏= target %'],noData:['Sin datos todavía.','No data yet.'],createPillars:['Crea pilares en Content Pillars.','Create pillars in Content Pillars.'],
+ next7:['Próximos 7 días','Next 7 days'],seeWeek:['Ver semana →','See week →'],attention:['Requiere atención','Needs attention'],attentionH:['retrasadas o programadas sin confirmar publicación','delayed, or scheduled but not confirmed as published'],nothing:['Nada por aquí 👌','Nothing here 👌'],
+ load:['Carga por responsable','Workload by owner'],loadH:['contenidos activos (no publicados)','active (unpublished) items'],addOwners:['Añade responsables en Equipo.','Add owners in Team.'],
+ imbalance:['Desequilibrio','Imbalance'],above:['por encima','above'],below:['por debajo','below'],
+ month:['Mes','Month'],week:['Semana','Week'],list:['Lista','List'],today:['Hoy','Today'],allContent:['Todos los contenidos','All content'],
+ sortDate:['Ordenar: fecha ↑','Sort: date ↑'],sortDateD:['Ordenar: fecha ↓','Sort: date ↓'],sortStatus:['Ordenar: estado','Sort: status'],sortChannel:['Ordenar: canal','Sort: channel'],sortPillar:['Ordenar: pilar','Sort: pillar'],sortOwner:['Ordenar: responsable','Sort: owner'],
+ hideUns:['Ocultar ideas sin fecha','Hide unscheduled ideas'],showUns:['Mostrar ideas sin fecha','Show unscheduled ideas'],
+ noDate:['Sin fecha','No date'],unsHelp:['Arrastra una idea a un día para planificarla. Arrastra aquí un contenido para quitarle la fecha.','Drag an idea onto a day to schedule it. Drag content here to remove its date.'],noUns:['No hay ideas sin fecha.','No unscheduled ideas.'],
+ addContent:['Añadir contenido','Add content'],add:['＋ Añadir','＋ Add'],more:['más','more'],showLess:['Mostrar menos','Show less'],
+ untitled:['(sin título)','(untitled)'],noChannel:['Sin canal','No channel'],noPillar:['Sin pilar','No pillar'],unassigned:['Sin asignar','Unassigned'],delayed:['Retrasada','Delayed'],delayedL:['retrasada','delayed'],
+ noResults:['No hay contenidos con estos filtros.','No content matches these filters.'],
+ search:['Buscar título, palabra clave, ID…','Search title, keyword, ID…'],f_channel:['Canal: todos','Channel: all'],f_format:['Formato: todos','Format: all'],f_pillar:['Pilar: todos','Pillar: all'],f_status:['Estado: todos','Status: all'],f_owner:['Responsable: todos','Owner: all'],from:['Desde','From'],to:['Hasta','To'],onlyLate:['⚠ Retrasadas','⚠ Delayed'],clear:['Limpiar filtros','Clear filters'],
+ c_id:['ID','ID'],c_title:['Título','Title'],c_date:['Fecha','Date'],c_time:['Hora','Time'],c_channel:['Canal','Channel'],c_format:['Formato','Format'],c_pillar:['Pilar','Pillar'],c_status:['Estado','Status'],c_owner:['Responsable','Owner'],c_objective:['Objetivo','Objective'],c_type:['Tipo','Type'],c_audience:['Audiencia','Audience'],c_cta:['CTA','CTA'],
+ dbNote:['edita directamente en la tabla (se guarda al salir del campo) o abre la ficha con ↗ para ver los 20 campos.','edit directly in the table (saves when you leave the field) or open the card with ↗ to see all 20 fields.'],of:['de','of'],
+ copyCSV:['Copiar CSV','Copy CSV'],createContent:['＋ Crear contenido','＋ Create content'],openCard:['Abrir ficha completa','Open full card'],duplicate:['Duplicar','Duplicate'],del:['Eliminar','Delete'],demoTag:['demo','demo'],sampleData:['Dato de ejemplo','Sample data'],
+ capture:['Captura una idea rápida… (Enter para guardar)','Capture a quick idea… (Enter to save)'],pillar:['Pilar','Pillar'],channel:['Canal','Channel'],addIdea:['＋ Añadir idea','＋ Add idea'],
+ ideasNote:[n=>`${n} ideas sin fecha. Asígnales fecha y pasarán al calendario automáticamente.`,n=>`${n} ideas without a date. Give them a date and they move into the calendar automatically.`],
+ pickDate:['Elegir fecha para planificar','Pick a date to schedule'],open:['Abrir','Open'],emptyIdeas:['El banco de ideas está vacío. Captura la primera arriba ☝️','The idea bank is empty. Capture the first one above ☝️'],
+ newIdea:['Nueva idea','New idea'],advanceTo:['Avanzar a','Advance to'],wfNote:['Arrastra las tarjetas entre columnas o usa «→» para avanzar al siguiente estado.','Drag cards between columns or use "→" to move to the next status.'],
+ distTitle:['Distribución real vs. objetivo','Actual vs. target distribution'],allCal:['Todo el calendario','Whole calendar'],thisMonth:['Este mes','This month'],
+ sumWarn:[n=>`La suma de porcentajes objetivo es ${n}% (debería ser 100%).`,n=>`Target percentages add up to ${n}% (should be 100%).`],
+ presence:['Presencia (▏= objetivo)','Presence (▏= target)'],actual:['Real','Actual'],target:['Objetivo','Target'],state:['Estado','Status'],noTarget:['Sin objetivo','No target'],balanced:['Equilibrado','Balanced'],
+ noPillars:['Aún no hay pilares.','No pillars yet.'],calcOn:[(n,m)=>`Calculado sobre ${n} contenidos con fecha${m?` · ${m} sin pilar asignado`:''}.`,(n,m)=>`Based on ${n} dated items${m?` · ${m} without a pillar`:''}.`],
+ pillarsN:['Pilares','Pillars'],newPillar:['＋ Nuevo pilar','＋ New pillar'],edit:['Editar','Edit'],description:['Descripción','Description'],objective:['Objetivo','Objective'],audience:['Audiencia','Audience'],topics:['Temáticas','Topics'],objShort:['objetivo','target'],realShort:['real','actual'],contents:['contenidos','items'],see:['Ver →','View →'],obj:['obj.','target'],
+ teamNote:['Gestiona quién es responsable de cada contenido.','Manage who owns each piece of content.'],unassignedN:[n=>`${n} contenidos sin asignar.`,n=>`${n} unassigned items.`],seeUnassigned:['Ver sin asignar','View unassigned'],addOwner:['＋ Añadir responsable','＋ Add owner'],
+ name:['Nombre','Name'],role:['Rol','Role'],total:['Total','Total'],active:['Activos','Active'],inProd:['En producción','In production'],late:['Retrasados','Delayed'],seeContent:['Ver contenidos →','View content →'],noTeam:['Aún no hay responsables. Añade al equipo para asignar contenidos.','No owners yet. Add your team to assign content.'],
+ clientName:['Nombre del cliente','Client name'],clientNameH:['Aparece en la pestaña y en la barra lateral.','Shown in the tab and sidebar.'],
+ l_channels:['Canales','Channels'],l_formats:['Formatos','Formats'],l_types:['Tipos de contenido','Content types'],l_objectives:['Objetivos de marketing','Marketing objectives'],commaSep:['Separados por comas. Solo para este cliente.','Comma-separated. This client only.'],
+ data:['Datos de este cliente','This client’s data'],demoData:['Datos de ejemplo','Sample data'],demoNow:['Ahora mismo este cliente tiene datos ficticios.','This client currently has fictitious data.'],demoOwn:['Este cliente tiene tus propios datos.','This client has your own data.'],
+ clearDemo:['Borrar datos de ejemplo','Clear sample data'],restoreDemo:['Restaurar datos de ejemplo','Restore sample data'],backup:['Copia de seguridad','Backup'],backupH:['Copia todo el cliente (contenidos, pilares, equipo y listas) como JSON.','Copy the whole client (content, pillars, team and lists) as JSON.'],copyJSON:['Copiar JSON','Copy JSON'],copyCSVc:['Copiar contenidos como CSV','Copy content as CSV'],
+ import:['Importar','Import'],importH:['Pega un JSON exportado desde esta herramienta. Sustituye los datos de este cliente.','Paste a JSON exported from this tool. Replaces this client’s data.'],
+ storage:['Almacenamiento','Storage'],storageH:['Dónde se guardan tus cambios.','Where your changes are saved.'],autosave:['Los cambios se guardan automáticamente y se reflejan en todas las vistas.','Changes save automatically and update every view.'],
+ language:['Idioma de la interfaz','Interface language'],languageH:['Cambia los textos de la herramienta. Tus contenidos no se traducen.','Changes the tool’s labels. Your content is not translated.'],
+ deleteClient:['Eliminar cliente','Delete client'],deleteClientH:['Borra este cliente y todo su calendario.','Deletes this client and its whole calendar.'],
+ f_plan:['Planificación','Planning'],f_strategy:['Estrategia','Strategy'],f_creative:['Creatividad','Creative'],f_pub:['Publicación','Publication'],
+ d_date:['Fecha de publicación','Publication date'],d_time:['Hora de publicación','Publication time'],d_channel:['Canal','Channel'],d_format:['Formato','Format'],d_type:['Tipo de contenido','Content type'],d_owner:['Responsable','Responsible person'],d_pillar:['Content pillar','Content pillar'],d_objective:['Objetivo de marketing','Marketing objective'],d_audience:['Audiencia objetivo','Target audience'],d_desc:['Descripción / concepto','Description / concept'],d_copy:['Caption / copy','Caption / copy'],d_cta:['CTA','CTA'],d_brief:['Creative brief','Creative brief'],d_ref:['Referencia / inspiración','Reference / inspiration'],d_asset:['Asset / link creativo','Asset / creative link'],d_url:['URL de publicación','Publication URL'],d_notes:['Notas','Notes'],
+ ph_title:['Título del contenido','Content title'],ph_aud:['¿A quién nos dirigimos?','Who are we talking to?'],ph_desc:['¿De qué trata? ¿Cuál es la idea central?','What is it about? What’s the core idea?'],ph_copy:['Texto de la publicación','Post copy'],ph_cta:['Llamada a la acción','Call to action'],ph_brief:['Indicaciones para diseño / producción','Directions for design / production'],ph_ref:['URL o descripción','URL or description'],
+ choose:['— Elegir —','— Choose —'],openLink:['abrir ↗','open ↗'],ideaNoDate:['✦ Idea sin fecha','✦ Unscheduled idea'],close:['Cerrar (Esc)','Close (Esc)'],
+ unsaved:['Cambios sin guardar','Unsaved changes'],cancel:['Cancelar','Cancel'],create:['Crear contenido','Create content'],saveChanges:['Guardar cambios','Save changes'],
+ created:['Contenido creado','Content created'],saved:['Cambios guardados','Changes saved'],discardT:['Descartar cambios','Discard changes'],discardM:['Tienes cambios sin guardar en esta ficha. ¿Quieres descartarlos?','You have unsaved changes on this card. Discard them?'],discard:['Descartar','Discard'],
+ manualCopy:['Copia manual','Copy manually'],manualCopyM:['El navegador no permitió copiar automáticamente. Selecciona el texto y cópialo:','The browser blocked automatic copying. Select the text and copy it:'],
+ editPillar:['Editar pilar','Edit pillar'],newPillarT:['Nuevo content pillar','New content pillar'],strategicObj:['Objetivo estratégico','Strategic objective'],topicsPh:['Separadas por comas','Comma-separated'],pctRec:['% de presencia recomendado','Recommended presence %'],color:['Color','Color'],savePillar:['Guardar pilar','Save pillar'],
+ editOwner:['Editar responsable','Edit owner'],addOwnerT:['Añadir responsable','Add owner'],rolePh:['p. ej. Copywriter, Diseño, Social Media…','e.g. Copywriter, Design, Social Media…'],save:['Guardar','Save'],
+ copySuffix:[' (copia)',' (copy)'],dupAs:['Duplicado como','Duplicated as'],delT:['Eliminar contenido','Delete content'],delM:[t=>`¿Eliminar «${t}»? Podrás deshacerlo justo después.`,t=>`Delete "${t}"? You can undo right after.`],deleted:['Contenido eliminado','Content deleted'],undo:['Deshacer','Undo'],undone:['Deshecho','Undone'],
+ movedIdeas:['Movido al banco de ideas','Moved to the idea bank'],movedTo:['movido al','moved to'],movedUns:['movido a ideas sin fecha','moved to unscheduled ideas'],planned:[d=>`Planificado para el ${d} · ahora está en el calendario`,d=>`Scheduled for ${d} · now in the calendar`],
+ ideaAdded:['Idea añadida al banco','Idea added to the bank'],pillarSaved:['Pilar guardado','Pillar saved'],ownerSaved:['Responsable guardado','Owner saved'],listUpdated:['Lista actualizada','List updated'],saveFirst:['Guarda los cambios antes de duplicar','Save your changes before duplicating'],
+ hidden:['Aviso ocultado. Los datos de ejemplo siguen marcados como «demo».','Notice hidden. Sample items are still tagged "demo".'],
+ blankT:['Empezar en blanco','Start blank'],blankM:['Se eliminarán los contenidos, pilares y responsables de este cliente para que empieces con información real. Las listas de canales y formatos se mantienen.','This client’s content, pillars and owners will be removed so you can start with real information. Channel and format lists are kept.'],blankDone:['Listo: calendario en blanco','Done: blank calendar'],
+ restoreT:['Restaurar datos de ejemplo','Restore sample data'],restoreM:['Se sustituirán los datos de este cliente por los datos ficticios de ejemplo.','This client’s data will be replaced by the fictitious sample data.'],restore:['Restaurar','Restore'],restored:['Datos de ejemplo restaurados','Sample data restored'],
+ copiedJSON:['JSON copiado al portapapeles','JSON copied to clipboard'],copiedCSV:['CSV copiado · pégalo en Sheets o Excel','CSV copied · paste it into Sheets or Excel'],badJSON:['JSON no válido','Invalid JSON'],importT:['Importar datos','Import data'],importM:['Se sustituirán los datos de este cliente por los importados.','This client’s data will be replaced by the imported data.'],imported:['Datos importados','Data imported'],
+ delPillarT:['Eliminar pilar','Delete pillar'],delPillarM:[(n,k)=>`¿Eliminar «${n}»?${k?` ${k} contenidos quedarán sin pilar asignado.`:''}`,(n,k)=>`Delete "${n}"?${k?` ${k} items will lose their pillar.`:''}`],pillarDeleted:['Pilar eliminado','Pillar deleted'],
+ delOwnerT:['Eliminar responsable','Delete owner'],delOwnerM:[(n,k)=>`¿Eliminar a ${n}?${k?` ${k} contenidos quedarán sin asignar.`:''}`,(n,k)=>`Delete ${n}?${k?` ${k} items will be unassigned.`:''}`],ownerDeleted:['Responsable eliminado','Owner deleted'],
+ sync_local:['Guardado en este navegador','Saved in this browser'],sync_cloud:['Guardado en la nube','Saved to the cloud'],sync_saving:['Guardando…','Saving…'],sync_conn:['Conectando…','Connecting…'],sync_ready:['Nube lista · se guardará al primer cambio','Cloud ready · saves on first change'],sync_err:['No se pudo guardar en la nube (copia local guardada)','Couldn’t save to the cloud (local copy kept)'],sync_ro:['Solo lectura: sin permiso para guardar','Read-only: no permission to save'],sync_off:['Sin conexión con la nube (trabajando en local)','No cloud connection (working locally)'],sync_slow:['No se puede conectar con la nube aún (trabajando en local)','Can’t reach the cloud yet (working locally)'],
+ newClient:['＋ Cliente','＋ Client'],newClientT:['Nuevo cliente','New client'],startWith:['Empezar con','Start with'],startBlankO:['Calendario en blanco','Blank calendar'],startBlankH:['Sin contenidos, pilares ni equipo.','No content, pillars or team.'],startDemoO:['Datos de ejemplo','Sample data'],startDemoH:['Ficticios, para probar. Puedes borrarlos después.','Fictitious, for testing. You can clear them later.'],createClient:['Crear cliente','Create client'],
+ renameClient:['Renombrar','Rename'],renameT:['Renombrar cliente','Rename client'],clientMenu:['Opciones del cliente','Client options'],
+ delClientM:[n=>`Se eliminará «${n}» con todos sus contenidos, pilares y equipo. Esta acción no se puede deshacer.`,n=>`"${n}" will be deleted with all its content, pillars and team. This can’t be undone.`],clientDeleted:['Cliente eliminado','Client deleted'],lastClient:['Debe quedar al menos un cliente','At least one client must remain'],clientCreated:['Cliente creado','Client created'],
+ loadingWs:['Cargando cliente…','Loading client…'],defaultClient:['Cliente de ejemplo','Sample client'],myClient:['Mi cliente','My client'],editorial:['Editorial Calendar','Editorial Calendar'],
+ viewAll:['Ver todo','View all'],
+ sync_gh:['Guardado en GitHub','Saved to GitHub'],sync_ghlocal:['Solo en este navegador: sin token de GitHub, los cambios no se comparten','This browser only: no GitHub token, changes aren’t shared'],sync_gherr:['No se pudo guardar en GitHub (copia local guardada)','Couldn’t save to GitHub (local copy kept)'],sync_ghload:['Cargando desde GitHub…','Loading from GitHub…']
+};
+function t(k,...a){const v=TX[k];if(!v)return k;const s=v[LANG==='en'?1:0];return typeof s==='function'?s(...a):s}
+const MONTHS={es:['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'],en:['January','February','March','April','May','June','July','August','September','October','November','December']};
+const MSHORT={es:['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],en:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']};
+const DOW={es:['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],en:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']};
+const DLONG={es:['domingo','lunes','martes','miércoles','jueves','viernes','sábado'],en:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']};
+
+/* ============ CONSTANTS ============ */
+const STATUSES=[
+  {k:'idea',l:'Idea',e:'⚪',c:'#9b9a97'},{k:'briefing',l:'Briefing',e:'🔵',c:'#3b82f6'},{k:'progress',l:'In progress',e:'🟠',c:'#f97316'},
+  {k:'review',l:'In review',e:'🟣',c:'#8b5cf6'},{k:'approved',l:'Approved',e:'🟡',c:'#d4a00b'},{k:'scheduled',l:'Scheduled',e:'🟢',c:'#22a35a'},{k:'published',l:'Published',e:'⚫',c:'#37352f'}
+];
+const SMAP=Object.fromEntries(STATUSES.map(s=>[s.k,s]));
+const SIDX=Object.fromEntries(STATUSES.map((s,i)=>[s.k,i]));
+const CH_COLORS={Instagram:'#d6409f',LinkedIn:'#0a66c2',TikTok:'#18181b',Blog:'#0f766e',Newsletter:'#c2410c',YouTube:'#dc2626',Pinterest:'#be123c',X:'#3f3f46',Facebook:'#1d4ed8',Podcast:'#7c3aed',Web:'#0369a1'};
+const PALETTE=['#5e6ad2','#0f9d8a','#e07a2f','#c2417b','#7c5cd6','#3b82f6','#b7791f','#4b8f3a','#d9473f','#6b7280'];
+const AV_COLORS=['#5e6ad2','#0f9d8a','#e07a2f','#c2417b','#7c5cd6','#4b8f3a','#3b82f6','#b7791f'];
+const LS_KEY='ecm-v2';
+
+/* ============ DATE HELPERS ============ */
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>{const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const today=()=>iso(new Date());
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+const startOfWeek=s=>{const d=parse(s);const k=(d.getDay()+6)%7;d.setDate(d.getDate()-k);return iso(d)};
+const fmtShort=s=>{if(!s)return '—';const d=parse(s);return LANG==='en'?MSHORT.en[d.getMonth()]+' '+d.getDate():d.getDate()+' '+MSHORT.es[d.getMonth()]};
+const fmtLong=s=>{const d=parse(s);return DLONG[LANG][d.getDay()]+' '+fmtShort(s)};
+const sameMonth=(s,ref)=>s&&s.slice(0,7)===ref.slice(0,7);
+
+/* ============ DEFAULTS & DEMO (ficticio) ============ */
+function defaultLists(lang){const en=lang==='en';return{
+  channels:['Instagram','LinkedIn','TikTok','Blog','Newsletter','YouTube'],
+  formats:en?['Carousel','Reel','Static post','Story','Video','Article','Email','Live']:['Carrusel','Reel','Post estático','Story','Vídeo','Artículo','Email','Live'],
+  types:en?['Educational','Inspirational','Promotional','Entertainment','Community','Corporate']:['Educativo','Inspiracional','Promocional','Entretenimiento','Comunidad','Corporativo'],
+  objectives:en?['Awareness','Engagement','Traffic','Consideration','Leads','Conversion','Retention']:['Awareness','Engagement','Tráfico','Consideración','Leads','Conversión','Fidelización']}}
+function demoState(lang){
+  const en=lang==='en',L=(es,e)=>en?e:es,Li=defaultLists(lang);
+  const F=i=>Li.formats[i],T=i=>Li.types[i],O=i=>Li.objectives[i];
+  const pillars=[
+    {id:'pl1',name:L('Expertise & Educación','Expertise & Education'),description:L('Contenido que enseña y demuestra conocimiento del sector.','Content that teaches and shows industry knowledge.'),objective:L('Posicionar a la marca como referente y generar confianza.','Position the brand as a reference and build trust.'),audience:L('Profesionales que buscan resolver un problema concreto','Professionals trying to solve a specific problem'),topics:L('Guías, tips, errores comunes, frameworks, tendencias explicadas','Guides, tips, common mistakes, frameworks, trends explained'),target:35,color:'#5e6ad2'},
+    {id:'pl2',name:L('Producto & Soluciones','Product & Solutions'),description:L('Muestra el producto/servicio en uso y los resultados que genera.','Shows the product/service in use and the results it delivers.'),objective:L('Generar consideración y conversión.','Drive consideration and conversion.'),audience:L('Leads en fase de evaluación','Leads in evaluation stage'),topics:L('Casos de uso, demos, comparativas, lanzamientos, FAQ','Use cases, demos, comparisons, launches, FAQ'),target:25,color:'#e07a2f'},
+    {id:'pl3',name:L('Comunidad & Cultura','Community & Culture'),description:L('Personas, equipo, clientes y valores detrás de la marca.','People, team, customers and values behind the brand.'),objective:L('Humanizar la marca y fidelizar a la comunidad.','Humanise the brand and retain the community.'),audience:L('Clientes actuales y seguidores','Current customers and followers'),topics:L('Behind the scenes, UGC, testimonios, equipo, eventos','Behind the scenes, UGC, testimonials, team, events'),target:20,color:'#0f9d8a'},
+    {id:'pl4',name:L('Inspiración & Tendencias','Inspiration & Trends'),description:L('Ideas, referencias y conversación de actualidad del sector.','Ideas, references and current industry conversation.'),objective:L('Alcance y engagement.','Reach and engagement.'),audience:L('Audiencia amplia del sector','Broad industry audience'),topics:L('Tendencias, moodboards, opinión, citas, newsjacking','Trends, moodboards, opinion, quotes, newsjacking'),target:20,color:'#c2417b'}
+  ];
+  const team=[{id:'tm1',name:'Laura Martín',role:'Content Lead'},{id:'tm2',name:'Pau Roca',role:L('Diseño gráfico','Graphic design')},{id:'tm3',name:'Nerea Soler',role:'Social Media Manager'},{id:'tm4',name:'Marc Torres',role:'Copywriter'}];
+  const P=o=>Object.assign({id:'',date:'',time:'',title:'',description:'',pillar:'',objective:'',audience:'',channel:'',format:'',type:'',copy:'',cta:'',brief:'',reference:'',owner:'',status:'idea',asset:'',url:'',notes:'',demo:true},o);
+  const A1=L('Responsables de marketing en pymes','Marketing managers at SMEs'),A2=L('Seguidores actuales','Current followers'),A3=L('Directores de marketing','Marketing directors'),A4=L('Leads en evaluación','Leads in evaluation');
+  const posts=[
+    P({id:'CNT-001',date:'2026-10-28',time:'10:00',title:L('5 errores al planificar contenido B2B','5 mistakes when planning B2B content'),description:L('Carrusel educativo con los errores más comunes y cómo evitarlos.','Educational carousel with the most common mistakes and how to avoid them.'),pillar:'pl1',objective:O(1),audience:A1,channel:'LinkedIn',format:F(0),type:T(0),copy:L('¿Planificas contenido cada semana sin estrategia? Estos 5 errores te están costando alcance 👇','Planning content every week with no strategy? These 5 mistakes are costing you reach 👇'),cta:L('Guarda este post','Save this post'),brief:L('8 slides, estilo tipográfico, 1 error por slide + solución.','8 slides, typographic style, 1 mistake per slide + fix.'),owner:'tm4',status:'published',url:'https://example.com/post-001'}),
+    P({id:'CNT-002',date:'2026-10-30',time:'18:30',title:L('Behind the scenes: cómo preparamos un lanzamiento','Behind the scenes: how we prepare a launch'),description:L('Reel mostrando el proceso interno del equipo.','Reel showing the team’s internal process.'),pillar:'pl3',objective:O(0),audience:A2,channel:'Instagram',format:F(1),type:T(3),copy:L('Lo que no se ve antes de un lanzamiento ✨','What you don’t see before a launch ✨'),cta:L('Síguenos para ver más','Follow for more'),brief:L('Vídeo vertical 30s, música tendencia, planos del equipo.','30s vertical video, trending audio, team shots.'),owner:'tm3',status:'published',url:'https://example.com/post-002'}),
+    P({id:'CNT-003',date:'2026-11-03',time:'09:00',title:L('Guía: cómo medir el ROI del contenido','Guide: how to measure content ROI'),description:L('Artículo largo con framework de medición.','Long-form article with a measurement framework.'),pillar:'pl1',objective:O(2),audience:A3,channel:'Blog',format:F(5),type:T(0),cta:L('Descarga la plantilla','Download the template'),brief:L('1.500 palabras, 3 gráficos, plantilla descargable.','1,500 words, 3 charts, downloadable template.'),owner:'tm1',status:'review',notes:L('Pendiente de validación de datos (ejemplo de contenido retrasado).','Waiting for data validation (example of a delayed item).')}),
+    P({id:'CNT-004',date:'2026-11-06',time:'12:00',title:L('Caso de uso: equipo que redujo tiempos un 30%','Use case: a team that cut turnaround by 30%'),description:L('Historia de cliente (ficticio) con resultados.','Customer story (fictitious) with results.'),pillar:'pl2',objective:O(5),audience:A4,channel:'LinkedIn',format:F(2),type:T(2),copy:L('Un equipo de 6 personas, un problema: demasiadas herramientas…','A team of 6, one problem: too many tools…'),cta:L('Pide una demo','Book a demo'),brief:L('Imagen con dato principal + logo de cliente ficticio.','Image with key stat + fictitious client logo.'),owner:'tm4',status:'approved'}),
+    P({id:'CNT-005',date:'2026-11-07',time:'19:00',title:L('Tendencias de diseño para 2027','Design trends for 2027'),description:L('Carrusel con 6 tendencias visuales.','Carousel with 6 visual trends.'),pillar:'pl4',objective:O(1),audience:L('Audiencia amplia del sector','Broad industry audience'),channel:'Instagram',format:F(0),type:T(1),copy:L('6 tendencias que vas a ver por todas partes en 2027 👀','6 trends you’ll see everywhere in 2027 👀'),cta:L('Comparte con tu equipo','Share with your team'),brief:L('Moodboard por tendencia, paleta neutra.','One moodboard per trend, neutral palette.'),reference:'https://example.com/moodboard',owner:'tm2',status:'scheduled',asset:'https://example.com/asset-005'}),
+    P({id:'CNT-006',date:'2026-11-10',time:'08:00',title:L('Newsletter mensual — noviembre','Monthly newsletter — November'),description:L('Resumen del mes + recursos destacados.','Monthly recap + featured resources.'),pillar:'pl1',objective:O(6),audience:L('Suscriptores','Subscribers'),channel:'Newsletter',format:F(6),type:T(0),cta:L('Lee el artículo completo','Read the full article'),brief:L('3 bloques: artículo, caso, recurso.','3 blocks: article, case, resource.'),owner:'tm1',status:'progress'}),
+    P({id:'CNT-007',date:'2026-11-12',time:'17:00',title:L('Tutorial rápido: función destacada del producto','Quick tutorial: featured product function'),description:L('Vídeo corto mostrando una función paso a paso.','Short video showing a feature step by step.'),pillar:'pl2',objective:O(3),audience:L('Usuarios nuevos','New users'),channel:'TikTok',format:F(4),type:T(0),cta:L('Pruébalo gratis','Try it free'),brief:L('Grabación de pantalla + voz en off, 45s.','Screen recording + voiceover, 45s.'),owner:'tm3',status:'briefing'}),
+    P({id:'CNT-008',date:'2026-11-14',time:'11:00',title:L('Conoce al equipo: Diseño','Meet the team: Design'),description:L('Presentación del equipo de diseño.','Introducing the design team.'),pillar:'pl3',objective:O(0),audience:A2,channel:'Instagram',format:F(3),type:T(4),cta:L('Responde con tu pregunta','Reply with your question'),brief:L('Secuencia de 5 stories con sticker de preguntas.','5-story sequence with a question sticker.'),owner:'tm2',status:'idea'}),
+    P({id:'CNT-009',date:'2026-11-18',time:'10:00',title:L('Opinión: el fin del contenido genérico','Opinion: the end of generic content'),description:L('Post de opinión del equipo directivo.','Opinion post from leadership.'),pillar:'pl4',objective:O(0),audience:A3,channel:'LinkedIn',format:F(2),type:T(5),cta:L('¿Estás de acuerdo? Cuéntanos','Agree? Tell us'),brief:L('Texto largo, con foto de equipo.','Long text, with a team photo.'),owner:'tm4',status:'progress'}),
+    P({id:'CNT-010',date:'2026-11-20',time:'18:00',title:L('Webinar: planifica tu Q1 en 45 minutos','Webinar: plan your Q1 in 45 minutes'),description:L('Directo en YouTube con plantilla de planificación.','YouTube live with a planning template.'),pillar:'pl2',objective:O(4),audience:A1,channel:'YouTube',format:F(7),type:T(0),cta:L('Regístrate','Register'),brief:L('Landing de registro + 3 piezas de promoción.','Registration landing + 3 promo pieces.'),owner:'tm1',status:'briefing'}),
+    P({id:'CNT-011',date:'2026-11-25',time:'13:00',title:L('Testimonios de clientes (UGC)','Customer testimonials (UGC)'),description:L('Recopilación de testimonios en formato vídeo.','Video testimonial compilation.'),pillar:'pl3',objective:O(5),audience:A4,channel:'Instagram',format:F(1),type:T(4),cta:L('Descubre más en la web','Learn more on the website'),brief:L('Montaje de 3 testimonios de 10s.','Edit of three 10s testimonials.'),owner:'tm3',status:'idea'}),
+    P({id:'CNT-012',date:'2026-12-02',time:'09:30',title:L('Checklist de cierre de año para marketing','Year-end marketing checklist'),description:L('Lead magnet descargable.','Downloadable lead magnet.'),pillar:'pl1',objective:O(4),audience:A1,channel:'Blog',format:F(5),type:T(0),cta:L('Descarga el checklist','Download the checklist'),brief:L('PDF de 2 páginas + artículo de apoyo.','2-page PDF + supporting article.'),owner:'tm1',status:'idea'}),
+    P({id:'CNT-013',date:'2026-12-09',time:'19:00',title:L('Resumen del año en 10 slides','The year in 10 slides'),description:L('Recap visual de hitos del año.','Visual recap of the year’s milestones.'),pillar:'pl3',objective:O(1),audience:A2,channel:'LinkedIn',format:F(0),type:T(5),cta:L('Comenta tu hito del año','Comment your milestone of the year'),owner:'tm2',status:'idea'}),
+    P({id:'CNT-014',title:L('Serie "Mitos del sector"','"Industry myths" series'),description:L('Serie de 4 piezas desmontando mitos habituales.','4-piece series debunking common myths.'),pillar:'pl1',channel:'Instagram',format:F(0),type:T(0),objective:O(1),owner:'tm4',status:'idea'}),
+    P({id:'CNT-015',title:L('Colaboración con creador/a del sector','Collab with an industry creator'),description:L('Explorar un live conjunto o un reel en colaboración.','Explore a joint live or a collab reel.'),pillar:'pl4',channel:'TikTok',format:F(4),type:T(3),objective:O(0),status:'idea'}),
+    P({id:'CNT-016',title:L('Comparativa: nuestra solución vs. hacerlo a mano','Comparison: our solution vs. doing it by hand'),description:L('Tabla comparativa visual de tiempos y costes.','Visual comparison of time and cost.'),pillar:'pl2',channel:'LinkedIn',format:F(0),type:T(2),objective:O(5),status:'idea'})
+  ];
+  return {v:2,isDemo:true,seq:16,posts,pillars,team,lists:Li};
+}
+const blankState=prev=>({v:2,isDemo:false,seq:0,posts:[],pillars:[],team:[],lists:prev&&prev.lists?JSON.parse(JSON.stringify(prev.lists)):defaultLists(LANG)});
+
+/* ============ STATE ============ */
+let CL=null;          // {list:[{id,name,color}]}
+let ACTIVE=null;      // active client id
+let S=null;           // active client workspace
+let WS_CACHE={};      // id -> state (local copy)
+let wsLoading=false;
+const UI={view:'overview',cal:{mode:'month',cursor:today()},
+  f:{q:'',channel:'',format:'',pillar:'',status:'',owner:'',from:'',to:'',delayed:false},
+  sort:{key:'date',dir:1},listSort:'date',pillarScope:'all',drawer:null,dirty:false,showUnsched:true};
+function normalize(st){
+  if(!st||typeof st!=='object'||!Array.isArray(st.posts))return null;
+  st.pillars=st.pillars||[];st.team=st.team||[];
+  const d=defaultLists(LANG);st.lists=st.lists||d;
+  for(const k of Object.keys(d))if(!Array.isArray(st.lists[k]))st.lists[k]=d[k];
+  st.seq=st.seq||st.posts.length;delete st.brand;return st;
+}
+const client=()=>CL.list.find(c=>c.id===ACTIVE)||CL.list[0];
+
+/* ============ PERSISTENCE ============ */
+const GH=window.ECM_GH||null;
+let ghSha=null,ghBusy=false,ghAgain=false,ghT=null;
+const ghTok=()=>{try{return localStorage.getItem('armi-gh-token')||''}catch(e){return ''}};
+const b64e=x=>btoa(unescape(encodeURIComponent(x)));
+const b64d=x=>decodeURIComponent(escape(atob(x.replace(/\s/g,''))));
+const ghUrl=()=>'https://api.github.com/repos/'+GH.repo+'/contents/'+GH.path;
+const ghH=()=>({'Accept':'application/vnd.github+json','Authorization':'Bearer '+ghTok()});
+async function ghFetch(){
+  if(ghTok()){const r=await fetch(ghUrl()+'?ref=main&t='+Date.now(),{headers:ghH(),cache:'no-store'});if(r.status===404){ghSha=null;return null}if(!r.ok)throw r.status;const j=await r.json();ghSha=j.sha;return JSON.parse(b64d(j.content))}
+  const r=await fetch(GH.path.split('/').pop()+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)return null;return await r.json();
+}
+function ghSchedule(){if(!ghTok()){setSync('local','sync_ghlocal');return}setSync('saving','sync_saving');clearTimeout(ghT);ghT=setTimeout(()=>ghPush(),1200)}
+async function ghPush(retry){
+  if(ghBusy){ghAgain=true;return}ghBusy=true;
+  try{
+    const body={message:'Calendario editorial: guardar',content:b64e(JSON.stringify({v:2,updatedAt:new Date().toISOString(),clients:CL,ws:WS_CACHE},null,1)),branch:'main'};
+    if(ghSha)body.sha=ghSha;
+    const r=await fetch(ghUrl(),{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},ghH()),body:JSON.stringify(body)});
+    if((r.status===409||r.status===422)&&!retry){try{const g=await fetch(ghUrl()+'?ref=main&t='+Date.now(),{headers:ghH(),cache:'no-store'});ghSha=g.ok?(await g.json()).sha:null}catch(e){}ghBusy=false;return ghPush(true)}
+    if(!r.ok)throw r.status;
+    const j=await r.json();ghSha=j.content&&j.content.sha;setSync('cloud','sync_gh');
+  }catch(e){setSync('err','sync_gherr')}
+  ghBusy=false;if(ghAgain){ghAgain=false;ghPush()}
+}
+let db=null,cloud=false;const writers={};const subs={};
+let sync={mode:'local',key:'sync_local'};
+function setSync(mode,key){sync={mode,key};document.querySelectorAll('.synch').forEach(el=>el.innerHTML=syncHTML())}
+function syncHTML(){const c=sync.mode==='cloud'?'ok':sync.mode==='saving'?'warn':sync.mode==='err'?'err':'';return `<span class="dotst ${c}"></span><span>${esc(t(sync.key))}</span>`}
+function lsSave(){try{localStorage.setItem(LS_KEY,JSON.stringify({clients:CL,active:ACTIVE,ws:WS_CACHE}))}catch(e){}}
+function lsLoad(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'null')}catch(e){return null}}
+function writer(path){
+  if(writers[path])return writers[path];
+  const w={path,writing:false,pending:null,last:'',timer:null};
+  w.push=j=>{w.pending=j;clearTimeout(w.timer);w.timer=setTimeout(()=>run(w),450)};
+  return writers[path]=w;
+}
+async function run(w){
+  if(!db||!cloud||w.writing||w.pending==null)return;
+  const j=w.pending;w.pending=null;
+  if(j===w.last){maybeSynced();return}
+  w.writing=true;
+  const doSet=()=>db.doc(w.path).set({state:j,updatedAt:new Date().toISOString()});
+  try{await doSet();w.last=j}
+  catch(e){
+    if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,700+Math.random()*900));try{await doSet();w.last=j}catch(e2){setSync('err','sync_err')}}
+    else if(e&&(e.code==='invalid_argument'||e.code==='not_granted'))setSync('err','sync_ro');
+    else if(e&&e.code==='quota_exceeded')setSync('err','sync_err');
+    else setSync('err','sync_err');
+  }
+  w.writing=false;
+  if(w.pending!=null)run(w);else maybeSynced();
+}
+function maybeSynced(){if(sync.mode==='err')return;if(Object.values(writers).some(w=>w.writing||w.pending!=null))return;setSync('cloud','sync_cloud')}
+function save(){ // save active workspace
+  if(!S)return;S.updatedAt=new Date().toISOString();WS_CACHE[ACTIVE]=S;lsSave();
+  if(GH){ghSchedule();return}
+  if(db&&cloud){setSync('saving','sync_saving');writer('workspaces/'+ACTIVE).push(JSON.stringify(S))}
+  else setSync('local','sync_local');
+}
+function saveClients(){lsSave();if(GH){ghSchedule();return}if(db&&cloud){setSync('saving','sync_saving');writer('meta/clients').push(JSON.stringify(CL))}}
+function subscribeWs(id){
+  if(!db||!cloud)return;
+  if(subs.ws){subs.ws();subs.ws=null}
+  const path='workspaces/'+id;let gotFinal=false;
+  subs.ws=db.doc(path).onSnapshot(snap=>{
+    if(id!==ACTIVE)return;
+    const w=writer(path);
+    if(snap.exists){
+      const j=snap.data()&&snap.data().state;
+      if(typeof j==='string'&&j!==w.last&&j!==JSON.stringify(S)){
+        let st=null;try{st=normalize(JSON.parse(j))}catch(e){}
+        if(st&&!(w.writing||w.pending!=null)){w.last=j;S=st;WS_CACHE[id]=st;lsSave();wsLoading=false;render();if(UI.drawer&&!UI.dirty)refreshDrawerFromState()}
+      }else if(typeof j==='string')w.last=j;
+      if(wsLoading){wsLoading=false;render()}
+    }else if(!snap.metadata.fromCache){
+      // nothing in the cloud for this client yet: keep local copy and store it
+      if(!S){S=blankState();WS_CACHE[id]=S}
+      if(wsLoading){wsLoading=false;render()}
+      writer(path).push(JSON.stringify(S));
+    }
+  },err=>{if(id===ACTIVE){wsLoading=false;render()}});
+}
+async function initDb(){
+  if(!(window.claude&&typeof window.claude.use==='function'))return;
+  let d=null;try{d=await window.claude.use('db')}catch(e){}
+  if(!d)return;
+  db=d;setSync('saving','sync_conn');
+  const timer=setTimeout(()=>{if(!cloud)setSync('err','sync_slow')},10000);
+  let first=true;
+  subs.meta=db.doc('meta/clients').onSnapshot(async snap=>{
+    if(snap.metadata.fromCache&&!snap.exists)return;
+    clearTimeout(timer);
+    const w=writer('meta/clients');
+    if(snap.exists){
+      let c=null;try{c=JSON.parse(snap.data().state)}catch(e){}
+      if(c&&Array.isArray(c.list)&&c.list.length){
+        const j=JSON.stringify(c);
+        if(j!==w.last&&!(w.writing||w.pending!=null)){w.last=j;CL=c;if(!CL.list.some(x=>x.id===ACTIVE)){ACTIVE=CL.list[0].id;S=WS_CACHE[ACTIVE]?normalize(WS_CACHE[ACTIVE]):null;wsLoading=!S}lsSave();render()}
+        else w.last=j;
+      }
+    }else if(first){
+      // first run on this artifact: migrate an old single-workspace doc if present, else upload local data
+      try{const old=await db.doc('workspace/main').get();if(old.exists){const st=normalize(JSON.parse(old.data().state));if(st){const id='c'+Math.random().toString(36).slice(2,8);CL.list.unshift({id,name:t('defaultClient'),color:PALETTE[0]});WS_CACHE[id]=st}}}catch(e){}
+      cloud=true;
+      for(const c of CL.list){const st=WS_CACHE[c.id];if(st)writer('workspaces/'+c.id).push(JSON.stringify(st))}
+      writer('meta/clients').push(JSON.stringify(CL));
+    }
+    if(first){first=false;cloud=true;subscribeWs(ACTIVE);if(sync.mode!=='err')setSync('cloud','sync_cloud')}
+  },err=>{clearTimeout(timer);cloud=false;setSync('err','sync_off')});
+}
+
+/* ============ UTILS ============ */
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=s=>document.querySelector(s);
+const uid=p=>p+Math.random().toString(36).slice(2,8);
+const isUrl=s=>/^https?:\/\//i.test(s||'');
+function chColor(c){if(CH_COLORS[c])return CH_COLORS[c];let h=0;for(const ch of String(c))h=(h*31+ch.charCodeAt(0))>>>0;return PALETTE[h%PALETTE.length]}
+const pillar=id=>S.pillars.find(p=>p.id===id);
+const member=id=>S.team.find(m=>m.id===id);
+const pillarName=id=>{const p=pillar(id);return p?p.name:''};
+function initials(n){return String(n||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('')}
+function avColor(id){const i=S.team.findIndex(m=>m.id===id);return AV_COLORS[(i<0?0:i)%AV_COLORS.length]}
+function avatar(id,size){const m=member(id);if(!m)return `<span class="av" style="background:#d4d4d2" title="${t('unassigned')}">–</span>`;return `<span class="av" title="${esc(m.name)}" style="background:${avColor(id)}${size?';width:'+size+'px;height:'+size+'px':''}">${esc(initials(m.name))}</span>`}
+function badge(k){const s=SMAP[k]||SMAP.idea;return `<span class="badge" style="--c:${s.c}"><i></i>${s.l}</span>`}
+function chChip(c){return c?`<span class="chip" style="--c:${chColor(c)}"><i></i>${esc(c)}</span>`:`<span class="chip" style="color:var(--tx3)">${t('noChannel')}</span>`}
+function pilChip(id){const p=pillar(id);return p?`<span class="chip" style="--c:${p.color}"><i></i>${esc(p.name)}</span>`:`<span class="chip" style="color:var(--tx3)">${t('noPillar')}</span>`}
+const isDelayed=p=>!!p.date&&p.date<today()&&p.status!=='published'&&p.status!=='scheduled';
+const isPending=p=>p.status==='idea'||p.status==='briefing';
+function options(list,val,empty){let h=empty!=null?`<option value="">${esc(empty)}</option>`:'';const arr=[...list];if(val&&!arr.includes(val))arr.push(val);for(const v of arr)h+=`<option${v===val?' selected':''}>${esc(v)}</option>`;return h}
+function optionsKV(list,val,empty){let h=empty!=null?`<option value="">${esc(empty)}</option>`:'';for(const [k,l] of list)h+=`<option value="${esc(k)}"${k===val?' selected':''}>${esc(l)}</option>`;return h}
+const statusOpts=v=>optionsKV(STATUSES.map(s=>[s.k,s.e+' '+s.l]),v);
+const pillarOpts=(v,e)=>optionsKV(S.pillars.map(p=>[p.id,p.name]),v,e);
+const ownerOpts=(v,e)=>optionsKV(S.team.map(m=>[m.id,m.name]),v,e);
+let toastT;function toast(msg,undo){const el=$('#toast');el.innerHTML=esc(msg)+(undo?` <button data-act="undo">${t('undo')}</button>`:'');el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),undo?5000:2200)}
+let undoStack=null;
+function snapshotForUndo(){undoStack={id:ACTIVE,j:JSON.stringify(S)}}
+function nextId(){S.seq=(S.seq||0)+1;let id;while(true){id='CNT-'+String(S.seq).padStart(3,'0');if(S.posts.some(p=>p.id===id))S.seq++;else break}return id}
+const cmpDate=(a,b)=>(a.date||'9999').localeCompare(b.date||'9999')||(a.time||'').localeCompare(b.time||'');
+
+/* ============ FILTERS ============ */
+function filtered(list){
+  const f=UI.f,q=f.q.trim().toLowerCase();
+  return list.filter(p=>{
+    if(f.channel&&p.channel!==f.channel)return false;
+    if(f.format&&p.format!==f.format)return false;
+    if(f.pillar&&p.pillar!==f.pillar)return false;
+    if(f.status&&p.status!==f.status)return false;
+    if(f.owner&&(f.owner==='_none'?(p.owner&&member(p.owner)):p.owner!==f.owner))return false;
+    if(f.from&&(!p.date||p.date<f.from))return false;
+    if(f.to&&(!p.date||p.date>f.to))return false;
+    if(f.delayed&&!isDelayed(p))return false;
+    if(q){const hay=[p.id,p.title,p.description,p.copy,p.notes,p.cta,p.audience,p.brief,pillarName(p.pillar),p.channel,p.format].join(' ').toLowerCase();if(!hay.includes(q))return false}
+    return true;
+  });
+}
+const activeFilters=()=>Object.values(UI.f).filter(v=>v&&v!=='').length;
+function setFilters(obj){UI.f={q:'',channel:'',format:'',pillar:'',status:'',owner:'',from:'',to:'',delayed:false};Object.assign(UI.f,obj)}
+function filterBar(opts={}){
+  const f=UI.f,n=activeFilters();
+  const sel=(key,html)=>`<select data-f="${key}" class="${f[key]?'act':''}">${html}</select>`;
+  return `<div class="fbar">
+    <div class="search"><span>⌕</span><input data-f="q" data-key="fq" placeholder="${t('search')}" value="${esc(f.q)}" class="${f.q?'act':''}"></div>
+    ${sel('channel',options(S.lists.channels,f.channel,t('f_channel')))}
+    ${sel('format',options(S.lists.formats,f.format,t('f_format')))}
+    ${sel('pillar',pillarOpts(f.pillar,t('f_pillar')))}
+    ${opts.noStatus?'':sel('status',optionsKV(STATUSES.map(s=>[s.k,s.e+' '+s.l]),f.status,t('f_status')))}
+    ${sel('owner',optionsKV([...S.team.map(m=>[m.id,m.name]),['_none',t('unassigned')]],f.owner,t('f_owner')))}
+    ${opts.noDates?'':`<input type="date" data-f="from" title="${t('from')}" value="${esc(f.from)}" class="${f.from?'act':''}"><input type="date" data-f="to" title="${t('to')}" value="${esc(f.to)}" class="${f.to?'act':''}">`}
+    <label class="chk ${f.delayed?'act':''}"><input type="checkbox" data-f="delayed" ${f.delayed?'checked':''} style="display:none">${t('onlyLate')}</label>
+    ${n?`<button class="btn ghost sm" data-act="clearFilters">${t('clear')} (${n})</button>`:''}
+  </div>`;
+}
+
+/* ============ SHELL ============ */
+const VIEWS=['overview','calendar','database','ideas','workflow','pillars','team','ajustes'];
+const ICONS={overview:'◧',calendar:'▦',database:'☰',ideas:'✦',workflow:'⇢',pillars:'◆',team:'◉',ajustes:'⚙'};
+function renderTabs(){
+  $('#tabs').innerHTML=CL.list.map(c=>{const on=c.id===ACTIVE;const st=c.id===ACTIVE?S:WS_CACHE[c.id];const late=st?st.posts.filter(isDelayed).length:0;
+    return `<div class="tab ${on?'on':''}" data-client="${c.id}" title="${esc(c.name)}"><span class="cd" style="background:${c.color}"></span><span class="nm">${esc(c.name)}</span>${late?`<span class="ct" style="color:var(--red)">${late}⚠</span>`:''}${on?`<button class="mn" data-act="clientMenu" title="${t('clientMenu')}">⋯</button>`:''}</div>`}).join('')
+    +`<button class="tabadd" data-act="newClient">${t('newClient')}</button>`;
+}
+function renderSide(){
+  const c=client();
+  const delayed=S?S.posts.filter(isDelayed).length:0,ideas=S?S.posts.filter(p=>!p.date).length:0;
+  const ct={database:S?S.posts.length:'',ideas,calendar:delayed?`<span class="ct red">${delayed} ⚠</span>`:''};
+  $('#side').innerHTML=`
+    <div class="brand"><div class="logo" style="background:${c.color}">${esc(initials(c.name)||'EC')}</div><div style="min-width:0"><b style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</b><small>${t('editorial')}</small></div></div>
+    <button class="btn-new" data-act="newPost">${t('newContent')}</button>
+    <nav class="nav">${VIEWS.map((k,i)=>`${i===5?`<div class="navlbl">${t('strategy')}</div>`:''}${i===7?`<div class="navlbl">${t('config')}</div>`:''}<a data-view="${k}" class="${UI.view===k?'on':''}"><span class="ic">${ICONS[k]}</span>${t('v_'+k)}${typeof ct[k]==='number'?`<span class="ct">${ct[k]}</span>`:(ct[k]||'')}</a>`).join('')}</nav>
+    <div class="foot"><span>${LANG==='en'?'Language':'Idioma'}</span><div class="lang"><button class="${LANG==='es'?'on':''}" data-lang="es">ES</button><button class="${LANG==='en'?'on':''}" data-lang="en">EN</button></div><div class="syn synch">${syncHTML()}</div></div>`;
+}
+function renderTop(){
+  $('#top').innerHTML=`<button class="mob-toggle" data-act="toggleSide">☰</button><div><h1>${t('v_'+UI.view)}</h1><div class="sub">${t('s_'+UI.view)}</div></div><div class="sp"></div>${UI.view==='overview'?`<span class="sub">${t('todayIs')}: ${fmtLong(today())}</span>`:''}`;
+}
+function demoBanner(){
+  if(!S.isDemo)return '';
+  return `<div class="demo-banner"><span>🧪</span><div><b>${t('demoTitle')}</b> ${t('demoText')}</div><div class="sp"></div><button class="btn sm" data-act="askClearDemo">${t('startBlank')}</button><button class="btn sm ghost" data-act="dismissDemo">${t('keepHide')}</button></div>`;
+}
+let focusInfo=null;
+function captureFocus(){const a=document.activeElement;focusInfo=a&&a.dataset&&a.dataset.key?{key:a.dataset.key,s:a.selectionStart,e:a.selectionEnd}:null}
+function restoreFocus(){if(!focusInfo)return;const el=document.querySelector(`[data-key="${focusInfo.key}"]`);if(el){el.focus();try{el.setSelectionRange(focusInfo.s,focusInfo.e)}catch(e){}}}
+function render(){
+  if(!CL)return;
+  document.documentElement.lang=LANG;
+  captureFocus();renderTabs();
+  if(!S||wsLoading){if(!S){$('#side').innerHTML='';$('#top').innerHTML='';$('#content').innerHTML=`<div class="loadingws">${t('loadingWs')}</div>`;return}}
+  renderSide();renderTop();
+  const fn={overview:vOverview,calendar:vCalendar,database:vDatabase,ideas:vIdeas,workflow:vWorkflow,pillars:vPillars,team:vTeam,ajustes:vSettings}[UI.view]||vOverview;
+  $('#content').innerHTML=demoBanner()+fn();
+  restoreFocus();
+}
+function go(view){UI.view=view;try{history.replaceState(null,'','#'+view)}catch(e){location.hash=view}$('#side').classList.remove('open');$('#content').scrollTop=0;render()}
+function switchClient(id){
+  if(id===ACTIVE)return;
+  if(UI.drawer)closeDrawer(true);
+  ACTIVE=id;S=WS_CACHE[id]?normalize(WS_CACHE[id]):null;wsLoading=!S&&!!(db&&cloud);
+  if(!S&&!(db&&cloud)){S=blankState();WS_CACHE[id]=S}
+  setFilters({});undoStack=null;lsSave();render();subscribeWs(id);
+}
+
+/* ============ OVERVIEW ============ */
+function vOverview(){
+  const P=S.posts,td=today(),dated=P.filter(p=>p.date);
+  const cnt=k=>P.filter(p=>p.status===k).length;
+  const monthN=dated.filter(p=>sameMonth(p.date,td)).length;
+  const delayed=P.filter(isDelayed);
+  const k=[
+    [t('k_planned'),'▦',dated.length,t('k_plannedH'),'calendar',{}],
+    [t('k_month'),'◷',monthN,MONTHS[LANG][new Date().getMonth()],'calendar',{}],
+    [t('k_pending'),'⚪',P.filter(isPending).length,'Idea + Briefing','workflow',{}],
+    [t('k_prod'),'🟠',cnt('progress')+cnt('review'),'In progress + In review','workflow',{}],
+    [t('k_approved'),'🟡',cnt('approved'),t('k_approvedH'),'database',{status:'approved'}],
+    [t('k_sched'),'🟢',cnt('scheduled'),'Scheduled','database',{status:'scheduled'}],
+    [t('k_pub'),'⚫',cnt('published'),'Published','database',{status:'published'}],
+    [t('k_late'),'⚠',delayed.length,t('k_lateH'),'database',{delayed:true},delayed.length>0],
+    [t('k_ideas'),'✦',P.filter(p=>!p.date).length,t('k_ideasH'),'ideas',{}]
+  ];
+  const kpis=k.map(([l,ic,v,h,view,f,al])=>`<div class="kpi ${al?'alert':''}" data-act="kpi" data-view="${view}" data-filt='${JSON.stringify(f)}'><div class="l"><span>${ic}</span>${esc(l)}</div><div class="v">${v}</div><div class="h">${esc(h)}</div></div>`).join('');
+  const tot=P.length||1;
+  const pipe=STATUSES.map(s=>{const n=cnt(s.k);return n?`<span style="width:${n/tot*100}%;background:${s.c}" title="${s.l}: ${n}"></span>`:''}).join('');
+  const leg=STATUSES.map(s=>`<span><i class="sw" style="background:${s.c}"></i>${s.l} <b style="color:var(--tx)">${cnt(s.k)}</b></span>`).join('');
+  const chs={};for(const p of P){const c=p.channel||t('noChannel');chs[c]=(chs[c]||0)+1}
+  const chMax=Math.max(1,...Object.values(chs));
+  const chBars=Object.entries(chs).sort((a,b)=>b[1]-a[1]).map(([c,n])=>`<div class="bar"><span class="nm"><i class="sw" style="background:${chColor(c)}"></i>${esc(c)}</span><div class="tr"><div class="fl" style="width:${n/chMax*100}%;background:${chColor(c)}"></div></div><span class="n">${n}</span></div>`).join('')||`<div class="note">${t('noData')}</div>`;
+  const pb=pillarDist(P);
+  const pilBars=pb.rows.map(r=>`<div class="bar" title="${t('actual')} ${r.pct}% · ${t('target')} ${r.target}%"><span class="nm"><i class="sw" style="background:${r.color}"></i>${esc(r.name)}</span><div class="tr"><div class="fl" style="width:${Math.min(100,r.pct)}%;background:${r.color}"></div>${r.target?`<span class="tg" style="left:calc(${Math.min(100,r.target)}% - 1px)"></span>`:''}</div><span class="n">${r.pct}%</span></div>`).join('')||`<div class="note">${t('createPillars')}</div>`;
+  const up=dated.filter(p=>p.date>=td&&p.date<=addDays(td,7)&&p.status!=='published').sort(cmpDate);
+  const mini=list=>list.length?`<div class="mini">${list.map(p=>`<div class="it" data-open="${p.id}"><span class="dt">${fmtShort(p.date)}${p.time?' · '+p.time:''}</span>${chChip(p.channel)}<span class="tt">${esc(p.title||t('untitled'))}</span>${badge(p.status)}</div>`).join('')}</div>`:`<div class="note">${t('nothing')}</div>`;
+  const attn=[...delayed.sort(cmpDate),...dated.filter(p=>p.status==='scheduled'&&p.date<td)];
+  const owners=S.team.map(m=>({m,n:P.filter(p=>p.owner===m.id&&p.status!=='published').length})).sort((a,b)=>b.n-a.n);
+  const oMax=Math.max(1,...owners.map(x=>x.n));
+  return `<div class="grid kpis">${kpis}</div>
+  <div class="card sec"><h3>${t('pipeline')} <small>${P.length} ${t('items')}</small></h3><div class="pipe">${pipe}</div><div class="legend">${leg}</div></div>
+  <div class="grid two sec">
+    <div class="card"><h3>${t('byChannel')}</h3><div class="bars">${chBars}</div></div>
+    <div class="card"><h3>${t('byPillar')} <span class="sp"></span><small>${t('targetMark')}</small></h3><div class="bars">${pilBars}</div>${pb.warn?`<div class="note" style="margin-top:10px;color:var(--amber)">⚠ ${esc(pb.warn)}</div>`:''}</div>
+  </div>
+  <div class="grid two sec">
+    <div class="card"><h3>${t('next7')} <span class="sp"></span><button class="btn ghost sm" data-act="goWeek">${t('seeWeek')}</button></h3>${mini(up)}</div>
+    <div class="card"><h3>${t('attention')} <small>${t('attentionH')}</small></h3>${mini(attn)}</div>
+  </div>
+  <div class="card sec"><h3>${t('load')} <small>${t('loadH')}</small></h3><div class="bars">${owners.map(o=>`<div class="bar"><span class="nm">${avatar(o.m.id,18)} ${esc(o.m.name)}</span><div class="tr"><div class="fl" style="width:${o.n/oMax*100}%;background:${avColor(o.m.id)}"></div></div><span class="n">${o.n}</span></div>`).join('')||`<div class="note">${t('addOwners')}</div>`}</div></div>`;
+}
+function pillarDist(posts){
+  const base=posts.filter(p=>p.date);const tot=base.length;
+  const rows=S.pillars.map(pl=>{const n=base.filter(p=>p.pillar===pl.id).length;return {id:pl.id,name:pl.name,color:pl.color,n,pct:tot?Math.round(n/tot*100):0,target:Number(pl.target)||0}});
+  const none=base.filter(p=>!p.pillar||!pillar(p.pillar)).length;
+  let warn='';const off=rows.filter(r=>r.target&&Math.abs(r.pct-r.target)>=10);
+  if(tot&&off.length)warn=t('imbalance')+': '+off.map(r=>`${r.name} ${r.pct>r.target?t('above'):t('below')} (${r.pct}% vs ${r.target}%)`).join(' · ');
+  return {rows,none,tot,warn};
+}
+
+/* ============ CALENDAR ============ */
+function vCalendar(){
+  const m=UI.cal.mode,cur=UI.cal.cursor;let label;
+  if(m==='month'){const d=parse(cur);label=MONTHS[LANG][d.getMonth()]+' '+d.getFullYear()}
+  else if(m==='week'){const s=startOfWeek(cur),e=addDays(s,6);label=`${fmtShort(s)} – ${fmtShort(e)} ${parse(e).getFullYear()}`}
+  else label=t('allContent');
+  const bar=`<div class="calbar">
+    <div class="seg"><button class="${m==='month'?'on':''}" data-calmode="month">${t('month')}</button><button class="${m==='week'?'on':''}" data-calmode="week">${t('week')}</button><button class="${m==='list'?'on':''}" data-calmode="list">${t('list')}</button></div>
+    ${m!=='list'?`<button class="btn icon" data-act="calPrev">‹</button><button class="btn sm" data-act="calToday">${t('today')}</button><button class="btn icon" data-act="calNext">›</button>`:''}<span class="lbl">${label}</span>
+    <span style="flex:1"></span>
+    ${m==='list'?`<select class="inp" data-act="listSort">${optionsKV([['date',t('sortDate')],['date-desc',t('sortDateD')],['status',t('sortStatus')],['channel',t('sortChannel')],['pillar',t('sortPillar')],['owner',t('sortOwner')]],UI.listSort)}</select>`:`<button class="btn sm ghost" data-act="toggleUnsched">${UI.showUnsched?t('hideUns'):t('showUns')}</button>`}
+    <button class="btn pri sm" data-act="newPost">${t('new')}</button>
+  </div>`;
+  const posts=filtered(S.posts);
+  const body=m==='month'?calMonth(posts):m==='week'?calWeek(posts):calList(posts);
+  const uns=posts.filter(p=>!p.date);
+  const side=m!=='list'&&UI.showUnsched?`<div class="unsched" data-drop-date=""><h4>✦ ${t('noDate')} (${uns.length})</h4><p>${t('unsHelp')}</p>${uns.map(p=>kCard(p,true)).join('')||`<div class="note">${t('noUns')}</div>`}</div>`:'';
+  return bar+filterBar()+`<div class="calwrap"><div class="calmain">${body}</div>${side}</div>`;
+}
+function evChip(p){const s=SMAP[p.status];return `<div class="ev ${isDelayed(p)?'late':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}" style="--c:${chColor(p.channel)};--sc:${s.c}" title="${esc(p.title)} · ${esc(p.channel)} · ${esc(p.format)} · ${s.l}"><span class="s"></span>${p.time?`<span class="t">${p.time}</span>`:''}<span class="n">${esc(p.title||t('untitled'))}</span></div>`}
+function calMonth(posts){
+  const cur=parse(UI.cal.cursor);const first=new Date(cur.getFullYear(),cur.getMonth(),1);
+  const start=startOfWeek(iso(first));const last=new Date(cur.getFullYear(),cur.getMonth()+1,0);
+  const end=addDays(startOfWeek(iso(last)),6);const td=today();
+  const by={};for(const p of posts)if(p.date)(by[p.date]=by[p.date]||[]).push(p);
+  let h=DOW[LANG].map(d=>`<div class="dh">${d}</div>`).join('');
+  for(let d=start;d<=end;d=addDays(d,1)){
+    const list=(by[d]||[]).sort(cmpDate);const out=parse(d).getMonth()!==cur.getMonth();
+    const exp=UI.cal.expanded===d;const shown=exp?list:list.slice(0,4);
+    h+=`<div class="c ${out?'out':''} ${d===td?'today':''}" data-drop-date="${d}"><div class="dn"><b>${parse(d).getDate()}</b><button class="add" data-newdate="${d}" title="${t('addContent')}">＋</button></div>${shown.map(evChip).join('')}${list.length>4&&!exp?`<span class="more" data-expand="${d}">+${list.length-4} ${t('more')}</span>`:''}${exp&&list.length>4?`<span class="more" data-expand="">${t('showLess')}</span>`:''}</div>`;
+  }
+  return `<div class="month">${h}</div>`;
+}
+function kCard(p,compact){
+  const late=isDelayed(p);
+  return `<div class="kc ${late?'late':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}">
+    <div class="mt">${chChip(p.channel)}${p.format?`<span class="tag">${esc(p.format)}</span>`:''}<span class="sp"></span>${p.time&&!compact?`<span style="color:var(--tx3)">${p.time}</span>`:''}</div>
+    <div class="tt">${esc(p.title||t('untitled'))}</div>
+    <div class="mt">${badge(p.status)}${late?`<span class="tag red">${t('delayed')}</span>`:''}<span class="sp"></span>${p.date&&compact?`<span style="color:var(--tx3)">${fmtShort(p.date)}</span>`:''}${avatar(p.owner)}</div>
+  </div>`;
+}
+function calWeek(posts){
+  const s=startOfWeek(UI.cal.cursor),td=today();let h='';
+  for(let i=0;i<7;i++){const d=addDays(s,i);const list=posts.filter(p=>p.date===d).sort(cmpDate);
+    h+=`<div class="wcol ${d===td?'today':''}" data-drop-date="${d}"><div class="wh"><b>${parse(d).getDate()}</b><span>${DOW[LANG][i]} · ${MSHORT[LANG][parse(d).getMonth()]}</span><span style="margin-left:auto">${list.length||''}</span></div><div class="wb">${list.map(p=>kCard(p)).join('')}<button class="wadd" data-newdate="${d}">${t('add')}</button></div></div>`}
+  return `<div class="week">${h}</div>`;
+}
+function sortPosts(list,key){
+  const nm=p=>((member(p.owner)||{}).name||'~');
+  const by={date:cmpDate,'date-desc':(a,b)=>cmpDate(b,a),status:(a,b)=>SIDX[a.status]-SIDX[b.status]||cmpDate(a,b),channel:(a,b)=>(a.channel||'').localeCompare(b.channel||'')||cmpDate(a,b),pillar:(a,b)=>pillarName(a.pillar).localeCompare(pillarName(b.pillar))||cmpDate(a,b),owner:(a,b)=>nm(a).localeCompare(nm(b))||cmpDate(a,b)};
+  return [...list].sort(by[key]||cmpDate);
+}
+function lRow(p){const dsort=UI.listSort==='date'||UI.listSort==='date-desc';return `<div class="lrow" data-open="${p.id}"><span class="tm">${p.time||'—'}</span><span>${chChip(p.channel)}</span><span class="tt">${esc(p.title||t('untitled'))} <span class="sm">· ${esc(p.format||'')} ${p.date&&!dsort?'· '+fmtShort(p.date):''}</span></span><span class="hm">${pilChip(p.pillar)}</span><span>${badge(p.status)}${isDelayed(p)?' <span class="tag red">!</span>':''}</span><span class="hm" style="display:flex;align-items:center;gap:6px">${avatar(p.owner)}<span class="sm">${esc((member(p.owner)||{}).name||t('unassigned'))}</span></span></div>`}
+function calList(posts){
+  if(!posts.length)return `<div class="empty">${t('noResults')}</div>`;
+  const sorted=sortPosts(posts,UI.listSort);
+  if(UI.listSort==='date'||UI.listSort==='date-desc'){
+    const groups=[];let cur=null;
+    for(const p of sorted){const k=p.date||'';if(!cur||cur.k!==k){cur={k,items:[]};groups.push(cur)}cur.items.push(p)}
+    const td=today();
+    return groups.map(g=>`<div class="lgroup"><h4>${g.k?fmtLong(g.k):t('noDate')}${g.k===td?` <span class="tag amber">${t('today')}</span>`:''}<span style="color:var(--tx3);font-weight:400">${g.items.length}</span></h4><div>${g.items.map(lRow).join('')}</div></div>`).join('');
+  }
+  return `<div class="lgroup"><div>${sorted.map(lRow).join('')}</div></div>`;
+}
+
+/* ============ DATABASE ============ */
+const COLS=['id','title','date','time','channel','format','pillar','status','owner','objective','type','audience','cta'];
+function vDatabase(){
+  const list=filtered(S.posts);const {key,dir}=UI.sort;
+  const nm=p=>((member(p.owner)||{}).name||'~');
+  list.sort((a,b)=>{let r;if(key==='date')r=cmpDate(a,b);else if(key==='status')r=SIDX[a.status]-SIDX[b.status];else if(key==='pillar')r=pillarName(a.pillar).localeCompare(pillarName(b.pillar));else if(key==='owner')r=nm(a).localeCompare(nm(b));else r=String(a[key]||'').localeCompare(String(b[key]||''),undefined,{numeric:true});return r*dir});
+  const head=COLS.map(k=>`<th class="s" data-sort="${k}">${t('c_'+k)}${key===k?(dir>0?' ↑':' ↓'):''}</th>`).join('')+'<th></th>';
+  const rows=list.map(p=>{const s=SMAP[p.status];const k=f=>`data-key="c-${p.id}-${f}" data-edit="${f}" data-id="${p.id}"`;
+    return `<tr>
+    <td class="id" data-open="${p.id}" title="${t('openCard')}">${esc(p.id)}${p.demo?` <span class="tag" title="${t('sampleData')}">${t('demoTag')}</span>`:''}</td>
+    <td><input class="cell ttl" ${k('title')} value="${esc(p.title)}" placeholder="${t('untitled')}"></td>
+    <td class="${isDelayed(p)?'late':''}"><input type="date" class="cell" ${k('date')} value="${esc(p.date)}" style="min-width:130px"></td>
+    <td><input type="time" class="cell" ${k('time')} value="${esc(p.time)}" style="min-width:90px"></td>
+    <td><select class="cell" ${k('channel')}>${options(S.lists.channels,p.channel,'—')}</select></td>
+    <td><select class="cell" ${k('format')}>${options(S.lists.formats,p.format,'—')}</select></td>
+    <td><select class="cell" ${k('pillar')} style="min-width:160px">${pillarOpts(p.pillar,'—')}</select></td>
+    <td><select class="cell stsel" ${k('status')} style="background:color-mix(in srgb,${s.c} 13%,#fff);color:color-mix(in srgb,${s.c} 75%,#000)">${statusOpts(p.status)}</select></td>
+    <td><select class="cell" ${k('owner')} style="min-width:130px">${ownerOpts(p.owner,t('unassigned'))}</select></td>
+    <td><select class="cell" ${k('objective')}>${options(S.lists.objectives,p.objective,'—')}</select></td>
+    <td><select class="cell" ${k('type')}>${options(S.lists.types,p.type,'—')}</select></td>
+    <td><input class="cell" ${k('audience')} value="${esc(p.audience)}" style="min-width:180px" list="audList"></td>
+    <td><input class="cell" ${k('cta')} value="${esc(p.cta)}" style="min-width:150px"></td>
+    <td><div class="rowact"><button class="btn ghost icon" data-open="${p.id}" title="${t('openCard')}">↗</button><button class="btn ghost icon" data-dup="${p.id}" title="${t('duplicate')}">⧉</button><button class="btn ghost icon" data-del="${p.id}" title="${t('del')}">🗑</button></div></td></tr>`}).join('');
+  const auds=[...new Set([...S.posts.map(p=>p.audience),...S.pillars.map(p=>p.audience)].filter(Boolean))];
+  return `<div class="calbar"><span class="note">${list.length} ${t('of')} ${S.posts.length} ${t('items')} · ${t('dbNote')}</span><span style="flex:1"></span><button class="btn sm" data-act="copyCSV">${t('copyCSV')}</button><button class="btn pri sm" data-act="newPost">${t('newContent')}</button></div>
+  ${filterBar()}
+  ${list.length?`<div class="tblwrap" style="max-height:calc(100vh - 290px)"><table><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty">${t('noResults')}<br><br><button class="btn" data-act="newPost">${t('createContent')}</button></div>`}
+  <datalist id="audList">${auds.map(a=>`<option value="${esc(a)}">`).join('')}</datalist>`;
+}
+
+/* ============ IDEAS ============ */
+function vIdeas(){
+  const ideas=filtered(S.posts.filter(p=>!p.date)).sort((a,b)=>(b.createdAt||b.id).localeCompare(a.createdAt||a.id));
+  return `<form class="capture" data-form="capture">
+    <input type="text" class="inp" name="title" data-key="capt" placeholder="${t('capture')}" required>
+    <select class="inp" name="pillar">${pillarOpts('',t('pillar'))}</select>
+    <select class="inp" name="channel">${options(S.lists.channels,'',t('channel'))}</select>
+    <button class="btn pri" type="submit">${t('addIdea')}</button>
+  </form>
+  ${filterBar({noDates:true})}
+  <div class="note" style="margin-bottom:12px">${t('ideasNote',ideas.length)}</div>
+  ${ideas.length?`<div class="grid ideas">${ideas.map(p=>`<div class="idea">
+    <div style="display:flex;gap:6px;align-items:center">${pilChip(p.pillar)}<span style="flex:1"></span>${badge(p.status)}</div>
+    <div class="tt" data-open="${p.id}">${esc(p.title||t('untitled'))}</div>
+    ${p.description?`<div class="ds">${esc(p.description)}</div>`:''}
+    <div class="ft">${chChip(p.channel)}${p.format?`<span class="tag">${esc(p.format)}</span>`:''}<span style="flex:1"></span>${avatar(p.owner)}</div>
+    <div class="ft" style="border-top:1px solid var(--line);padding-top:8px"><input type="date" class="inp" data-plan="${p.id}" style="flex:1;padding:4px 6px" title="${t('pickDate')}"><button class="btn sm" data-open="${p.id}">${t('open')}</button><button class="btn sm ghost" data-dup="${p.id}" title="${t('duplicate')}">⧉</button><button class="btn sm ghost" data-del="${p.id}" title="${t('del')}">🗑</button></div>
+  </div>`).join('')}</div>`:`<div class="empty">${t('emptyIdeas')}</div>`}`;
+}
+
+/* ============ WORKFLOW ============ */
+function vWorkflow(){
+  const posts=filtered(S.posts);
+  const flow=STATUSES.map((s,i)=>`<b>${s.e} ${s.l}</b>${i<6?' →':''}`).join(' ');
+  return `<div class="flow">${flow}</div>${filterBar({noStatus:true})}
+  <div class="kanban">${STATUSES.map((s,i)=>{const list=posts.filter(p=>p.status===s.k).sort(cmpDate);
+    return `<div class="kcol" data-drop-status="${s.k}"><div class="kh"><span class="sw" style="background:${s.c};border-radius:50%"></span>${s.l}<span class="n">${list.length}</span><span style="flex:1"></span>${i===0?`<button class="btn ghost icon sm" data-act="newPost" title="${t('newIdea')}">＋</button>`:''}</div><div class="kb">${list.map(p=>wfCard(p,i)).join('')}</div></div>`}).join('')}</div>
+  <div class="note">${t('wfNote')}</div>`;
+}
+function wfCard(p,i){
+  const late=isDelayed(p);
+  return `<div class="kc ${late?'late':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}">
+    <div class="mt">${chChip(p.channel)}${p.format?`<span class="tag">${esc(p.format)}</span>`:''}</div>
+    <div class="tt">${esc(p.title||t('untitled'))}</div>
+    <div class="mt"><span style="color:${late?'var(--red)':'var(--tx3)'}">${p.date?fmtShort(p.date)+(p.time?' · '+p.time:''):t('noDate')}${late?' · '+t('delayedL'):''}</span><span class="sp"></span>${avatar(p.owner)}${i<6?`<button class="btn ghost icon sm" data-advance="${p.id}" title="${t('advanceTo')} ${STATUSES[i+1].l}">→</button>`:''}</div>
+  </div>`;
+}
+
+/* ============ PILLARS ============ */
+function vPillars(){
+  const scope=UI.pillarScope;const base=scope==='month'?S.posts.filter(p=>sameMonth(p.date,today())):S.posts;
+  const d=pillarDist(base);const sumT=S.pillars.reduce((a,p)=>a+(Number(p.target)||0),0);
+  const rows=d.rows.map(r=>{const diff=r.pct-r.target;const st=!r.target?`<span class="tag">${t('noTarget')}</span>`:Math.abs(diff)<5?`<span class="tag" style="background:#eaf6ef;color:var(--green)">${t('balanced')}</span>`:Math.abs(diff)<10?`<span class="tag amber">${diff>0?'+':''}${diff} pp</span>`:`<span class="tag red">${diff>0?'+':''}${diff} pp</span>`;
+    return `<div class="dist"><span class="chip" style="--c:${r.color}"><i></i><b style="color:var(--tx);font-weight:500">${esc(r.name)}</b></span><div class="dbar" style="height:8px;background:var(--bg3);border-radius:4px;position:relative"><div style="height:100%;width:${Math.min(100,r.pct)}%;background:${r.color};border-radius:4px"></div>${r.target?`<span style="position:absolute;top:-4px;left:calc(${Math.min(100,r.target)}% - 1px);width:2px;height:16px;background:var(--tx)"></span>`:''}</div><span>${r.n} · <b>${r.pct}%</b></span><span class="dd" style="color:var(--tx3)">${t('obj')} ${r.target}%</span><span>${st}</span></div>`}).join('');
+  return `<div class="card"><h3>${t('distTitle')} <span class="sp"></span><div class="seg"><button class="${scope==='all'?'on':''}" data-pscope="all">${t('allCal')}</button><button class="${scope==='month'?'on':''}" data-pscope="month">${t('thisMonth')}</button></div></h3>
+    ${sumT!==100&&S.pillars.length?`<div class="warnbox">${t('sumWarn',sumT)}</div>`:''}
+    ${d.warn?`<div class="warnbox">⚠ ${esc(d.warn)}</div>`:''}
+    <div class="dist h"><span>${t('pillar')}</span><span class="dbar">${t('presence')}</span><span>${t('actual')}</span><span class="dd">${t('target')}</span><span>${t('state')}</span></div>
+    ${rows||`<div class="note" style="padding:10px 0">${t('noPillars')}</div>`}
+    <div class="note" style="margin-top:8px">${t('calcOn',d.tot,d.none)}</div></div>
+  <div class="calbar sec"><b style="font-size:14px">${t('pillarsN')} (${S.pillars.length})</b><span style="flex:1"></span><button class="btn pri sm" data-act="newPillar">${t('newPillar')}</button></div>
+  <div class="grid pillars">${S.pillars.map(p=>{const n=S.posts.filter(x=>x.pillar===p.id).length;const r=d.rows.find(x=>x.id===p.id)||{pct:0};return `<div class="pil" style="--c:${p.color}">
+    <h4><span class="sw" style="background:${p.color};width:10px;height:10px;border-radius:3px"></span>${esc(p.name)}<span class="sp"></span><button class="btn ghost icon sm" data-editpillar="${p.id}" title="${t('edit')}">✎</button><button class="btn ghost icon sm" data-delpillar="${p.id}" title="${t('del')}">🗑</button></h4>
+    <dl><dt>${t('description')}</dt><dd>${esc(p.description)||'—'}</dd><dt>${t('objective')}</dt><dd>${esc(p.objective)||'—'}</dd><dt>${t('audience')}</dt><dd>${esc(p.audience)||'—'}</dd><dt>${t('topics')}</dt><dd>${esc(p.topics)||'—'}</dd></dl>
+    <div class="pct"><div><b>${p.target||0}%</b>${t('objShort')}</div><div><b>${r.pct}%</b>${t('realShort')}</div><div><b>${n}</b>${t('contents')}</div><span style="flex:1"></span><button class="btn sm ghost" data-filterpillar="${p.id}">${t('see')}</button></div>
+  </div>`}).join('')}</div>`;
+}
+
+/* ============ TEAM ============ */
+function vTeam(){
+  const rows=S.team.map(m=>{const mine=S.posts.filter(p=>p.owner===m.id);const act=mine.filter(p=>p.status!=='published');const late=mine.filter(isDelayed).length;
+    return `<tr><td><div style="display:flex;align-items:center;gap:8px;padding:5px 0">${avatar(m.id,26)}<b style="font-weight:500">${esc(m.name)}</b></div></td><td>${esc(m.role)||'—'}</td><td>${mine.length}</td><td>${act.length}</td><td>${mine.filter(p=>p.status==='progress'||p.status==='review').length}</td><td>${late?`<span class="tag red">${late}</span>`:'0'}</td>
+    <td><div class="rowact"><button class="btn ghost sm" data-filterowner="${m.id}">${t('seeContent')}</button><button class="btn ghost icon" data-editmember="${m.id}" title="${t('edit')}">✎</button><button class="btn ghost icon" data-delmember="${m.id}" title="${t('del')}">🗑</button></div></td></tr>`}).join('');
+  const un=S.posts.filter(p=>!p.owner||!member(p.owner)).length;
+  return `<div class="calbar"><span class="note">${t('teamNote')} ${un?`<b>${t('unassignedN',un)}</b>`:''}</span><span style="flex:1"></span>${un?`<button class="btn sm" data-filterowner="_none">${t('seeUnassigned')}</button>`:''}<button class="btn pri sm" data-act="newMember">${t('addOwner')}</button></div>
+  ${S.team.length?`<div class="tblwrap"><table><thead><tr><th>${t('name')}</th><th>${t('role')}</th><th>${t('total')}</th><th>${t('active')}</th><th>${t('inProd')}</th><th>${t('late')}</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:`<div class="empty">${t('noTeam')}</div>`}`;
+}
+
+/* ============ SETTINGS ============ */
+function vSettings(){
+  const L=S.lists;const ta=(k)=>`<div class="setrow"><div class="l"><b>${t('l_'+k)}</b><span>${t('commaSep')}</span></div><div><textarea class="inp" data-list="${k}">${esc(L[k].join(', '))}</textarea></div></div>`;
+  return `<div class="card">
+    <div class="setrow"><div class="l"><b>${t('clientName')}</b><span>${t('clientNameH')}</span></div><div><input class="inp" data-cname style="width:100%;max-width:360px" value="${esc(client().name)}"></div></div>
+    <div class="setrow"><div class="l"><b>${t('language')}</b><span>${t('languageH')}</span></div><div><div class="seg"><button class="${LANG==='es'?'on':''}" data-lang="es">Español</button><button class="${LANG==='en'?'on':''}" data-lang="en">English</button></div></div></div>
+    ${ta('channels')}${ta('formats')}${ta('types')}${ta('objectives')}
+  </div>
+  <div class="card sec"><h3>${t('data')}</h3>
+    <div class="setrow"><div class="l"><b>${t('demoData')}</b><span>${S.isDemo?t('demoNow'):t('demoOwn')}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start"><button class="btn" data-act="askClearDemo">${t('clearDemo')}</button><button class="btn" data-act="askRestoreDemo">${t('restoreDemo')}</button></div></div>
+    <div class="setrow"><div class="l"><b>${t('backup')}</b><span>${t('backupH')}</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start"><button class="btn" data-act="copyJSON">${t('copyJSON')}</button><button class="btn" data-act="copyCSV">${t('copyCSVc')}</button></div></div>
+    <div class="setrow"><div class="l"><b>${t('import')}</b><span>${t('importH')}</span></div><div><textarea class="inp" id="importBox" style="width:100%;min-height:80px" placeholder='{"posts":[…],"pillars":[…],"team":[…]}'></textarea><button class="btn sm" data-act="importJSON" style="margin-top:6px">${t('import')}</button></div></div>
+    <div class="setrow"><div class="l"><b>${t('storage')}</b><span>${t('storageH')}</span></div><div class="note" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="synch" style="display:flex;gap:6px;align-items:center">${syncHTML()}</span><span>· ${t('autosave')}</span></div></div>
+    <div class="setrow"><div class="l"><b>${t('deleteClient')}</b><span>${t('deleteClientH')}</span></div><div><button class="btn danger" data-act="askDelClient">${t('deleteClient')}</button></div></div>
+  </div>`;
+}
+
+/* ============ DRAWER ============ */
+let draft=null;
+const EMPTY_POST={id:'',date:'',time:'',title:'',description:'',pillar:'',objective:'',audience:'',channel:'',format:'',type:'',copy:'',cta:'',brief:'',reference:'',owner:'',status:'idea',asset:'',url:'',notes:''};
+function openPost(id,preset){
+  if(id){const p=S.posts.find(x=>x.id===id);if(!p)return;draft=JSON.parse(JSON.stringify(p));UI.drawer={id,isNew:false}}
+  else{draft=Object.assign({},EMPTY_POST,{id:LANG==='en'?'(new)':'(nuevo)'},preset||{});UI.drawer={id:null,isNew:true}}
+  UI.dirty=false;renderDrawer();$('#drawer').classList.add('on');$('#scrim').classList.add('on');
+  setTimeout(()=>{const ti=$('#drawer .tinput');if(ti&&UI.drawer&&UI.drawer.isNew)ti.focus()},210);
+}
+function refreshDrawerFromState(){if(!UI.drawer||UI.drawer.isNew)return;const p=S.posts.find(x=>x.id===UI.drawer.id);if(!p){closeDrawer(true);return}draft=JSON.parse(JSON.stringify(p));renderDrawer()}
+function fld(k,lk,type,opts={}){
+  const v=draft[k]||'';const a=`data-d="${k}" data-key="d-${k}"`;let inp;
+  const ph=opts.ph?t(opts.ph):'';
+  if(type==='textarea')inp=`<textarea class="inp" ${a} rows="${opts.rows||3}" placeholder="${esc(ph)}">${esc(v)}</textarea>`;
+  else if(type==='select')inp=`<select class="inp" ${a}>${opts.html}</select>`;
+  else inp=`<input class="inp" type="${type||'text'}" ${a} value="${esc(v)}" placeholder="${esc(ph||(opts.rawph||''))}" ${opts.list?`list="${opts.list}"`:''}>`;
+  const link=opts.link&&isUrl(v)?`<a class="lk" href="${esc(v)}" target="_blank" rel="noopener">${t('openLink')}</a>`:'';
+  return `<div class="fld ${opts.full?'full':''}"><label>${t(lk)}${link}</label>${inp}</div>`;
+}
+function renderDrawer(){
+  const d=draft,cur=SIDX[d.status]||0,ch=t('choose');
+  const steps=STATUSES.map((s,i)=>`<button data-step="${s.k}" class="${i===cur?'on':''} ${i<cur?'done':''}" style="--c:${s.c}"><i></i>${s.l}</button>`).join('');
+  const auds=[...new Set([...S.posts.map(p=>p.audience),...S.pillars.map(p=>p.audience)].filter(Boolean))];
+  const late=isDelayed(d)&&!UI.drawer.isNew;
+  $('#drawer').innerHTML=`
+  <div class="dhd">
+    <div class="row"><span class="tag">${esc(d.id)}</span><span class="tag" style="background:#fff;border:1px solid var(--line)"><span class="sw" style="background:${client().color};border-radius:50%;margin-right:4px"></span>${esc(client().name)}</span>${d.demo?`<span class="tag amber">${t('sampleData')}</span>`:''}${late?`<span class="tag red">⚠ ${t('delayed')}</span>`:''}${!d.date?`<span class="tag">${t('ideaNoDate')}</span>`:''}<span class="sp"></span>${!UI.drawer.isNew?`<button class="btn ghost icon" data-act="dupDraft" title="${t('duplicate')}">⧉</button>`:''}<button class="btn ghost icon" data-act="closeDrawer" title="${t('close')}">✕</button></div>
+    <input class="tinput" data-d="title" data-key="d-title" value="${esc(d.title)}" placeholder="${t('ph_title')}">
+    <div class="steps">${steps}</div>
+    ${cur<6?`<div style="margin-top:8px"><button class="btn sm" data-act="advanceDraft">${t('advanceTo')} ${STATUSES[cur+1].e} ${STATUSES[cur+1].l} →</button></div>`:''}
+  </div>
+  <div class="dbd">
+    <div class="dsec"><h5>${t('f_plan')}</h5><div class="fgrid">
+      ${fld('date','d_date','date')}${fld('time','d_time','time')}
+      ${fld('channel','d_channel','select',{html:options(S.lists.channels,d.channel,ch)})}
+      ${fld('format','d_format','select',{html:options(S.lists.formats,d.format,ch)})}
+      ${fld('type','d_type','select',{html:options(S.lists.types,d.type,ch)})}
+      ${fld('owner','d_owner','select',{html:ownerOpts(d.owner,t('unassigned'))})}
+    </div></div>
+    <div class="dsec"><h5>${t('f_strategy')}</h5><div class="fgrid">
+      ${fld('pillar','d_pillar','select',{html:pillarOpts(d.pillar,ch)})}
+      ${fld('objective','d_objective','select',{html:options(S.lists.objectives,d.objective,ch)})}
+      ${fld('audience','d_audience','text',{full:true,list:'dAud',ph:'ph_aud'})}
+      ${fld('description','d_desc','textarea',{full:true,ph:'ph_desc'})}
+    </div></div>
+    <div class="dsec"><h5>${t('f_creative')}</h5><div class="fgrid">
+      ${fld('copy','d_copy','textarea',{full:true,rows:4,ph:'ph_copy'})}
+      ${fld('cta','d_cta','text',{full:true,ph:'ph_cta'})}
+      ${fld('brief','d_brief','textarea',{full:true,rows:3,ph:'ph_brief'})}
+      ${fld('reference','d_ref','text',{full:true,link:true,ph:'ph_ref'})}
+      ${fld('asset','d_asset','text',{full:true,link:true,rawph:'https://… (Drive, Figma, Canva…)'})}
+    </div></div>
+    <div class="dsec"><h5>${t('f_pub')}</h5><div class="fgrid">
+      ${fld('url','d_url','text',{full:true,link:true,rawph:'https://…'})}
+      ${fld('notes','d_notes','textarea',{full:true})}
+    </div></div>
+    <datalist id="dAud">${auds.map(a=>`<option value="${esc(a)}">`).join('')}</datalist>
+  </div>
+  <div class="dft">${!UI.drawer.isNew?`<button class="btn danger" data-act="delDraft">${t('del')}</button>`:''}<span class="sp"></span><span class="dirty" id="dirtyLbl">${UI.dirty?t('unsaved'):''}</span><button class="btn" data-act="closeDrawer">${t('cancel')}</button><button class="btn pri" data-act="saveDraft">${UI.drawer.isNew?t('create'):t('saveChanges')}</button></div>`;
+}
+function markDirty(){UI.dirty=true;const l=$('#dirtyLbl');if(l)l.textContent=t('unsaved')}
+function saveDraft(){
+  const d=draft;if(!d.title.trim())d.title=t('untitled');
+  const now=new Date().toISOString();
+  if(UI.drawer.isNew){d.id=nextId();d.createdAt=now;d.updatedAt=now;S.posts.push(d);toast(t('created')+' · '+d.id)}
+  else{const i=S.posts.findIndex(p=>p.id===UI.drawer.id);d.updatedAt=now;if(i>=0)S.posts[i]=d;else S.posts.push(d);toast(t('saved'))}
+  UI.dirty=false;save();closeDrawer(true);render();
+}
+function closeDrawer(force){
+  if(!force&&UI.dirty){confirmModal(t('discardT'),t('discardM'),t('discard'),()=>closeDrawer(true),true);return}
+  $('#drawer').classList.remove('on');$('#scrim').classList.remove('on');UI.drawer=null;UI.dirty=false;draft=null;
+}
+
+/* ============ MODALS & MENU ============ */
+let modalCb=null;
+function openModal(html){$('#modal').innerHTML=html;$('#modal').classList.add('on');$('#mscrim').classList.add('on');setTimeout(()=>{const f=$('#modal input[type=text],#modal input:not([type]),#modal textarea');if(f)f.focus()},60)}
+function closeModal(){$('#modal').classList.remove('on');$('#mscrim').classList.remove('on');modalCb=null}
+function confirmModal(title,msg,okLabel,cb,danger){openModal(`<div class="mh">${esc(title)}</div><div class="mb">${esc(msg)}</div><div class="mf"><button class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" data-act="modalOk" ${danger?'style="background:var(--red);border-color:var(--red)"':''}>${esc(okLabel)}</button></div>`);modalCb=cb}
+function pillarModal(id){
+  const p=id?pillar(id):{name:'',description:'',objective:'',audience:'',topics:'',target:'',color:PALETTE[S.pillars.length%PALETTE.length]};
+  openModal(`<form data-form="pillar" data-id="${id||''}"><div class="mh">${id?t('editPillar'):t('newPillarT')}</div><div class="mb"><div class="fgrid">
+    <div class="fld full"><label>${t('name')}</label><input class="inp" name="name" required value="${esc(p.name)}"></div>
+    <div class="fld full"><label>${t('description')}</label><textarea class="inp" name="description" rows="2">${esc(p.description)}</textarea></div>
+    <div class="fld full"><label>${t('strategicObj')}</label><input class="inp" name="objective" value="${esc(p.objective)}"></div>
+    <div class="fld full"><label>${t('audience')}</label><input class="inp" name="audience" value="${esc(p.audience)}"></div>
+    <div class="fld full"><label>${t('topics')}</label><textarea class="inp" name="topics" rows="2" placeholder="${t('topicsPh')}">${esc(p.topics)}</textarea></div>
+    <div class="fld"><label>${t('pctRec')}</label><input class="inp" type="number" min="0" max="100" name="target" value="${esc(p.target)}"></div>
+    <div class="fld"><label>${t('color')}</label>${colorPicker(p.color)}</div>
+  </div></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('savePillar')}</button></div></form>`);
+}
+function colorPicker(sel){return `<div style="display:flex;gap:6px;flex-wrap:wrap;padding-top:4px">${PALETTE.map(c=>`<label style="cursor:pointer"><input type="radio" name="color" value="${c}" ${c===sel?'checked':''} style="display:none"><span class="sw pcol" style="background:${c};width:20px;height:20px;border-radius:5px;${c===sel?'outline:2px solid var(--tx);outline-offset:2px':''}"></span></label>`).join('')}</div>`}
+function memberModal(id){
+  const m=id?member(id):{name:'',role:''};
+  openModal(`<form data-form="member" data-id="${id||''}"><div class="mh">${id?t('editOwner'):t('addOwnerT')}</div><div class="mb"><div class="fgrid">
+    <div class="fld full"><label>${t('name')}</label><input class="inp" name="name" required value="${esc(m.name)}"></div>
+    <div class="fld full"><label>${t('role')}</label><input class="inp" name="role" value="${esc(m.role)}" placeholder="${t('rolePh')}"></div>
+  </div></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('save')}</button></div></form>`);
+}
+function clientModal(id){
+  const c=id?CL.list.find(x=>x.id===id):{name:'',color:PALETTE[CL.list.length%PALETTE.length]};
+  openModal(`<form data-form="client" data-id="${id||''}"><div class="mh">${id?t('renameT'):t('newClientT')}</div><div class="mb"><div class="fgrid">
+    <div class="fld full"><label>${t('clientName')}</label><input class="inp" name="name" required value="${esc(c.name)}"></div>
+    <div class="fld full"><label>${t('color')}</label>${colorPicker(c.color)}</div>
+    ${id?'':`<div class="fld full"><label>${t('startWith')}</label><div class="radio"><label><input type="radio" name="start" value="blank" checked><span>${t('startBlankO')}<small>${t('startBlankH')}</small></span></label><label><input type="radio" name="start" value="demo"><span>${t('startDemoO')}<small>${t('startDemoH')}</small></span></label></div></div>`}
+  </div></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${id?t('save'):t('createClient')}</button></div></form>`);
+}
+function showMenu(anchor,items){
+  const m=$('#menu');m.innerHTML=items.map(([act,label,danger])=>`<button data-act="${act}" class="${danger?'danger':''}">${label}</button>`).join('');
+  const r=anchor.getBoundingClientRect();m.style.left=Math.min(r.left,innerWidth-190)+'px';m.style.top=(r.bottom+4)+'px';m.classList.add('on');
+}
+const hideMenu=()=>$('#menu').classList.remove('on');
+function deleteClient(){
+  if(CL.list.length<=1){toast(t('lastClient'));return}
+  const c=client();
+  confirmModal(t('deleteClient'),t('delClientM',c.name),t('del'),async()=>{
+    const id=c.id;CL.list=CL.list.filter(x=>x.id!==id);delete WS_CACHE[id];
+    const nextId=CL.list[0].id;ACTIVE=null;switchClient(nextId);saveClients();
+    if(db&&cloud){try{await db.doc('workspaces/'+id).delete()}catch(e){}}
+    toast(t('clientDeleted'));
+  },true);
+}
+
+/* ============ ACTIONS ============ */
+function updatePost(id,patch,msg){const p=S.posts.find(x=>x.id===id);if(!p)return;Object.assign(p,patch,{updatedAt:new Date().toISOString()});save();render();if(msg)toast(msg)}
+function duplicate(id){const p=S.posts.find(x=>x.id===id);if(!p)return;const c=JSON.parse(JSON.stringify(p));c.id=nextId();c.title=(p.title||'')+t('copySuffix');c.status='idea';c.url='';c.demo=false;c.createdAt=c.updatedAt=new Date().toISOString();S.posts.push(c);save();render();toast(t('dupAs')+' '+c.id);return c.id}
+function delPost(id){const p=S.posts.find(x=>x.id===id);if(!p)return;confirmModal(t('delT'),t('delM',p.title||p.id),t('del'),()=>{snapshotForUndo();S.posts=S.posts.filter(x=>x.id!==id);save();if(UI.drawer&&UI.drawer.id===id)closeDrawer(true);render();toast(t('deleted'),true)},true)}
+function csv(){
+  const cols=['id','date','time','title','description','pillar','objective','audience','channel','format','type','copy','cta','brief','reference','owner','status','asset','url','notes'];
+  const head=['Client','Content ID','Publication date','Publication time','Content title','Content description','Content pillar','Marketing objective','Target audience','Channel','Format','Content type','Caption / copy','CTA','Creative brief','Reference','Responsible person','Status','Asset link','Publication URL','Notes'];
+  const q=v=>{v=String(v==null?'':v);return /[",\n;]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  return [head.join(','),...sortPosts(S.posts,'date').map(p=>[q(client().name),...cols.map(c=>q(c==='pillar'?pillarName(p.pillar):c==='owner'?((member(p.owner)||{}).name||''):c==='status'?SMAP[p.status].l:p[c]))].join(','))].join('\n');
+}
+async function copyText(txt,msg){try{await navigator.clipboard.writeText(txt);toast(msg)}catch(e){openModal(`<div class="mh">${t('manualCopy')}</div><div class="mb">${t('manualCopyM')}<textarea class="inp" style="width:100%;min-height:200px;margin-top:8px" readonly>${esc(txt)}</textarea></div><div class="mf"><button class="btn" data-act="closeModal">${t('close')}</button></div>`)}}
+function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('ecm-lang',l)}catch(e){}render();if(UI.drawer)renderDrawer()}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#menu')&&!e.target.closest('[data-act=clientMenu]'))hideMenu();
+  const el=e.target.closest('[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-editmember],[data-delmember],[data-filterowner],[data-pscope],[data-client],[data-lang]');
+  if(!el)return;
+  if(e.target.closest('input,select,textarea')&&!el.matches('[data-act],[data-step]'))return;
+  const ds=el.dataset;
+  if(ds.act){
+    const a=ds.act;hideMenu();
+    if(a==='clientMenu'){e.stopPropagation();showMenu(el,[['renameClient',t('renameClient')],['askDelClient',t('deleteClient'),true]]);return}
+    if(a==='renameClient'){clientModal(ACTIVE);return}
+    if(a==='askDelClient'){deleteClient();return}
+    if(a==='newClient'){clientModal();return}
+    if(a==='kpi'){let f={};try{f=JSON.parse(ds.filt)}catch(_){}setFilters(f);if(ds.view==='calendar'){UI.cal.mode='month';UI.cal.cursor=today()}go(ds.view);return}
+    if(a==='newPost'){openPost(null);return}
+    if(a==='toggleSide'){$('#side').classList.toggle('open');return}
+    if(a==='clearFilters'){setFilters({});render();return}
+    if(a==='calPrev'||a==='calNext'){const k=a==='calPrev'?-1:1;if(UI.cal.mode==='month'){const d=parse(UI.cal.cursor);UI.cal.cursor=iso(new Date(d.getFullYear(),d.getMonth()+k,1))}else UI.cal.cursor=addDays(UI.cal.cursor,7*k);UI.cal.expanded=null;render();return}
+    if(a==='calToday'){UI.cal.cursor=today();render();return}
+    if(a==='goWeek'){UI.cal.mode='week';UI.cal.cursor=today();go('calendar');return}
+    if(a==='toggleUnsched'){UI.showUnsched=!UI.showUnsched;render();return}
+    if(a==='closeDrawer'){closeDrawer();return}
+    if(a==='saveDraft'){saveDraft();return}
+    if(a==='dupDraft'){if(UI.dirty){toast(t('saveFirst'));return}const nid=duplicate(UI.drawer.id);openPost(nid);return}
+    if(a==='delDraft'){delPost(UI.drawer.id);return}
+    if(a==='advanceDraft'){const i=SIDX[draft.status];if(i<6){draft.status=STATUSES[i+1].k;markDirty();renderDrawer()}return}
+    if(a==='closeModal'){closeModal();return}
+    if(a==='modalOk'){const cb=modalCb;closeModal();if(cb)cb();return}
+    if(a==='undo'){if(undoStack&&undoStack.id===ACTIVE){S=normalize(JSON.parse(undoStack.j));undoStack=null;save();render();toast(t('undone'))}return}
+    if(a==='newPillar'){pillarModal();return}
+    if(a==='newMember'){memberModal();return}
+    if(a==='dismissDemo'){S.isDemo=false;save();render();toast(t('hidden'));return}
+    if(a==='askClearDemo'){confirmModal(t('blankT'),t('blankM'),t('startBlank'),()=>{snapshotForUndo();S=blankState(S);save();render();toast(t('blankDone'),true)},true);return}
+    if(a==='askRestoreDemo'){confirmModal(t('restoreT'),t('restoreM'),t('restore'),()=>{snapshotForUndo();S=demoState(LANG);save();render();toast(t('restored'),true)},true);return}
+    if(a==='copyJSON'){copyText(JSON.stringify(Object.assign({client:client().name},S),null,2),t('copiedJSON'));return}
+    if(a==='copyCSV'){copyText(csv(),t('copiedCSV'));return}
+    if(a==='importJSON'){const v=$('#importBox').value.trim();let st=null;try{st=normalize(JSON.parse(v))}catch(_){}if(!st){toast(t('badJSON'));return}delete st.client;confirmModal(t('importT'),t('importM'),t('import'),()=>{snapshotForUndo();S=st;save();render();toast(t('imported'),true)},true);return}
+    return;
+  }
+  if(ds.client){switchClient(ds.client);return}
+  if(ds.lang){setLang(ds.lang);return}
+  if(ds.view&&el.closest('.nav')){go(ds.view);return}
+  if(ds.calmode){UI.cal.mode=ds.calmode;render();return}
+  if(ds.newdate){openPost(null,{date:ds.newdate,time:'10:00',status:'briefing'});return}
+  if(ds.expand!==undefined){UI.cal.expanded=ds.expand||null;render();return}
+  if(ds.advance){const p=S.posts.find(x=>x.id===ds.advance);const i=SIDX[p.status];if(i<6)updatePost(p.id,{status:STATUSES[i+1].k},`${p.id} → ${STATUSES[i+1].l}`);return}
+  if(ds.step){draft.status=ds.step;markDirty();renderDrawer();return}
+  if(ds.sort){if(UI.sort.key===ds.sort)UI.sort.dir*=-1;else UI.sort={key:ds.sort,dir:1};render();return}
+  if(ds.dup){duplicate(ds.dup);return}
+  if(ds.del){delPost(ds.del);return}
+  if(ds.editpillar){pillarModal(ds.editpillar);return}
+  if(ds.delpillar){const p=pillar(ds.delpillar);const n=S.posts.filter(x=>x.pillar===p.id).length;confirmModal(t('delPillarT'),t('delPillarM',p.name,n),t('del'),()=>{snapshotForUndo();S.pillars=S.pillars.filter(x=>x.id!==p.id);S.posts.forEach(x=>{if(x.pillar===p.id)x.pillar=''});save();render();toast(t('pillarDeleted'),true)},true);return}
+  if(ds.filterpillar){setFilters({pillar:ds.filterpillar});go('database');return}
+  if(ds.editmember){memberModal(ds.editmember);return}
+  if(ds.delmember){const m=member(ds.delmember);const n=S.posts.filter(x=>x.owner===m.id).length;confirmModal(t('delOwnerT'),t('delOwnerM',m.name,n),t('del'),()=>{snapshotForUndo();S.team=S.team.filter(x=>x.id!==m.id);S.posts.forEach(x=>{if(x.owner===m.id)x.owner=''});save();render();toast(t('ownerDeleted'),true)},true);return}
+  if(ds.filterowner){setFilters({owner:ds.filterowner});go('database');return}
+  if(ds.pscope){UI.pillarScope=ds.pscope;render();return}
+  if(ds.open){openPost(ds.open);return}
+});
+$('#scrim').addEventListener('click',()=>closeDrawer());
+$('#mscrim').addEventListener('click',()=>closeModal());
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){hideMenu();if($('#modal').classList.contains('on'))closeModal();else if(UI.drawer)closeDrawer();else $('#side').classList.remove('open')}
+  if((e.metaKey||e.ctrlKey)&&e.key==='s'&&UI.drawer){e.preventDefault();saveDraft()}
+});
+let qT;
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.f==='q'){UI.f.q=el.value;clearTimeout(qT);qT=setTimeout(render,150);return}
+  if(el.dataset.d!==undefined&&draft){draft[el.dataset.d]=el.value;markDirty();return}
+});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.dataset.f&&el.dataset.f!=='q'){UI.f[el.dataset.f]=el.type==='checkbox'?el.checked:el.value;render();return}
+  if(el.dataset.edit){const f=el.dataset.edit;const p=S.posts.find(x=>x.id===el.dataset.id);if(p&&p[f]!==el.value){updatePost(p.id,{[f]:el.value},f==='status'?`${p.id} → ${SMAP[el.value].l}`:f==='date'&&!el.value?t('movedIdeas'):null)}return}
+  if(el.dataset.d!==undefined&&draft){draft[el.dataset.d]=el.value;markDirty();if(['date','status'].includes(el.dataset.d))renderDrawer();return}
+  if(el.dataset.plan){const p=S.posts.find(x=>x.id===el.dataset.plan);if(el.value&&p)updatePost(p.id,{date:el.value,time:p.time||'10:00',status:p.status==='idea'?'briefing':p.status},t('planned',fmtShort(el.value)));return}
+  if(el.dataset.act==='listSort'){UI.listSort=el.value;render();return}
+  if(el.dataset.list){S.lists[el.dataset.list]=el.value.split(',').map(s=>s.trim()).filter(Boolean);save();toast(t('listUpdated'));return}
+  if(el.dataset.cname!==undefined){const c=client();c.name=el.value.trim()||t('myClient');saveClients();render();return}
+  if(el.name==='color'&&el.closest('form')){el.closest('form').querySelectorAll('.pcol').forEach(s=>s.style.outline='');el.nextElementSibling.style.outline='2px solid var(--tx)';el.nextElementSibling.style.outlineOffset='2px';return}
+});
+document.addEventListener('submit',e=>{
+  const f=e.target;if(!f.dataset.form)return;e.preventDefault();const fd=Object.fromEntries(new FormData(f).entries());
+  if(f.dataset.form==='capture'){const title=(fd.title||'').trim();if(!title)return;const now=new Date().toISOString();S.posts.push(Object.assign({},EMPTY_POST,{id:nextId(),title,pillar:fd.pillar||'',channel:fd.channel||'',createdAt:now,updatedAt:now}));save();render();toast(t('ideaAdded'));setTimeout(()=>{const i=document.querySelector('[data-key=capt]');if(i)i.focus()},20);return}
+  if(f.dataset.form==='pillar'){const id=f.dataset.id;const obj={name:fd.name.trim(),description:fd.description,objective:fd.objective,audience:fd.audience,topics:fd.topics,target:Number(fd.target)||0,color:fd.color||PALETTE[0]};if(id)Object.assign(pillar(id),obj);else S.pillars.push(Object.assign({id:uid('pl')},obj));save();closeModal();render();toast(t('pillarSaved'));return}
+  if(f.dataset.form==='member'){const id=f.dataset.id;const obj={name:fd.name.trim(),role:fd.role.trim()};if(id)Object.assign(member(id),obj);else S.team.push(Object.assign({id:uid('tm')},obj));save();closeModal();render();toast(t('ownerSaved'));return}
+  if(f.dataset.form==='client'){const id=f.dataset.id;const name=fd.name.trim()||t('myClient');const color=fd.color||PALETTE[0];
+    if(id){Object.assign(CL.list.find(x=>x.id===id),{name,color});saveClients();closeModal();render();return}
+    const nid=uid('c');CL.list.push({id:nid,name,color});const st=fd.start==='demo'?demoState(LANG):blankState();WS_CACHE[nid]=st;
+    closeModal();ACTIVE_switch(nid,st);saveClients();toast(t('clientCreated'));return}
+});
+function ACTIVE_switch(id,st){if(UI.drawer)closeDrawer(true);ACTIVE=id;S=st;wsLoading=false;setFilters({});UI.view='overview';save();render();if(db&&cloud)subscribeWs(id)}
+/* drag & drop */
+let dragId=null;
+document.addEventListener('dragstart',e=>{const el=e.target.closest&&e.target.closest('[data-drag]');if(!el)return;dragId=el.dataset.drag;try{e.dataTransfer.setData('text/plain',dragId);e.dataTransfer.effectAllowed='move'}catch(_){}el.style.opacity='.5'});
+document.addEventListener('dragend',e=>{const el=e.target.closest&&e.target.closest('[data-drag]');if(el)el.style.opacity='';document.querySelectorAll('.dragover').forEach(x=>x.classList.remove('dragover'))});
+document.addEventListener('dragover',e=>{const z=e.target.closest&&e.target.closest('[data-drop-date],[data-drop-status]');if(!z||!dragId)return;e.preventDefault();document.querySelectorAll('.dragover').forEach(x=>x!==z&&x.classList.remove('dragover'));z.classList.add('dragover')});
+document.addEventListener('drop',e=>{const z=e.target.closest&&e.target.closest('[data-drop-date],[data-drop-status]');if(!z||!dragId)return;e.preventDefault();z.classList.remove('dragover');const id=dragId;dragId=null;const p=S.posts.find(x=>x.id===id);if(!p)return;
+  if(z.dataset.dropStatus!==undefined){if(p.status!==z.dataset.dropStatus)updatePost(id,{status:z.dataset.dropStatus},`${id} → ${SMAP[z.dataset.dropStatus].l}`)}
+  else{const d=z.dataset.dropDate;if(p.date!==d){const patch={date:d};if(d&&!p.time)patch.time='10:00';updatePost(id,patch,d?`${id} ${t('movedTo')} ${fmtShort(d)}`:`${id} ${t('movedUns')}`)}}
+});
+window.addEventListener('hashchange',()=>{const h=(location.hash||'').slice(1);if(VIEWS.includes(h)&&h!==UI.view){UI.view=h;render()}});
+
+/* ============ BOOT ============ */
+(async function boot(){
+  const ls=lsLoad();
+  if(GH){
+    setSync('saving','sync_ghload');
+    let remote=null;try{remote=await ghFetch()}catch(e){}
+    if(remote&&remote.clients&&Array.isArray(remote.clients.list)&&remote.clients.list.length){
+      CL=remote.clients;WS_CACHE=remote.ws||{};
+      ACTIVE=ls&&CL.list.some(c=>c.id===ls.active)?ls.active:CL.list[0].id;
+      S=WS_CACHE[ACTIVE]?normalize(WS_CACHE[ACTIVE]):null;if(!S){S=blankState();WS_CACHE[ACTIVE]=S}
+      const h=(location.hash||'').slice(1);if(VIEWS.includes(h))UI.view=h;
+      if(ghTok())setSync('cloud','sync_gh');else setSync('local','sync_ghlocal');
+      lsSave();render();return;
+    }
+    if(!ghTok())setSync('local','sync_ghlocal');else setSync('cloud','sync_gh');
+  }
+  if(ls&&ls.clients&&Array.isArray(ls.clients.list)&&ls.clients.list.length){
+    CL=ls.clients;WS_CACHE=ls.ws||{};ACTIVE=CL.list.some(c=>c.id===ls.active)?ls.active:CL.list[0].id;
+  }else{
+    const id='c-demo';CL={list:[{id,name:t('defaultClient'),color:PALETTE[0]}]};WS_CACHE={[id]:demoState(LANG)};ACTIVE=id;
+  }
+  S=WS_CACHE[ACTIVE]?normalize(WS_CACHE[ACTIVE]):null;if(!S){S=blankState();WS_CACHE[ACTIVE]=S}
+  const h=(location.hash||'').slice(1);if(VIEWS.includes(h))UI.view=h;
+  render();initDb();
+})();
+
+</script>
+</body>
+</html>

@@ -24,19 +24,25 @@
    }
   ]
  },
- "clients": [
-  {
-   "key": "santalo-candles-vf9",
-   "name": "Santaló Candles",
-   "c": "#FFC98B"
-  }
- ],
  "rowLinks": {
   "e-ta3ef9zo": [
    {
     "u": "https://armellecouetoux.github.io/armi-live/0uswj3l9e1/",
     "l": "Calendario editorial"
    }
+  ],
+  "e-c4aakgjq": [
+   {
+    "u": "https://claude.ai/artifact/Xt6mCSWMU8L5AKmbjmDs8J",
+    "l": "Media plan Navidad 26"
+   }
   ]
- }
+ },
+ "clients": [
+  {
+   "key": "santalo-candles-vf9",
+   "name": "Santaló Candles",
+   "c": "#FFC98B"
+  }
+ ]
 }

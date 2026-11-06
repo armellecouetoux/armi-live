@@ -406,6 +406,42 @@ tr:hover .rowact{opacity:1}
 details>summary{list-style:none}details>summary::-webkit-details-marker{display:none}details>summary::before{content:'▸ ';}details[open]>summary::before{content:'▾ '}
 
 .grid>*{min-width:0}
+.big3{gap:28px!important}
+.big3 div small{display:block;font-size:11px;color:#bdb8ad;text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-bottom:2px}
+.big3 div b{font-size:28px!important}
+.big3 div span{display:block;font-size:11.5px;color:#bdb8ad;margin-top:2px}
+.fgrid.dark label{color:#bdb8ad}
+.fgrid.dark .inp{background:#2a2926;border-color:#3a3833;color:#fff}
+.mrow{display:grid;grid-template-columns:150px 170px 1fr 170px;gap:14px;align-items:center;padding:11px 4px;border-bottom:1px dashed var(--line)}
+.mrow:last-child{border-bottom:0}
+.mrow.cur{background:#fdffe8;border-radius:10px}
+.mrow .mn{font-weight:700;text-transform:capitalize}
+.mrow .md{color:var(--tx2);font-size:12.5px}
+.mrow .tr{height:12px;background:var(--bg2);border-radius:8px;overflow:hidden}
+.mrow .fl{height:100%;background:var(--paid);border-radius:8px}
+.mrow .mt2{text-align:right}
+.mrow .mt2 b{font-size:16px;font-family:'Bricolage Grotesque',sans-serif}
+.mrow .mt2 small{color:var(--tx3)}
+.phases{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.phase{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff;display:flex;flex-direction:column;gap:4px}
+.phase.live{border:2px solid var(--ink);background:#fdffe8}
+.phase.past{opacity:.6}
+.phase.tbd{border-style:dashed;background:var(--bg)}
+.phase .ph-top{display:flex;align-items:center;gap:6px}
+.phase .ph-top b{font-size:15px;font-family:'Bricolage Grotesque',sans-serif}
+.phase .ph-top .sp{flex:1}
+.phase .ph-dates{font-size:12px;color:var(--tx2);font-weight:600}
+.phase .ph-money{margin-top:6px}
+.phase .ph-money b{font-size:26px;font-family:'Bricolage Grotesque',sans-serif;color:#c25412}
+.phase .ph-money span{color:var(--tx3);font-weight:600}
+.phase .ph-total{font-size:12px;color:var(--tx2)}
+.phase .ph-focus{font-size:12.5px;color:var(--tx);margin-top:6px;padding-top:8px;border-top:1px dashed var(--line)}
+.adrow{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px dashed var(--line)}
+.adrow:last-child{border-bottom:0}
+.adrow code{font-size:11.5px;background:var(--bg2);padding:2px 6px;border-radius:6px;white-space:nowrap}
+.adrow .ac{flex:1;min-width:0;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adrow select{width:auto;padding:4px 8px}
+@media (max-width:860px){.mrow{grid-template-columns:1fr auto}.mrow .md,.mrow .mb2{display:none}}
 </style>
 </head>
 <body>
@@ -436,7 +472,7 @@ const TX={
  k_month:['Este mes','This month'],k_pending:['Por arrancar','Not started'],k_pendingH:['Idea + Briefing','Idea + Briefing'],k_late:['Retrasadas','Delayed'],k_lateH:['fecha pasada, sin publicar','past date, not published'],k_pub:['Publicadas','Published'],
  thisWeek:['Esta semana','This week'],slotsDone:[(a,b)=>`${a}/${b} huecos cubiertos`,(a,b)=>`${a}/${b} slots covered`],bonus:['Bonus','Bonus'],create:['＋ crear','＋ create'],
  viralH:[(v,n)=>`${v} de ${n} posts de esta semana son test viral. Objetivo: 1 de cada 3. Lo que funciona se repite y pasa a Ads.`,(v,n)=>`${v} of ${n} posts this week are viral tests. Target: 1 in 3. What works gets repeated and moves into ads.`],
- paidNow:['Paid ahora','Paid now'],noPaid:['Sin campañas Paid.','No paid campaigns.'],perDay:['€/día','€/day'],planMonth:['previsto este mes','planned this month'],adsReady:['anuncios listos','ads ready'],noneActive:['ninguna pantalla activa hoy','no flight live today'],nextMs:['Próximo hito','Next milestone'],
+ paidNow:['Paid ahora','Paid now'],noPaid:['Sin campañas Paid.','No paid campaigns.'],perDay:['€/día','€/day'],planMonth:['previsto este mes','planned this month'],adsReady:['anuncios listos','ads ready'],noneActive:['hoy no hay anuncios activos','no ads running today'],nextMs:['Próximo hito','Next milestone'],
  byPillar:['Pilares: real vs. objetivo','Pillars: actual vs. target'],target:['objetivo','target'],next7:['Próximos 7 días','Next 7 days'],nothing:['Nada por aquí 👌','Nothing here 👌'],seeWeek:['Ver semana →','See week →'],
  month:['Mes','Month'],week:['Semana','Week'],list:['Lista','List'],today:['Hoy','Today'],allContent:['Todos los contenidos','All content'],
  noDate:['Ideas sin fecha','Unscheduled ideas'],unsHelp:['Arrástralas a un día para planificarlas.','Drag them onto a day to schedule them.'],capture:['Nueva idea… (Enter)','New idea… (Enter)'],
@@ -453,16 +489,20 @@ const TX={
  rhythmT:['Semana tipo','Typical week'],rhythmH:['Los huecos vacíos salen como ✨ en el calendario.','Empty slots show as ✨ in the calendar.'],addSlot:['＋ Hueco','＋ Slot'],
  momentsT:['Momentos clave','Key moments'],momentsH:['Salen como bandas en el calendario.','Shown as bands in the calendar.'],addMom:['＋ Momento','＋ Moment'],
  day:['Día','Day'],format:['Formato','Format'],pillar:['Pilar','Pillar'],label:['Etiqueta','Label'],name:['Nombre','Name'],start:['Inicio','Start'],end:['Fin','End'],descr:['Descripción','Description'],color:['Color','Colour'],
- campaign:['Campaña','Campaign'],newCampaign:['＋ Campaña','＋ Campaign'],flights:['Pantallas','Flights'],ads:['Anuncios','Ads'],milestones:['Hitos','Milestones'],timeline:['Línea de tiempo','Timeline'],
+ campaign:['Campaña','Campaign'],newCampaign:['＋ Campaña','＋ Campaign'],flights:['Fases de la campaña','Campaign phases'],ads:['Anuncios','Ads'],milestones:['Hitos','Milestones'],timeline:['Línea de tiempo','Timeline'],
  daily:['€/día','€/day'],focus:['Foco','Focus'],days:['Días','Days'],total:['Total','Total'],tbd:['Por definir','TBD'],planTotal:['presupuesto total','total budget'],
  a_code:['Código','Code'],a_creative:['Creatividad','Creative'],a_dest:['Destino','Destination'],
  ad_ready:['🟢 Listo','🟢 Ready'],ad_todo:['🟡 En marcha','🟡 In progress'],ad_ask:['🔴 Pedir','🔴 To request'],ad_off:['⚫ Pausado','⚫ Paused'],
  c_planned:['🗓️ Planificada','🗓️ Planned'],c_live:['🟢 Activa','🟢 Live'],c_paused:['⏸️ Pausada','⏸️ Paused'],c_done:['✅ Terminada','✅ Done'],
- kindPaid:['💸 Paid','💸 Paid'],kindOrg:['🌱 Orgánico','🌱 Organic'],addFlight:['＋ Pantalla','＋ Flight'],addAd:['＋ Anuncio','＋ Ad'],addMs:['＋ Hito','＋ Milestone'],
+ kindPaid:['💸 Paid','💸 Paid'],kindOrg:['🌱 Orgánico','🌱 Organic'],addFlight:['＋ Fase','＋ Phase'],addAd:['＋ Anuncio','＋ Ad'],addMs:['＋ Hito','＋ Milestone'],
  notes:['Pendientes y notas','To-dos and notes'],setup:['Configuración','Setup'],platform:['Plataforma','Platform'],objective:['Objetivo','Objective'],optim:['Optimización','Optimisation'],country:['País','Country'],code:['Código','Code'],
  lanePaid:['💸 Paid','💸 Paid'],laneMom:['🎁 Momentos','🎁 Moments'],laneMs:['📍 Hitos','📍 Milestones'],
- delCampT:['Eliminar campaña','Delete campaign'],delCampM:[n=>`¿Eliminar «${n}» con sus pantallas y anuncios?`,n=>`Delete "${n}" with its flights and ads?`],
- paidOn:[(n,d)=>`💸 Ese día está activa ${n} (${d} €/día).`,(n,d)=>`💸 ${n} is live that day (€${d}/day).`],momOn:[n=>`🎁 ${n}`,n=>`🎁 ${n}`],
+ delCampT:['Eliminar campaña','Delete campaign'],delCampM:[n=>`¿Eliminar «${n}» con sus fases y anuncios?`,n=>`Delete "${n}" with its phases and ads?`],
+ paidOn:[(n,d)=>`💸 Ese día hay anuncios: ${n} (${d} €/día).`,(n,d)=>`💸 Ads running that day: ${n} (€${d}/day).`],
+ flightsH:['Cada fase es un periodo de la campaña con su propio presupuesto diario y su foco.','Each phase is a period of the campaign with its own daily budget and focus.'],
+ byMonth:['Presupuesto mes a mes','Budget month by month'],byMonthH:['€/día de cada mes y total previsto frente al tope mensual.','Daily budget for each month and planned total against the monthly cap.'],
+ bToday:['Hoy','Today'],bMonth:['Este mes','This month'],bTotal:['Toda la campaña','Whole campaign'],ofCap:[x=>`de ${x} al mes`,x=>`of ${x} per month`],plusTbd:['+ enero por definir','+ January TBD'],
+ liveNow:['activa','live'],daysL:['días','days'],dayShort:['día','day'],inTotal:['en total','in total'],monthlyCap:['Tope mensual (€)','Monthly cap (€)'],dailyBudget:['Presupuesto diario (€)','Daily budget (€)'],momOn:[n=>`🎁 ${n}`,n=>`🎁 ${n}`],
  viral:['🧪 Test viral','🧪 Viral test'],toAds:['💸 Pasa a Ads','💸 Move to ads'],
  f_main:['Contenido','Content'],f_more:['Más detalles','More details'],
  d_date:['Fecha','Date'],d_time:['Hora','Time'],d_format:['Formato','Format'],d_pillar:['Pilar','Pillar'],d_owner:['Responsable','Owner'],d_desc:['Concepto','Concept'],d_copy:['Caption / copy','Caption / copy'],d_cta:['CTA','CTA'],d_brief:['Brief creativo','Creative brief'],d_notes:['Notas','Notes'],
@@ -825,14 +865,11 @@ function rhythmCard(){
 }
 function paidCard(){
   if(!S.paid.length)return '';
-  const td=today(),act=flightsOn(td),daily=act.reduce((a,x)=>a+(+x.f.daily||0),0);
-  const mS=td.slice(0,8)+'01',mE=iso(new Date(parse(td).getFullYear(),parse(td).getMonth()+1,0));let month=0;
-  for(const c of S.paid)for(const f of c.flights){if(f.tbd||!f.start||!f.end)continue;const a=f.start>mS?f.start:mS,b=f.end<mE?f.end:mE;if(a<=b)month+=daysBetween(a,b)*(+f.daily||0)}
-  const ms=S.milestones.filter(m=>m.date>=td).sort((a,b)=>a.date.localeCompare(b.date))[0];
-  const ads=S.paid.flatMap(c=>c.ads),ready=ads.filter(a=>a.status==='ready').length;
-  return `<div class="money" data-view2="paid" style="cursor:pointer"><span class="coin">💸</span><div class="code">${esc(S.paid.map(c=>c.code||tv(c,'name')).join(' · '))}</div><h3>${t('paidNow')}</h3>
+  const td=today(),act=flightsOn(td),m=budgetByMonth(null).find(x=>x.k===td.slice(0,7)),cap=S.paid.reduce((a,c)=>a+(+c.monthly||0),0);
+  const ms=S.milestones.filter(x=>x.date>=td).sort((a,b)=>a.date.localeCompare(b.date))[0];
+  return `<div class="money" data-view2="paid" style="cursor:pointer"><span class="coin">💸</span><h3>💸 ${t('paidNow')}</h3>
    <div style="font-size:13px;color:#d9d4c9">${act.length?act.map(x=>`<b style="color:#fff">${esc(tv(x.f,'name'))}</b> · ${esc(tv(x.f,'focus'))}`).join('<br>'):t('noneActive')}</div>
-   <div class="row"><div><b>${daily} €</b>${t('perDay')}</div><div><b>≈${Math.round(month)} €</b>${t('planMonth')}</div><div><b>${ready}/${ads.length}</b>${t('adsReady')}</div></div>
+   <div class="row big3"><div><small>${t('bToday')}</small><b>${money(todayDaily())}</b></div><div><small>${t('bMonth')}</small><b>≈${money(m?m.total:0)}</b><span>${cap?t('ofCap',money(cap)):''}</span></div></div>
    ${ms?`<div style="margin-top:14px;font-size:12.5px;color:#d9d4c9">📍 ${t('nextMs')}: <b style="color:var(--lime)">${fmtShort(ms.date)}</b> · ${esc(tv(ms,'label'))}</div>`:''}</div>`;
 }
 function pillarBars(){
@@ -960,50 +997,94 @@ function vPillars(){
 /* ============ PAID ============ */
 const AD_ST=()=>[['ready',t('ad_ready')],['todo',t('ad_todo')],['ask',t('ad_ask')],['off',t('ad_off')]];
 const C_ST=()=>[['planned',t('c_planned')],['live',t('c_live')],['paused',t('c_paused')],['done',t('c_done')]];
-function gantt(){
-  const all=[...S.paid.flatMap(c=>c.flights).filter(f=>f.start),...S.moments.filter(m=>m.start),...S.milestones.map(m=>({start:m.date,end:m.date}))];
-  if(!all.length)return '';
-  let a=all.reduce((x,f)=>f.start<x?f.start:x,all[0].start),b=all.reduce((x,f)=>(f.end||f.start)>x?(f.end||f.start):x,all[0].end||all[0].start);
-  a=addDays(a,-2);b=addDays(b,2);const N=daysBetween(a,b),pos=d=>((daysBetween(a,d)-1)/N*100),wid=(s,e)=>(daysBetween(s,e)/N*100);
-  let scale='';for(let d=a;d<=b;d=addDays(d,1)){const x=parse(d);if(x.getDate()===1||d===a)scale+=`<span style="left:${pos(d)}%">${MSHORT[LANG][x.getMonth()]}</span>`}
-  const td=today(),tl=td>=a&&td<=b?`<div class="gtoday" style="left:${pos(td)}%"></div>`:'';
-  return `<div class="gantt"><div class="gscale">${scale}</div>
-   <div class="glane"><div class="gl">${t('lanePaid')}</div><div class="gtrack">${tl}${S.paid.flatMap(c=>c.flights).filter(f=>f.start).map(f=>`<div class="gbar paid ${f.tbd?'tbd':''}" style="left:${pos(f.start)}%;width:${wid(f.start,f.end||f.start)}%" title="${esc(tv(f,'focus'))}">${esc(tv(f,'name'))}</div>`).join('')}</div></div>
-   <div class="glane"><div class="gl">${t('laneMom')}</div><div class="gtrack">${tl}${S.moments.filter(m=>m.start).map(m=>`<div class="gbar mom" style="--c:${m.color};left:${pos(m.start)}%;width:${wid(m.start,m.end||m.start)}%" title="${esc(tv(m,'name'))}">${esc(tv(m,'name'))}</div>`).join('')}</div></div>
-   <div class="glane"><div class="gl">${t('laneMs')}</div><div class="gtrack">${tl}${S.milestones.map(m=>`<div class="gms" style="left:${pos(m.date)+.5/N*100}%" title="${fmtShort(m.date)} · ${esc(tv(m,'label'))}"></div>`).join('')}</div></div></div>`;
+const fmtRange=(a,b)=>a===b||!b?fmtShort(a):`${fmtShort(a)} – ${fmtShort(b)}`;
+const money=n=>(Math.round(n*100)/100).toLocaleString(LANG==='en'?'en-GB':'es-ES')+' €';
+/* month-by-month budget of one campaign (or all when c is null) */
+function budgetByMonth(c){
+  const flights=c?c.flights:S.paid.flatMap(x=>x.flights),out={};
+  for(const f of flights){if(!f.start)continue;const e=f.end||f.start;
+    for(let d=f.start;d<=e;d=addDays(d,1)){const k=d.slice(0,7);const m=out[k]=out[k]||{k,total:0,days:0,dailies:new Set(),tbd:false,phases:new Set()};
+      m.phases.add(tv(f,'name'));if(f.tbd){m.tbd=true;continue}m.total+=+f.daily||0;m.days++;m.dailies.add(+f.daily||0)}}
+  return Object.values(out).sort((a,b)=>a.k.localeCompare(b.k));
 }
+const monthName=k=>{const [y,m]=k.split('-').map(Number);return MONTHS[LANG][m-1]+' '+y};
+function todayDaily(){return flightsOn(today()).reduce((a,x)=>a+(+x.f.daily||0),0)}
 function vPaid(){
-  const td=today();
+  const td=today(),curK=td.slice(0,7);
   const camps=S.paid.map(c=>{
-    const total=c.flights.reduce((x,f)=>x+flightTotal(f),0),act=c.flights.find(f=>!f.tbd&&inRange(td,f.start,f.end));
-    const X=(f,o,field)=>`data-x="${f}|${c.id}|${o.id}|${field}"`;
-    const fl=c.flights.map(f=>`<tr><td><input class="cell" ${X('flight',f,'name')} value="${esc(tv(f,'name'))}" style="font-weight:600;min-width:110px"></td><td><input type="date" class="cell" ${X('flight',f,'start')} value="${esc(f.start)}"></td><td><input type="date" class="cell" ${X('flight',f,'end')} value="${esc(f.end)}"></td><td><input type="number" min="0" class="cell" ${X('flight',f,'daily')} value="${esc(f.daily)}" style="width:70px;min-width:60px"></td><td><input class="cell" ${X('flight',f,'focus')} value="${esc(tv(f,'focus'))}" style="min-width:220px"></td><td><b>${f.tbd?t('tbd'):'≈'+flightTotal(f)+' €'}</b></td><td><button class="btn ghost icon" data-xdel="flight|${c.id}|${f.id}">🗑</button></td></tr>`).join('');
-    const ads=c.ads.map(a=>`<tr><td><input class="cell" ${X('ad',a,'code')} value="${esc(a.code)}" style="font-family:ui-monospace,monospace;min-width:120px"></td><td><input class="cell" ${X('ad',a,'creative')} value="${esc(tv(a,'creative'))}" style="min-width:260px"></td><td><select class="cell paidstat" ${X('ad',a,'status')}>${optsKV(AD_ST(),a.status)}</select></td><td><button class="btn ghost icon" data-xdel="ad|${c.id}|${a.id}">🗑</button></td></tr>`).join('');
+    const months=budgetByMonth(c),total=months.reduce((a,m)=>a+m.total,0),cap=+c.monthly||0;
+    const act=c.flights.find(f=>!f.tbd&&inRange(td,f.start,f.end)),thisM=months.find(m=>m.k===curK);
     const cx=f=>`data-x="camp||${c.id}|${f}"`;
-    return `<div class="paidhero sec">
-      <div class="money"><span class="coin">💸</span><div class="code">${esc(c.code)}</div><h3>${esc(tv(c,'name'))}</h3>
+    const monthRows=months.map(m=>{const ds=[...m.dailies],pct=cap?Math.min(100,m.total/cap*100):0;
+      return `<div class="mrow ${m.k===curK?'cur':''}"><div class="mn">${monthName(m.k)}${m.k===curK?` <span class="tag lime">${t('today')}</span>`:''}</div>
+        <div class="md">${m.tbd&&!m.days?t('tbd'):(ds.length?ds.map(x=>x+' €').join(' → ')+' / '+t('dayShort'):'—')}</div>
+        <div class="mb2">${cap?`<div class="tr"><div class="fl" style="width:${pct}%"></div></div>`:''}</div>
+        <div class="mt2"><b>${m.tbd&&!m.days?'—':'≈'+money(m.total)}</b>${cap?`<small> / ${money(cap)}</small>`:''}</div></div>`}).join('');
+    const phases=c.flights.map(f=>{const live=!f.tbd&&inRange(td,f.start,f.end),past=f.end&&f.end<td;
+      return `<div class="phase ${live?'live':''} ${past?'past':''} ${f.tbd?'tbd':''}">
+        <div class="ph-top"><b>${esc(tv(f,'name'))}</b>${live?`<span class="tag lime">● ${t('liveNow')}</span>`:''}<span class="sp"></span>${RO()?'':`<button class="btn ghost icon sm" data-editflight="${c.id}|${f.id}">✎</button><button class="btn ghost icon sm" data-xdel="flight|${c.id}|${f.id}">🗑</button>`}</div>
+        <div class="ph-dates">${f.start?fmtRange(f.start,f.end):'—'}${f.start&&f.end?` · ${daysBetween(f.start,f.end)} ${t('daysL')}`:''}</div>
+        <div class="ph-money">${f.tbd?`<b>${t('tbd')}</b>`:`<b>${money(+f.daily||0)}</b><span>/${t('dayShort')}</span>`}</div>
+        <div class="ph-total">${f.tbd?'':'≈'+money(flightTotal(f))+' '+t('inTotal')}</div>
+        <div class="ph-focus">${esc(tv(f,'focus'))}</div></div>`}).join('');
+    const ads=c.ads.map(a=>`<div class="adrow"><code>${esc(a.code)}</code><span class="ac">${esc(tv(a,'creative'))}</span><select class="inp paidstat" data-x="ad|${c.id}|${a.id}|status">${optsKV(AD_ST(),a.status)}</select>${RO()?'':`<button class="btn ghost icon sm" data-editad="${c.id}|${a.id}">✎</button><button class="btn ghost icon sm" data-xdel="ad|${c.id}|${a.id}">🗑</button>`}</div>`).join('');
+    return `<div class="money">
+        <span class="coin">💸</span><div class="code">${esc(c.code)}</div><h3>${esc(tv(c,'name'))}</h3>
         <div style="font-size:12.5px;color:#d9d4c9">${esc([c.platform,lv(tv(c,'objective')),lv(tv(c,'optimization')),lv(tv(c,'country'))].filter(Boolean).join(' · '))}</div>
-        <div class="row"><div><b>≈${total} €</b>${t('planTotal')}</div><div><b>${act?act.daily+' €':'—'}</b>${t('perDay')}</div><div><b>${c.ads.filter(a=>a.status==='ready').length}/${c.ads.length}</b>${t('adsReady')}</div></div>
-        <details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:#bdb8ad">⚙️ ${t('setup')}</summary><div class="fgrid" style="margin-top:10px">
-          <div class="fld full"><label style="color:#bdb8ad">${t('name')}</label><input class="inp keep2" ${cx('name')} value="${esc(tv(c,'name'))}"></div>
-          <div class="fld"><label style="color:#bdb8ad">${t('c_status')}</label><select class="inp" ${cx('status')}>${optsKV(C_ST(),c.status)}</select></div>
-          <div class="fld"><label style="color:#bdb8ad">${t('platform')}</label><input class="inp" ${cx('platform')} value="${esc(c.platform)}"></div>
-          <div class="fld"><label style="color:#bdb8ad">${t('objective')}</label><input class="inp" ${cx('objective')} value="${esc(tv(c,'objective'))}"></div>
-          <div class="fld"><label style="color:#bdb8ad">${t('optim')}</label><input class="inp" ${cx('optimization')} value="${esc(tv(c,'optimization'))}"></div>
-          <div class="fld"><label style="color:#bdb8ad">${t('country')}</label><input class="inp" ${cx('country')} value="${esc(tv(c,'country'))}"></div>
-          <div class="fld"><label style="color:#bdb8ad">${t('code')}</label><input class="inp" ${cx('code')} value="${esc(c.code)}"></div>
-          <div class="fld full"><button class="btn sm" data-delcamp="${c.id}" style="background:transparent;color:#ff9b9b;border-color:#4a3a3a">🗑 ${t('delCampT')}</button></div></div></details>
+        <div class="row big3">
+          <div><small>${t('bToday')}</small><b>${money(act?+act.daily:0)}</b><span>${act?esc(tv(act,'name')):t('noneActive')}</span></div>
+          <div><small>${t('bMonth')} · ${MONTHS[LANG][+curK.slice(5)-1]}</small><b>≈${money(thisM?thisM.total:0)}</b><span>${cap?t('ofCap',money(cap)):''}</span></div>
+          <div><small>${t('bTotal')}</small><b>≈${money(total)}</b><span>${months.some(m=>m.tbd)?t('plusTbd'):''}</span></div>
+        </div>
+        <details style="margin-top:14px"><summary style="cursor:pointer;font-size:12px;color:#bdb8ad">⚙️ ${t('setup')}</summary><div class="fgrid dark" style="margin-top:10px">
+          <div class="fld full"><label>${t('name')}</label><input class="inp" ${cx('name')} value="${esc(tv(c,'name'))}"></div>
+          <div class="fld"><label>${t('monthlyCap')}</label><input class="inp" type="number" min="0" ${cx('monthly')} value="${esc(c.monthly||'')}"></div>
+          <div class="fld"><label>${t('c_status')}</label><select class="inp" ${cx('status')}>${optsKV(C_ST(),c.status)}</select></div>
+          <div class="fld"><label>${t('platform')}</label><input class="inp" ${cx('platform')} value="${esc(c.platform)}"></div>
+          <div class="fld"><label>${t('objective')}</label><input class="inp" ${cx('objective')} value="${esc(tv(c,'objective'))}"></div>
+          <div class="fld"><label>${t('optim')}</label><input class="inp" ${cx('optimization')} value="${esc(tv(c,'optimization'))}"></div>
+          <div class="fld"><label>${t('country')}</label><input class="inp" ${cx('country')} value="${esc(tv(c,'country'))}"></div>
+          <div class="fld full"><label>${t('code')}</label><input class="inp" ${cx('code')} value="${esc(c.code)}"></div>
+          ${RO()?'':`<div class="fld full"><button class="btn sm" data-delcamp="${c.id}" style="background:transparent;color:#ff9b9b;border-color:#4a3a3a">🗑 ${t('delCampT')}</button></div>`}</div></details>
       </div>
-      <div class="card"><h3>📝 ${t('notes')}</h3><textarea class="inp" ${cx('notes')} style="width:100%;min-height:190px;line-height:1.55">${esc(tv(c,'notes'))}</textarea></div>
-    </div>
-    <div class="sec">
-      <div class="card"><h3>📺 ${t('flights')}<span class="sp"></span><button class="btn sm" data-xadd="flight|${c.id}">${t('addFlight')}</button></h3><div class="tblwrap mini-tbl"><table><thead><tr><th>${t('name')}</th><th>${t('start')}</th><th>${t('end')}</th><th>${t('daily')}</th><th>${t('focus')}</th><th>${t('total')}</th><th></th></tr></thead><tbody>${fl}</tbody></table></div></div>
-      <div class="card sec"><h3>🎬 ${t('ads')}<span class="sp"></span><button class="btn sm" data-xadd="ad|${c.id}">${t('addAd')}</button></h3><div class="tblwrap mini-tbl"><table><thead><tr><th>${t('a_code')}</th><th>${t('a_creative')}</th><th>${t('c_status')}</th><th></th></tr></thead><tbody>${ads}</tbody></table></div></div>
-    </div>`;
+      <div class="card sec"><h3>💶 ${t('byMonth')}<small>${t('byMonthH')}</small></h3>${monthRows}</div>
+      <div class="card sec"><h3>🧩 ${t('flights')}<small>${t('flightsH')}</small><span class="sp"></span>${RO()?'':`<button class="btn sm" data-xadd="flight|${c.id}">${t('addFlight')}</button>`}</h3><div class="phases">${phases}</div></div>
+      <div class="grid two sec">
+        <div class="card"><h3>🎬 ${t('ads')}<span class="sp"></span>${RO()?'':`<button class="btn sm" data-xadd="ad|${c.id}">${t('addAd')}</button>`}</h3>${ads||'<div class="note">—</div>'}</div>
+        <div class="card"><h3>📝 ${t('notes')}</h3><textarea class="inp" ${cx('notes')} style="width:100%;min-height:200px;line-height:1.55">${esc(tv(c,'notes'))}</textarea></div>
+      </div>`;
   }).join('<hr style="border:0;border-top:2px dashed var(--line);margin:28px 0">');
-  const ms=[...S.milestones].sort((a,b)=>a.date.localeCompare(b.date)).map(m=>`<tr><td><input type="date" class="cell" data-x="ms||${m.id}|date" value="${esc(m.date)}"></td><td><input class="cell" data-x="ms||${m.id}|label" value="${esc(tv(m,'label'))}" style="min-width:300px"></td><td><select class="cell" data-x="ms||${m.id}|kind">${optsKV([['paid',t('kindPaid')],['organic',t('kindOrg')]],m.kind)}</select></td><td><button class="btn ghost icon" data-xdel="ms||${m.id}">🗑</button></td></tr>`).join('');
-  return `${gantt()}${S.paid.length?camps:`<div class="empty sec"><span class="big">💸</span>${t('noPaid')}</div>`}
-  <div class="card sec"><h3>📍 ${t('milestones')}<span class="sp"></span><button class="btn sm" data-xadd="ms|">${t('addMs')}</button><button class="btn sm" data-act="newCampaign">${t('newCampaign')}</button></h3><div class="tblwrap mini-tbl"><table><tbody>${ms}</tbody></table></div></div>`;
+  const ms=[...S.milestones].sort((a,b)=>a.date.localeCompare(b.date)).map(m=>`<div class="adrow"><span class="dt" style="width:70px;font-weight:700;color:var(--tx2)">${fmtShort(m.date)}</span><span class="ac">${m.kind==='paid'?'💸':'🌱'} ${esc(tv(m,'label'))}</span>${RO()?'':`<button class="btn ghost icon sm" data-editms="${m.id}">✎</button><button class="btn ghost icon sm" data-xdel="ms||${m.id}">🗑</button>`}</div>`).join('');
+  return `${S.paid.length?camps:`<div class="empty"><span class="big">💸</span>${t('noPaid')}</div>`}
+  <div class="card sec"><h3>📍 ${t('milestones')}<span class="sp"></span>${RO()?'':`<button class="btn sm" data-editms="">${t('addMs')}</button>`}</h3>${ms||'<div class="note">—</div>'}</div>
+  ${RO()?'':`<div class="sec"><button class="btn" data-act="newCampaign">${t('newCampaign')}</button></div>`}`;
+}
+function flightModal(cid,fid){
+  const c=S.paid.find(x=>x.id===cid),f=c.flights.find(x=>x.id===fid);
+  openModal(`<form data-form="flight" data-c="${cid}" data-f="${fid}"><div class="mh">✎ ${esc(tv(f,'name'))}</div><div class="mb"><div class="fgrid">
+   <div class="fld full"><label>${t('name')}</label><input class="inp" name="name" value="${esc(tv(f,'name'))}"></div>
+   <div class="fld"><label>${t('start')}</label><input class="inp" type="date" name="start" value="${esc(f.start)}"></div>
+   <div class="fld"><label>${t('end')}</label><input class="inp" type="date" name="end" value="${esc(f.end)}"></div>
+   <div class="fld"><label>${t('dailyBudget')}</label><input class="inp" type="number" min="0" step="0.5" name="daily" value="${esc(f.daily)}"></div>
+   <div class="fld"><label>&nbsp;</label><label class="chk" style="display:inline-flex"><input type="checkbox" name="tbd" ${f.tbd?'checked':''}> ${t('tbd')}</label></div>
+   <div class="fld full"><label>${t('focus')}</label><input class="inp" name="focus" value="${esc(tv(f,'focus'))}"></div>
+  </div></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('save')}</button></div></form>`);
+}
+function adModal(cid,aid){
+  const c=S.paid.find(x=>x.id===cid),a=c.ads.find(x=>x.id===aid);
+  openModal(`<form data-form="ad" data-c="${cid}" data-a="${aid}"><div class="mh">✎ ${esc(a.code||t('ads'))}</div><div class="mb"><div class="fgrid">
+   <div class="fld full"><label>${t('a_code')}</label><input class="inp" name="code" value="${esc(a.code)}"></div>
+   <div class="fld full"><label>${t('a_creative')}</label><input class="inp" name="creative" value="${esc(tv(a,'creative'))}"></div>
+   <div class="fld full"><label>${t('a_dest')}</label><input class="inp" name="dest" value="${esc(tv(a,'dest'))}"></div>
+  </div></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('save')}</button></div></form>`);
+}
+function msModal(id){
+  const m=id?S.milestones.find(x=>x.id===id):{date:today(),label:'',kind:'organic'};
+  openModal(`<form data-form="ms" data-id="${id||''}"><div class="mh">📍 ${t('milestones')}</div><div class="mb"><div class="fgrid">
+   <div class="fld"><label>${t('d_date')}</label><input class="inp" type="date" name="date" value="${esc(m.date)}" required></div>
+   <div class="fld"><label>&nbsp;</label><select class="inp" name="kind">${optsKV([['paid',t('kindPaid')],['organic',t('kindOrg')]],m.kind)}</select></div>
+   <div class="fld full"><label>${t('label')}</label><input class="inp" name="label" value="${esc(tv(m,'label'))}" required></div>
+  </div></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('save')}</button></div></form>`);
 }
 
 /* ============ SETTINGS ============ */
@@ -1138,13 +1219,13 @@ function deleteClient(){
 const XTXT=['name','focus','label','desc','notes','creative','dest','role','objective','optimization','country'];
 function xList(kind,pid){if(kind==='flight'||kind==='ad'){const c=S.paid.find(x=>x.id===pid);return c?(kind==='flight'?c.flights:c.ads):null}return {mom:S.moments,ms:S.milestones,rhy:S.rhythm,camp:S.paid,team:S.team}[kind]}
 function xSet(spec,val){const [kind,pid,rid,field]=spec.split('|'),L=xList(kind,pid);if(!L)return;const o=L.find(x=>x.id===rid);if(!o)return;
-  if(field==='daily'||field==='day')val=Number(val)||0;
+  if(field==='daily'||field==='day'||field==='monthly')val=Number(val)||0;
   if(XTXT.includes(field)&&!(kind==='team'&&field==='name'))setTv(o,field,val);else o[field]=val;
   if(field==='start'&&o.end&&o.end<val)o.end=val;save();if(!['notes','label','desc','creative','role','name'].includes(field))render()}
 function xAdd(spec){const [kind,pid]=spec.split('|'),L=xList(kind,pid);if(!L)return;const td=today();
-  L.push({flight:{id:uid('f'),name:(LANG==='en'?'Flight ':'Pantalla ')+(L.length+1),start:td,end:addDays(td,13),daily:10,focus:'',tbd:false},ad:{id:uid('a'),code:'',creative:'',dest:'',status:'todo'},ms:{id:uid('m'),date:td,label:'',kind:'organic'},mom:{id:uid('mo'),name:'',start:td,end:addDays(td,6),color:PALETTE[S.moments.length%PALETTE.length],desc:''},rhy:{id:uid('r'),day:1,format:S.lists.formats[0]||'',pillar:'',label:''},team:{id:uid('tm'),name:'',role:''}}[kind]);save();render()}
+  L.push({flight:{id:uid('f'),name:(LANG==='en'?'Phase ':'Fase ')+(L.length+1),start:td,end:addDays(td,13),daily:0,focus:'',tbd:true},ad:{id:uid('a'),code:'',creative:'',dest:'',status:'todo'},ms:{id:uid('m'),date:td,label:'',kind:'organic'},mom:{id:uid('mo'),name:'',start:td,end:addDays(td,6),color:PALETTE[S.moments.length%PALETTE.length],desc:''},rhy:{id:uid('r'),day:1,format:S.lists.formats[0]||'',pillar:'',label:''},team:{id:uid('tm'),name:'',role:''}}[kind]);save();render()}
 function xDel(spec){const [kind,pid,rid]=spec.split('|'),L=xList(kind,pid);if(!L)return;const i=L.findIndex(x=>x.id===rid);if(i<0)return;snapshotForUndo();L.splice(i,1);save();render();toast(t('deleted'),true)}
-function newCampaign(){const td=today();S.paid.push({id:uid('c'),name:LANG==='en'?'New campaign':'Nueva campaña',code:'',platform:'Meta',objective:'',optimization:'',country:'',status:'planned',notes:'',flights:[{id:uid('f'),name:LANG==='en'?'Flight 1':'Pantalla 1',start:td,end:addDays(td,13),daily:10,focus:'',tbd:false}],ads:[]});save();go('paid')}
+function newCampaign(){const td=today();S.paid.push({id:uid('c'),name:LANG==='en'?'New campaign':'Nueva campaña',code:'',platform:'Meta',objective:'',optimization:'',country:'',status:'planned',notes:'',monthly:0,flights:[{id:uid('f'),name:LANG==='en'?'Phase 1':'Fase 1',start:td,end:addDays(td,13),daily:0,focus:'',tbd:true}],ads:[]});save();go('paid')}
 function updatePost(id,patch,msg){if(RO())return;const p=S.posts.find(x=>x.id===id);if(!p)return;if(patch.status==='published'&&p.status!=='published'){confetti();msg=t('published')}
   if(patch.title!==undefined){setTv(p,'title',patch.title);delete patch.title}Object.assign(p,patch,{updatedAt:new Date().toISOString()});save();render();if(msg)toast(msg)}
 function duplicate(id){const p=S.posts.find(x=>x.id===id);if(!p)return;const c=JSON.parse(JSON.stringify(p));c.id=nextId();c.title=(p.title||'')+t('copySuffix');if(c.en&&c.en.title)c.en.title+=' (copy)';c.status='idea';c.url='';c.createdAt=c.updatedAt=new Date().toISOString();S.posts.push(c);save();render();toast(t('dupAs')+' '+c.id);return c.id}
@@ -1160,7 +1241,7 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('ecm-lang
 
 document.addEventListener('click',e=>{
   if(!e.target.closest('#menu')&&!e.target.closest('[data-act=clientMenu]'))hideMenu();
-  const el=e.target.closest('[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
+  const el=e.target.closest('[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
   if(!el)return;if(e.target.closest('input,select,textarea')&&!el.matches('[data-act],[data-step]'))return;
   const ds=el.dataset;
   if(ds.copy){copyText(ds.copy,t('linkCopied'));return}
@@ -1197,9 +1278,12 @@ document.addEventListener('click',e=>{
   if(ds.view&&el.closest('.nav')){go(ds.view);return}
   if(ds.view2){go(ds.view2);return}
   if(ds.band){go(ds.band==='paid'?'paid':'pillars');return}
-  if(RO()&&(ds.slot||ds.xadd||ds.xdel||ds.delcamp||ds.newdate||ds.advance||ds.step||ds.dup||ds.del||ds.editpillar||ds.delpillar)){connectModal();return}
+  if(RO()&&(ds.editflight||ds.editad||ds.editms!==undefined||ds.slot||ds.xadd||ds.xdel||ds.delcamp||ds.newdate||ds.advance||ds.step||ds.dup||ds.del||ds.editpillar||ds.delpillar)){connectModal();return}
+  if(ds.editflight){const [c,f]=ds.editflight.split('|');flightModal(c,f);return}
+  if(ds.editad){const [c,a]=ds.editad.split('|');adModal(c,a);return}
+  if(ds.editms!==undefined){msModal(ds.editms);return}
   if(ds.slot){const r=S.rhythm.find(x=>x.id===ds.slot);if(r)openPost(null,{date:ds.sdate,format:r.format,pillar:r.pillar,status:'idea',channel:S.lists.channels.includes('Instagram')?'Instagram':''});return}
-  if(ds.xadd){xAdd(ds.xadd);return}
+  if(ds.xadd){xAdd(ds.xadd);const [k,pid]=ds.xadd.split('|');if(k==='flight'||k==='ad'){const c=S.paid.find(x=>x.id===pid),L=k==='flight'?c.flights:c.ads,o=L[L.length-1];k==='flight'?flightModal(pid,o.id):adModal(pid,o.id)}return}
   if(ds.xdel){xDel(ds.xdel);return}
   if(ds.delcamp){const c=S.paid.find(x=>x.id===ds.delcamp);if(c)confirmModal(t('delCampT'),t('delCampM',tv(c,'name')),t('del'),()=>{snapshotForUndo();S.paid=S.paid.filter(x=>x!==c);save();render();toast(t('deleted'),true)},true);return}
   if(ds.calmode){UI.cal.mode=ds.calmode;render();return}
@@ -1242,6 +1326,9 @@ document.addEventListener('submit',e=>{
   if(f.dataset.form==='connect'){doConnect((fd.token||'').trim());return}
   if(RO())return;
   if(f.dataset.form==='capture'){const title=(fd.title||'').trim();if(!title)return;const now=new Date().toISOString();const p=Object.assign({},EMPTY_POST,{id:nextId(),createdAt:now,updatedAt:now});setTv(p,'title',title);S.posts.push(p);save();render();toast(t('ideaAdded'));setTimeout(()=>{const i=document.querySelector('[data-key=capt]');if(i)i.focus()},20);return}
+  if(f.dataset.form==='flight'){const c=S.paid.find(x=>x.id===f.dataset.c),o=c&&c.flights.find(x=>x.id===f.dataset.f);if(!o)return;setTv(o,'name',fd.name.trim());setTv(o,'focus',fd.focus.trim());o.start=fd.start;o.end=fd.end&&fd.end>=fd.start?fd.end:fd.start;o.daily=+fd.daily||0;o.tbd=!!fd.tbd;save();closeModal();render();return}
+  if(f.dataset.form==='ad'){const c=S.paid.find(x=>x.id===f.dataset.c),o=c&&c.ads.find(x=>x.id===f.dataset.a);if(!o)return;o.code=fd.code.trim();setTv(o,'creative',fd.creative.trim());setTv(o,'dest',fd.dest.trim());save();closeModal();render();return}
+  if(f.dataset.form==='ms'){let o=f.dataset.id?S.milestones.find(x=>x.id===f.dataset.id):null;if(!o){o={id:uid('m')};S.milestones.push(o)}o.date=fd.date;o.kind=fd.kind;setTv(o,'label',fd.label.trim());save();closeModal();render();return}
   if(f.dataset.form==='pillar'){const id=f.dataset.id,o=id?pillar(id):{id:uid('pl')};setTv(o,'name',fd.name.trim());setTv(o,'description',fd.description);o.target=+fd.target||0;o.color=fd.color||o.color||PALETTE[0];if(!id)S.pillars.push(o);save();closeModal();render();return}
   if(f.dataset.form==='client'){const id=f.dataset.id,name=fd.name.trim()||t('myClient'),color=fd.color||PALETTE[0];
     if(id){Object.assign(CL.list.find(x=>x.id===id),{name,color});saveClients();closeModal();render();return}

@@ -323,14 +323,14 @@
    "status": "idea",
    "asset": "",
    "url": "",
-   "notes": "Propuesta. Black Friday: ¿hay acción? Confirmar con Silvia (el Paid ya lo cubre en la Pantalla 1).",
+   "notes": "Propuesta. Black Friday: ¿hay acción? Confirmar con Silvia (el Paid ya lo cubre en la Fase 1).",
    "viral": false,
    "ads": false,
    "createdAt": "2026-11-06T08:57:22.529450+00:00",
    "updatedAt": "2026-11-06T08:57:22.529450+00:00",
    "en": {
     "title": "Founder on camera: the story behind a piece",
-    "notes": "Proposal. Black Friday: is there a promotion? Confirm with Silvia (paid already covers it in Flight 1)."
+    "notes": "Proposal. Black Friday: is there a promotion? Confirm with Silvia (paid already covers it in Phase 1)."
    }
   },
   {
@@ -1269,54 +1269,54 @@
    "flights": [
     {
      "id": "f1",
-     "name": "Campaña 1",
+     "name": "Fase 1",
      "start": "2026-11-09",
      "end": "2026-11-30",
      "daily": 13,
      "focus": "Bali + Navidad · incluye Black Friday",
      "tbd": false,
      "en": {
-      "name": "Flight 1",
+      "name": "Phase 1",
       "focus": "Bali + Christmas · includes Black Friday"
      }
     },
     {
      "id": "f2",
-     "name": "Pantalla 2",
+     "name": "Fase 2",
      "start": "2026-12-01",
      "end": "2026-12-18",
      "daily": 14,
      "focus": "Más peso a Navidad · sprint de regalos",
      "tbd": false,
      "en": {
-      "name": "Flight 2",
+      "name": "Phase 2",
       "focus": "More weight on Christmas · gift sprint"
      }
     },
     {
      "id": "f3",
-     "name": "Pantalla 3",
+     "name": "Fase 3",
      "start": "2026-12-19",
      "end": "2026-12-30",
      "daily": 4,
      "focus": "Solo Bali · Navidad en pausa",
      "tbd": false,
      "en": {
-      "name": "Flight 3",
+      "name": "Phase 3",
       "focus": "Bali only · Christmas paused"
      }
     },
     {
      "id": "f4",
-     "name": "Bonus enero",
+     "name": "Enero",
      "start": "2027-01-01",
      "end": "2027-01-31",
      "daily": 0,
-     "focus": "Bali + prueba B2B · 300 €/mes, por definir",
+     "focus": "Bali + prueba B2B · por definir",
      "tbd": true,
      "en": {
-      "name": "January bonus",
-      "focus": "Bali + B2B test · €300/month, TBD"
+      "name": "January",
+      "focus": "Bali + B2B test · TBD"
      }
     }
    ],
@@ -1383,7 +1383,8 @@
     "optimization": "Add to cart",
     "country": "Spain",
     "notes": "🔐 Silvia approves access to the Facebook page (unlocks everything)\n📦 Shipping cut-off to arrive before Dec 24 (assumed: Dec 18)\n🎥 2–3 short vertical Christmas videos (phone footage is fine)\n🧾 Verify the tax ID (NIF/VAT) in Meta Billing\n🗂️ Is there a product catalogue in Meta?\n💶 Confirm the €300/month is ads only (VAT on top)\n\nAd set: SAN_ES_B2C_AMPLIO_ATC · broad audience, suggested women 30–60 + home decor, interior design and design · Spanish and Catalan\nFull media plan: https://claude.ai/artifact/Xt6mCSWMU8L5AKmbjmDs8J"
-   }
+   },
+   "monthly": 300
   },
   {
    "id": "cyqn8pa",
@@ -1398,12 +1399,12 @@
    "flights": [
     {
      "id": "f5yhpfb",
-     "name": "Pantalla 1",
+     "name": "Fase 1",
      "start": "2026-11-06",
      "end": "2026-11-19",
-     "daily": 10,
+     "daily": 0,
      "focus": "",
-     "tbd": false
+     "tbd": true
     }
    ],
    "ads": []

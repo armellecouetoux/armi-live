@@ -1124,7 +1124,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-06T09:25:15.394098+00:00",
+ "updatedAt": "2026-11-06T14:00:48.481Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1384,6 +1384,29 @@
     "country": "Spain",
     "notes": "🔐 Silvia approves access to the Facebook page (unlocks everything)\n📦 Shipping cut-off to arrive before Dec 24 (assumed: Dec 18)\n🎥 2–3 short vertical Christmas videos (phone footage is fine)\n🧾 Verify the tax ID (NIF/VAT) in Meta Billing\n🗂️ Is there a product catalogue in Meta?\n💶 Confirm the €300/month is ads only (VAT on top)\n\nAd set: SAN_ES_B2C_AMPLIO_ATC · broad audience, suggested women 30–60 + home decor, interior design and design · Spanish and Catalan\nFull media plan: https://claude.ai/artifact/Xt6mCSWMU8L5AKmbjmDs8J"
    }
+  },
+  {
+   "id": "cyqn8pa",
+   "name": "Nueva campaña",
+   "code": "",
+   "platform": "Meta",
+   "objective": "",
+   "optimization": "",
+   "country": "",
+   "status": "planned",
+   "notes": "",
+   "flights": [
+    {
+     "id": "f5yhpfb",
+     "name": "Pantalla 1",
+     "start": "2026-11-06",
+     "end": "2026-11-19",
+     "daily": 10,
+     "focus": "",
+     "tbd": false
+    }
+   ],
+   "ads": []
   }
  ]
 }

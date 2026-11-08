@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T19:26:55.563Z",
+ "updatedAt": "2026-11-08T20:56:45.128Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1632,11 +1632,11 @@
    "flights": [
     {
      "id": "f1",
-     "name": "Fase 1",
+     "name": "Vela Bali",
      "start": "2026-11-09",
      "end": "2026-11-30",
-     "daily": 13,
-     "focus": "Vela Bali · incluye Black Friday",
+     "daily": 10,
+     "focus": "Vela Bali",
      "tbd": false,
      "en": {
       "name": "Phase 1",

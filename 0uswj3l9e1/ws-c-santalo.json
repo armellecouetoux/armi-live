@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T20:58:02.243Z",
+ "updatedAt": "2026-11-08T20:58:19.626Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1733,17 +1733,7 @@
    "country": "",
    "status": "planned",
    "notes": "",
-   "flights": [
-    {
-     "id": "f5yhpfb",
-     "name": "Vela Bali",
-     "start": "2026-11-09",
-     "end": "2026-11-19",
-     "daily": 10,
-     "focus": "Vela Bali",
-     "tbd": true
-    }
-   ],
+   "flights": [],
    "ads": [
     {
      "id": "a29w09u",

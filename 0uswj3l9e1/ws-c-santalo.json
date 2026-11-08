@@ -1410,49 +1410,8 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T21:14:15.018Z",
- "rhythm": [
-  {
-   "id": "r1",
-   "day": 1,
-   "format": "Reel",
-   "pillar": "pl1",
-   "label": "Ritual y calma",
-   "en": {
-    "label": "Ritual and calm"
-   }
-  },
-  {
-   "id": "r2",
-   "day": 3,
-   "format": "Carrusel",
-   "pillar": "pl2",
-   "label": "Producto y regalo",
-   "en": {
-    "label": "Product and gifting"
-   }
-  },
-  {
-   "id": "r3",
-   "day": 5,
-   "format": "Reel",
-   "pillar": "pl3",
-   "label": "Inspiración o comunidad",
-   "en": {
-    "label": "Inspiration or community"
-   }
-  },
-  {
-   "id": "r4",
-   "day": 0,
-   "format": "Stories",
-   "pillar": "pl4",
-   "label": "Tienda, proceso, evento",
-   "en": {
-    "label": "Shop, process, event"
-   }
-  }
- ],
+ "updatedAt": "2026-11-08T21:14:23.651Z",
+ "rhythm": [],
  "moments": [],
  "milestones": [
   {

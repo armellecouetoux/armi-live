@@ -1410,7 +1410,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T21:13:32.718Z",
+ "updatedAt": "2026-11-08T21:14:10.885Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1464,18 +1464,6 @@
    "en": {
     "name": "Gifting",
     "desc": "Gift guides, bundles and countdown to the event"
-   }
-  },
-  {
-   "id": "mo2",
-   "name": "Evento en tienda",
-   "start": "2026-12-10",
-   "end": "2026-12-10",
-   "color": "#9bbf00",
-   "desc": "Grabación para Reels y stories esa tarde",
-   "en": {
-    "name": "In-store event",
-    "desc": "Filming for Reels and stories that evening"
    }
   },
   {

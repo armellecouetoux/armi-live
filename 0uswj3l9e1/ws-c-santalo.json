@@ -1410,7 +1410,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T21:14:10.885Z",
+ "updatedAt": "2026-11-08T21:14:15.018Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1453,44 +1453,7 @@
    }
   }
  ],
- "moments": [
-  {
-   "id": "mo1",
-   "name": "Gifting",
-   "start": "2026-12-01",
-   "end": "2026-12-09",
-   "color": "#e05a7a",
-   "desc": "Guías de regalo, bundles y cuenta atrás para el evento",
-   "en": {
-    "name": "Gifting",
-    "desc": "Gift guides, bundles and countdown to the event"
-   }
-  },
-  {
-   "id": "mo3",
-   "name": "Último envío",
-   "start": "2026-12-11",
-   "end": "2026-12-20",
-   "color": "#3b82f6",
-   "desc": "Contenido del evento y fecha límite para recibir antes de Navidad",
-   "en": {
-    "name": "Last shipping",
-    "desc": "Event content and the cut-off date to arrive before Christmas"
-   }
-  },
-  {
-   "id": "mo4",
-   "name": "Tienda y Reyes",
-   "start": "2026-12-21",
-   "end": "2027-01-06",
-   "color": "#c9a227",
-   "desc": "Regalos de última hora en tienda y tarjeta regalo, si existe",
-   "en": {
-    "name": "Shop and Three Kings",
-    "desc": "Last-minute gifts in store and a gift card, if there is one"
-   }
-  }
- ],
+ "moments": [],
  "milestones": [
   {
    "id": "ms1",

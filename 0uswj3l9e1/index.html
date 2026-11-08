@@ -490,7 +490,13 @@ let LANG='es';
 try{const l=localStorage.getItem('ecm-lang');if(l==='en'||l==='es')LANG=l;else if((navigator.language||'').toLowerCase().startsWith('en'))LANG='en'}catch(e){}
 const TX={
  v_overview:['Resumen','Overview'],v_calendar:['Calendario','Calendar'],v_database:['Contenidos','Content'],v_workflow:['Producción','Production'],v_pillars:['Pilares','Pillars'],v_paid:['Paid','Paid'],v_prompts:['Prompts IA','AI prompts'],v_ajustes:['Ajustes','Settings'],
- sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],useSug:['Usar','Use'],sugUsed:['Copy aplicado: revísalo y guarda','Copy applied: review it and save'],
+ sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],genNow:['✨ Otras propuestas ya','✨ New ideas now'],generating:['Generando…','Generating…'],
+ genHint:['Usa lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Uses what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
+ genDone:['✨ Nuevas propuestas listas','✨ New suggestions ready'],genErr:['No se pudo generar:','Couldn’t generate:'],genBadFormat:['respuesta sin formato válido','response in an unexpected format'],
+ aiT:['Claude para copys al instante','Claude for instant copy'],aiM:['Pega tu clave de la API de Claude (console.anthropic.com → API Keys). Con ella, «Otras propuestas ya» genera copys al momento.','Paste your Claude API key (console.anthropic.com → API Keys). With it, “New ideas now” writes copy instantly.'],
+ aiNote:['Se guarda solo en este navegador, nunca en GitHub. Cada generación se cobra en tu cuenta de la API (es un uso pequeño). Usa una clave solo para esto y con límite de gasto.','Stored only in this browser, never on GitHub. Each generation is billed to your API account (small usage). Use a dedicated key with a spend limit.'],
+ aiOrTomorrow:['¿Sin clave? También puedes pedirlas para mañana por la mañana:','No key? You can also ask for them tomorrow morning:'],aiDel:['Quitar clave','Remove key'],aiSaved:['Clave guardada','Key saved'],aiRow:['✨ Claude (copys al instante)','✨ Claude (instant copy)'],aiOn:['Conectado en este navegador','Connected in this browser'],aiOff:['Sin conectar','Not connected'],aiBtn:['Configurar','Set up'],
+ todayProps:['✨ Propuestas de copy de esta mañana','✨ This morning’s copy suggestions'],todayPropsH:['Para lo que se publica en los próximos 7 días y aún no tiene copy final.','For what goes out in the next 7 days and has no final copy yet.'],useSug:['Usar','Use'],sugUsed:['Copy aplicado: revísalo y guarda','Copy applied: review it and save'],
  askNew:['🔄 Pedir otras','🔄 Ask for new ones'],askedNew:['Pedido: Claude las renueva en la próxima pasada (cada mañana)','Requested: Claude refreshes them in the next run (every morning)'],
  noSug:['Aún sin sugerencias: Claude las escribe cada mañana para los contenidos que no tienen.','No suggestions yet: Claude writes them every morning for content that has none.'],sugPending:['⏳ Pendiente de nuevas sugerencias','⏳ Waiting for new suggestions'],
  newContent:['＋ Nuevo contenido','＋ New content'],new:['＋ Nuevo','＋ New'],editorial:['Calendario editorial','Editorial calendar'],
@@ -913,7 +919,13 @@ function vOverview(){
   const pc=paidCard();
   return `<div class="grid kpis">${kpis}</div>${rhythmCard()}
   <div class="grid two sec">${pc||pillarBars()}<div class="card"><h3>⏭️ ${t('next7')}</h3>${upHtml}</div></div>
+  ${propsCard()}
   ${pc?`<div class="sec">${pillarBars()}</div>`:''}`;
+}
+function propsCard(){
+  const td=today(),L=S.posts.filter(p=>p.date&&p.date>=td&&p.date<=addDays(td,7)&&p.status!=='published'&&!tv(p,'copy')&&(p.sug||[]).length).sort(cmpDate);
+  if(!L.length)return '';
+  return `<div class="card sec"><h3>${t('todayProps')} <small>${t('todayPropsH')}</small></h3><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">${L.map(p=>{const x=p.sug[0];return `<div class="sug" data-open="${p.id}" style="cursor:pointer"><div style="font-weight:700;margin-bottom:6px;white-space:normal">${fEmo(p.format)} ${fmtShort(p.date)} · ${esc(tv(p,'title'))}</div>${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}</div>`}).join('')}</div></div>`;
 }
 function pillarDist(posts){
   const base=posts.filter(p=>p.date),tot=base.length;
@@ -1170,6 +1182,7 @@ function vSettings(){
     <div class="setrow"><div class="l"><b>${t('language')}</b><span>${t('languageH')}</span></div><div><div class="seg"><button class="${LANG==='es'?'on':''}" data-lang="es">Español</button><button class="${LANG==='en'?'on':''}" data-lang="en">English</button></div></div></div>
     <div class="setrow"><div class="l"><b>${t('team')}</b></div><div>${S.team.map(m=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">${avatar(m.id)}<input class="inp" data-x="team||${m.id}|name" value="${esc(m.name)}" style="width:160px"><input class="inp" data-x="team||${m.id}|role" value="${esc(tv(m,'role'))}" placeholder="${t('role')}" style="flex:1;max-width:260px"><button class="btn ghost icon" data-xdel="team||${m.id}">🗑</button></div>`).join('')}<button class="btn sm" data-xadd="team|">${t('addOwner')}</button></div></div>
     ${GH&&!TEAM&&!RO()?`<div class="setrow"><div class="l"><b>${t('shareT')}</b></div><div><button class="btn" data-act="shareTeam">${t('shareTeam')}</button></div></div>`:''}
+    <div class="setrow"><div class="l"><b>${t('aiRow')}</b><span>${aiKey()?t('aiOn'):t('aiOff')}</span></div><div><button class="btn" data-act="aiKey">${t('aiBtn')}</button></div></div>
     <div class="setrow"><div class="l"><b>${t('exportT')}</b></div><div><button class="btn" data-act="copyCSV">${t('copyCSV')}</button></div></div>
   </div>
   <details class="card sec"><summary style="cursor:pointer;font-weight:700">${t('lists')}</summary>${['channels','formats','types','objectives'].map(k=>`<div class="setrow"><div class="l"><b>${t('l_'+k)}</b></div><div><textarea class="inp" data-list="${k}">${esc(L[k].join(', '))}</textarea></div></div>`).join('')}</details>
@@ -1229,10 +1242,60 @@ function renderDrawer(){
   <div class="dft">${!UI.drawer.isNew&&!RO()?`<button class="btn danger" data-act="delDraft">${t('del')}</button>`:''}<span class="sp"></span><span class="dirty" id="dirtyLbl">${UI.dirty?t('unsaved'):''}</span><button class="btn" data-act="closeDrawer">${RO()?t('close'):t('cancel')}</button>${RO()?'':`<button class="btn pri" data-act="saveDraft">${UI.drawer.isNew?t('createBtn'):t('save')}</button>`}</div>`;
   lockRO($('#drawer'));
 }
+const aiKey=()=>{try{return localStorage.getItem('ecm-anthropic-key')||''}catch(e){return ''}};
+let genBusy=false;
 function sugBlock(d){
   const L=Array.isArray(d.sug)?d.sug:[];
-  return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:(RO()?'':`<button class="btn ghost sm" data-act="askSug">${t('askNew')}</button>`)}</div>
+  const btn=RO()?'':`<button class="btn sm ${genBusy?'':'pri'}" data-act="genSug" ${genBusy?'disabled':''}>${genBusy?t('generating'):t('genNow')}</button>`;
+  return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${btn}</div>
+   <div class="note" style="margin:-4px 0 8px">${t('genHint')}</div>
    ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${RO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
+}
+function copyBrief(d){
+  const pl=pillar(d.pillar),c=client();
+  const f=(k,v)=>v?`- ${k}: ${v}\n`:'';
+  return `Marca: ${c.name}\n`+f('Título del contenido',d.title)+f('Título (EN)',d.en&&d.en.title)+f('Formato',d.format)+f('Canal',d.channel||'Instagram')+f('Fecha',d.date)
+   +f('Pilar',pl?`${pl.name} — ${pl.description||''}`:'')+f('Concepto',d.description)+f('Objetivo de marketing',d.objective)+f('Audiencia',d.audience)+f('Tipo de contenido',d.type)
+   +f('CTA deseado',d.cta)+f('Brief creativo',d.brief)+f('Referencia / inspiración',d.reference)+f('Notas',d.notes)+f('Copy actual (no repetir)',d.copy)
+   +((d.sug||[]).length?`- Propuestas anteriores (no repetir):\n${(d.sug||[]).map(x=>'  · '+(x.es||'').replace(/\n/g,' ')).join('\n')}\n`:'');
+}
+async function genSuggestions(){
+  if(!draft||genBusy)return;
+  if(!aiKey()){aiKeyModal(true);return}
+  genBusy=true;renderDrawer();
+  const sys=`Eres copywriter de redes sociales para la marca indicada. Escribe 3 propuestas de copy distintas entre sí para el contenido descrito.
+Reglas:
+- Usa TODA la información del brief: CTA, audiencia, objetivo de marketing, tipo de contenido, referencia, concepto, pilar y notas. Si hay CTA deseado, termina con él (adaptado). Ajusta el tono a la audiencia y el objetivo.
+- Español de España como base ("es"); "en" es la misma idea en inglés natural.
+- Tono: cálido, sereno, elegante; frases cortas; 0–2 emojis; 2–5 líneas.
+- Si el formato es Stories, en lugar de caption propone 2–3 textos de stickers (encuesta, cuenta atrás, ubicación, caja de preguntas).
+- No inventes hechos: nada de precios, descuentos, horarios, fechas de envío, direcciones ni productos que no aparezcan en el brief. Si falta un dato, escribe "(confirmar)".
+- No repitas el copy actual ni las propuestas anteriores.
+Responde SOLO con JSON válido: {"options":[{"es":"...","en":"..."},{"es":"...","en":"..."},{"es":"...","en":"..."}]}`;
+  let out=null,err='';
+  for(const model of ['claude-sonnet-5-5','claude-opus-5-5']){
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':aiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model,max_tokens:1500,system:sys,messages:[{role:'user',content:copyBrief(draft)}]})});
+      const j=await r.json();
+      if(!r.ok){err=(j&&j.error&&j.error.message)||('HTTP '+r.status);if(r.status===404||/model/i.test(err))continue;break}
+      const txt=(j.content||[]).map(x=>x.text||'').join('');const m=txt.match(/\{[\s\S]*\}/);
+      const o=m?JSON.parse(m[0]):null;if(o&&Array.isArray(o.options)&&o.options.length){out=o.options.filter(x=>x&&(x.es||x.en)).slice(0,3);break}
+      err=t('genBadFormat');break;
+    }catch(e){err=String(e.message||e);break}
+  }
+  genBusy=false;
+  if(!draft)return;
+  if(out){draft.sug=out;draft.sugAt=new Date().toISOString();draft.wantCopy=false;
+    if(!UI.drawer.isNew){const p=S.posts.find(x=>x.id===UI.drawer.id);if(p){p.sug=out;p.sugAt=draft.sugAt;p.wantCopy=false;save()}}
+    renderDrawer();toast(t('genDone'))}
+  else{renderDrawer();toast(t('genErr')+' '+err)}
+}
+function aiKeyModal(fromGen){
+  openModal(`<form data-form="aikey"><div class="mh">✨ ${t('aiT')}</div><div class="mb"><p style="margin-top:0">${t('aiM')}</p>
+   <input class="inp keep" name="key" type="password" autocomplete="off" style="width:100%" placeholder="sk-ant-…" value="${esc(aiKey())}"><p class="note">${t('aiNote')}</p>
+   ${fromGen&&draft?`<p class="note">${t('aiOrTomorrow')} <button type="button" class="btn ghost sm" data-act="askSug">${t('askNew')}</button></p>`:''}</div>
+   <div class="mf">${aiKey()?`<button type="button" class="btn danger" data-act="aiKeyDel">${t('aiDel')}</button>`:''}<span style="flex:1"></span><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('save')}</button></div></form>`);
 }
 function markDirty(){UI.dirty=true;const l=$('#dirtyLbl');if(l)l.textContent=t('unsaved')}
 function saveDraft(){
@@ -1345,7 +1408,10 @@ document.addEventListener('click',e=>{
     if(a==='saveDraft'){saveDraft();return}
     if(a==='dupDraft'){if(UI.dirty)return;const nid=duplicate(UI.drawer.id);openPost(nid);return}
     if(a==='delDraft'){delPost(UI.drawer.id);return}
-    if(a==='askSug'){if(draft){draft.wantCopy=true;markDirty();renderDrawer();toast(t('askedNew'))}return}
+    if(a==='genSug'){genSuggestions();return}
+    if(a==='aiKeyDel'){try{localStorage.removeItem('ecm-anthropic-key')}catch(_){}closeModal();render();return}
+    if(a==='aiKey'){aiKeyModal(false);return}
+    if(a==='askSug'){closeModal();if(draft){draft.wantCopy=true;markDirty();renderDrawer();toast(t('askedNew'))}return}
     if(a==='advanceDraft'){const i=SIDX[draft.status];if(i<6){draft.status=STATUSES[i+1].k;markDirty();renderDrawer()}return}
     if(a==='closeModal'){closeModal();return}
     if(a==='modalOk'){const cb=modalCb;closeModal();if(cb)cb();return}
@@ -1405,6 +1471,7 @@ document.addEventListener('change',e=>{const el=e.target;
 });
 document.addEventListener('submit',e=>{
   const f=e.target;if(!f.dataset.form)return;e.preventDefault();const fd=Object.fromEntries(new FormData(f).entries());
+  if(f.dataset.form==='aikey'){const k=(fd.key||'').trim();try{if(k)localStorage.setItem('ecm-anthropic-key',k)}catch(_){}closeModal();toast(t('aiSaved'));render();if(UI.drawer)renderDrawer();return}
   if(f.dataset.form==='connect'){doConnect((fd.token||'').trim());return}
   if(RO())return;
   if(f.dataset.form==='capture'){const title=(fd.title||'').trim();if(!title)return;const now=new Date().toISOString();const p=Object.assign({},EMPTY_POST,{id:nextId(),createdAt:now,updatedAt:now});setTv(p,'title',title);S.posts.push(p);save();render();toast(t('ideaAdded'));setTimeout(()=>{const i=document.querySelector('[data-key=capt]');if(i)i.focus()},20);return}

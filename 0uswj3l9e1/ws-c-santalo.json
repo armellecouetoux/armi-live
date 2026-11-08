@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T20:57:06.844Z",
+ "updatedAt": "2026-11-08T20:57:08.343Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1704,17 +1704,6 @@
      "en": {
       "creative": "Photo of Bali with the green box",
       "dest": "Bali"
-     }
-    },
-    {
-     "id": "a4",
-     "code": "NAV_CARRUSEL",
-     "creative": "Carrusel de 4–6 productos de Navidad (Cascanueces XL, Pack 6 velas, Árbol…)",
-     "dest": "Cada tarjeta a su ficha",
-     "status": "todo",
-     "en": {
-      "creative": "Carousel of 4–6 Christmas products (XL Nutcracker, 6-candle pack, Tree…)",
-      "dest": "Each card to its product page"
      }
     }
    ],

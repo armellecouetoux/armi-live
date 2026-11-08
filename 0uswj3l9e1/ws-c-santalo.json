@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T20:57:09.693Z",
+ "updatedAt": "2026-11-08T20:57:16.244Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1708,8 +1708,8 @@
     },
     {
      "id": "a1i0j03",
-     "code": "",
-     "creative": "",
+     "code": "BALI_FOTO",
+     "creative": "Foto de bali",
      "dest": "",
      "status": "todo"
     }

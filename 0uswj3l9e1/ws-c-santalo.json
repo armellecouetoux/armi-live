@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T20:56:45.128Z",
+ "updatedAt": "2026-11-08T20:56:59.628Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1692,17 +1692,6 @@
      "status": "ready",
      "en": {
       "creative": "15 s vertical video (SANTALO_VIDEO_12_15s)",
-      "dest": "Bali"
-     }
-    },
-    {
-     "id": "a2",
-     "code": "BALI_VID24",
-     "creative": "Vídeo vertical 24 s (SANTALO_VIDEO_01)",
-     "dest": "Bali",
-     "status": "ready",
-     "en": {
-      "creative": "24 s vertical video (SANTALO_VIDEO_01)",
       "dest": "Bali"
      }
     },

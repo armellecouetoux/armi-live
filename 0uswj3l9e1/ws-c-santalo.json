@@ -127,47 +127,6 @@
    "sugAt": "2026-11-08T19:15:23.366078+00:00"
   },
   {
-   "id": "CNT-004",
-   "date": "2026-11-14",
-   "time": "",
-   "title": "Stories: un día en la tienda",
-   "description": "",
-   "pillar": "pl4",
-   "objective": "",
-   "audience": "",
-   "channel": "Instagram",
-   "format": "Stories",
-   "type": "",
-   "copy": "",
-   "cta": "",
-   "brief": "",
-   "reference": "",
-   "owner": "tm1",
-   "status": "briefing",
-   "asset": "",
-   "url": "",
-   "notes": "Propuesta.",
-   "viral": false,
-   "ads": false,
-   "createdAt": "2026-11-06T08:57:22.529450+00:00",
-   "updatedAt": "2026-11-06T08:57:22.529450+00:00",
-   "en": {
-    "title": "Stories: a day at the shop",
-    "notes": "Proposal."
-   },
-   "sug": [
-    {
-     "es": "Sticker 1: «Un día en la tienda ☕»\nSticker 2: encuesta «¿Mañana o tarde para venir?»\nCierre: «Te esperamos en Barcelona»",
-     "en": "Sticker 1: “A day at the shop ☕”\nSticker 2: poll “Morning or afternoon visit?”\nClosing: “See you in Barcelona”"
-    },
-    {
-     "es": "Abrimos la puerta, encendemos la primera vela y empieza el día. ¿Te vienes a vernos?\n(Añadir sticker de ubicación)",
-     "en": "We open the door, light the first candle and the day begins. Come and see us?\n(Add location sticker)"
-    }
-   ],
-   "sugAt": "2026-11-08T19:15:23.366078+00:00"
-  },
-  {
    "id": "CNT-005",
    "date": "2026-11-16",
    "time": "",
@@ -1451,7 +1410,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T21:03:50.220Z",
+ "updatedAt": "2026-11-08T21:04:04.020Z",
  "rhythm": [
   {
    "id": "r1",

@@ -492,14 +492,16 @@ const TX={
  v_overview:['Resumen','Overview'],v_calendar:['Calendario','Calendar'],v_database:['Contenidos','Content'],v_workflow:['Producción','Production'],v_pillars:['Pilares','Pillars'],v_paid:['Paid','Paid'],v_prompts:['Prompts IA','AI prompts'],v_ajustes:['Ajustes','Settings'],
  genBrief:['✨ Mini brief','✨ Mini brief'],briefDone:['Mini brief listo: revísalo y guarda','Mini brief ready: review it and save'],
  sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],genNow:['✨ Otras propuestas ya','✨ New ideas now'],generating:['Generando…','Generating…'],
- genHint:['Usa lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Uses what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
+ genHint:['Cada mañana (7:52) Claude deja propuestas nuevas usando lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Every morning (7:52) Claude leaves new ideas using what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
+ briefUsed:['Mini brief aplicado: revísalo y guarda','Mini brief applied: review it and save'],
+ briefSugT:['✨ Mini brief propuesto · Claude','✨ Suggested mini brief · Claude'],askBrief:['📝 Pedir mini brief','📝 Ask for a mini brief'],briefPending:['⏳ Mini brief para mañana','⏳ Mini brief tomorrow'],
  genDone:['✨ Nuevas propuestas listas','✨ New suggestions ready'],genErr:['No se pudo generar:','Couldn’t generate:'],genBadFormat:['respuesta sin formato válido','response in an unexpected format'],
  aiT:['Claude para copys al instante','Claude for instant copy'],aiM:['Pega tu clave de la API de Claude (console.anthropic.com → API Keys). Con ella, «Otras propuestas ya» genera copys al momento.','Paste your Claude API key (console.anthropic.com → API Keys). With it, “New ideas now” writes copy instantly.'],
  aiNote:['Se guarda solo en este navegador, nunca en GitHub. Cada generación se cobra en tu cuenta de la API (es un uso pequeño). Usa una clave solo para esto y con límite de gasto.','Stored only in this browser, never on GitHub. Each generation is billed to your API account (small usage). Use a dedicated key with a spend limit.'],
  aiOrTomorrow:['¿Sin clave? También puedes pedirlas para mañana por la mañana:','No key? You can also ask for them tomorrow morning:'],aiDel:['Quitar clave','Remove key'],aiSaved:['Clave guardada','Key saved'],aiRow:['✨ Claude (copys al instante)','✨ Claude (instant copy)'],aiOn:['Conectado en este navegador','Connected in this browser'],aiOff:['Sin conectar','Not connected'],aiBtn:['Configurar','Set up'],
  todayProps:['✨ Propuestas de copy de esta mañana','✨ This morning’s copy suggestions'],todayPropsH:['Para lo que se publica en los próximos 7 días y aún no tiene copy final.','For what goes out in the next 7 days and has no final copy yet.'],useSug:['Usar','Use'],sugUsed:['Copy aplicado: revísalo y guarda','Copy applied: review it and save'],
- askNew:['🔄 Pedir otras','🔄 Ask for new ones'],askedNew:['Pedido: Claude las renueva en la próxima pasada (cada mañana)','Requested: Claude refreshes them in the next run (every morning)'],
- noSug:['Aún sin sugerencias: Claude las escribe cada mañana para los contenidos que no tienen.','No suggestions yet: Claude writes them every morning for content that has none.'],sugPending:['⏳ Pendiente de nuevas sugerencias','⏳ Waiting for new suggestions'],
+ askNew:['🔄 Pedir otras','🔄 Ask for new ones'],askedNew:['Pedido: lo tendrás mañana a las 7:52','Requested: you’ll have it tomorrow at 7:52'],
+ noSug:['Aún sin sugerencias: Claude las escribe cada mañana para los contenidos que no tienen.','No suggestions yet: Claude writes them every morning for content that has none.'],sugPending:['⏳ Nuevas propuestas mañana','⏳ New ideas tomorrow'],
  newContent:['＋ Nuevo contenido','＋ New content'],new:['＋ Nuevo','＋ New'],editorial:['Calendario editorial','Editorial calendar'],
  k_month:['Este mes','This month'],k_pending:['Por arrancar','Not started'],k_pendingH:['Idea + Briefing','Idea + Briefing'],k_late:['Retrasadas','Delayed'],k_lateH:['fecha pasada, sin publicar','past date, not published'],k_pub:['Publicadas','Published'],
  thisWeek:['Esta semana','This week'],slotsDone:[(a,b)=>`${a}/${b} huecos cubiertos`,(a,b)=>`${a}/${b} slots covered`],bonus:['Bonus','Bonus'],create:['＋ crear','＋ create'],
@@ -1183,7 +1185,6 @@ function vSettings(){
     <div class="setrow"><div class="l"><b>${t('language')}</b><span>${t('languageH')}</span></div><div><div class="seg"><button class="${LANG==='es'?'on':''}" data-lang="es">Español</button><button class="${LANG==='en'?'on':''}" data-lang="en">English</button></div></div></div>
     <div class="setrow"><div class="l"><b>${t('team')}</b></div><div>${S.team.map(m=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">${avatar(m.id)}<input class="inp" data-x="team||${m.id}|name" value="${esc(m.name)}" style="width:160px"><input class="inp" data-x="team||${m.id}|role" value="${esc(tv(m,'role'))}" placeholder="${t('role')}" style="flex:1;max-width:260px"><button class="btn ghost icon" data-xdel="team||${m.id}">🗑</button></div>`).join('')}<button class="btn sm" data-xadd="team|">${t('addOwner')}</button></div></div>
     ${GH&&!TEAM&&!RO()?`<div class="setrow"><div class="l"><b>${t('shareT')}</b></div><div><button class="btn" data-act="shareTeam">${t('shareTeam')}</button></div></div>`:''}
-    <div class="setrow"><div class="l"><b>${t('aiRow')}</b><span>${aiKey()?t('aiOn'):t('aiOff')}</span></div><div><button class="btn" data-act="aiKey">${t('aiBtn')}</button></div></div>
     <div class="setrow"><div class="l"><b>${t('exportT')}</b></div><div><button class="btn" data-act="copyCSV">${t('copyCSV')}</button></div></div>
   </div>
   <details class="card sec"><summary style="cursor:pointer;font-weight:700">${t('lists')}</summary>${['channels','formats','types','objectives'].map(k=>`<div class="setrow"><div class="l"><b>${t('l_'+k)}</b></div><div><textarea class="inp" data-list="${k}">${esc(L[k].join(', '))}</textarea></div></div>`).join('')}</details>
@@ -1227,7 +1228,7 @@ function renderDrawer(){
       ${fld('description','d_desc','textarea',{full:true,rows:2})}
       ${sugBlock(d)}${fld('copy','d_copy','textarea',{full:true,rows:4})}
       ${fld('cta','d_cta','text',{full:true})}
-      ${fld('brief','d_brief','textarea',{full:true,rows:tv(draft,'brief').split('\n').length>2?8:2,extra:RO()?'':`<span style="flex:1"></span><button type="button" class="btn sm ${briefBusy?'':'pri'}" data-act="genBrief" ${briefBusy?'disabled':''}>${briefBusy?t('generating'):t('genBrief')}</button>`})}
+      ${fld('brief','d_brief','textarea',{full:true,rows:tv(draft,'brief').split('\n').length>2?8:2,extra:`<span style="flex:1"></span>${draft.wantBrief?`<span class="tag viral">${t('briefPending')}</span>`:(RO()?'':`<button type="button" class="btn sm" data-act="askBrief">${t('askBrief')}</button>`)}`})}${briefSugBlock(draft)}
       ${fld('notes','d_notes','textarea',{full:true,rows:2})}
     </div></div>
     <details class="dsec"><summary style="cursor:pointer;font-weight:700;color:var(--tx2)">${t('f_more')}</summary><div class="fgrid" style="margin-top:10px">
@@ -1245,9 +1246,18 @@ function renderDrawer(){
 }
 const aiKey=()=>{try{return localStorage.getItem('ecm-anthropic-key')||''}catch(e){return ''}};
 let genBusy=false;
+function briefSugBlock(d){
+  const x=d.briefSug;if(!x||!(x.es||x.en))return '';
+  return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b></div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${RO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
+}
+function askFlag(flag){
+  if(!draft)return;draft[flag]=true;
+  if(!UI.drawer.isNew){const p=S.posts.find(x=>x.id===UI.drawer.id);if(p){p[flag]=true;save()}}
+  closeModal();renderDrawer();toast(t('askedNew'));
+}
 function sugBlock(d){
   const L=Array.isArray(d.sug)?d.sug:[];
-  const btn=RO()?'':`<button class="btn sm ${genBusy?'':'pri'}" data-act="genSug" ${genBusy?'disabled':''}>${genBusy?t('generating'):t('genNow')}</button>`;
+  const btn=RO()||d.wantCopy?'':`<button class="btn sm" data-act="askSug">${t('askNew')}</button>`;
   return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${btn}</div>
    <div class="note" style="margin:-4px 0 8px">${t('genHint')}</div>
    ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${RO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
@@ -1451,7 +1461,9 @@ document.addEventListener('click',e=>{
     if(a==='genBrief'){genBrief();return}
     if(a==='aiKeyDel'){try{localStorage.removeItem('ecm-anthropic-key')}catch(_){}closeModal();render();return}
     if(a==='aiKey'){aiKeyModal(false);return}
-    if(a==='askSug'){closeModal();if(draft){draft.wantCopy=true;markDirty();renderDrawer();toast(t('askedNew'))}return}
+    if(a==='askSug'){askFlag('wantCopy');return}
+    if(a==='askBrief'){askFlag('wantBrief');return}
+    if(a==='useBrief'){const x=draft&&draft.briefSug;if(x){draft.brief=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.brief=x.en}markDirty();renderDrawer();toast(t('briefUsed'))}return}
     if(a==='advanceDraft'){const i=SIDX[draft.status];if(i<6){draft.status=STATUSES[i+1].k;markDirty();renderDrawer()}return}
     if(a==='closeModal'){closeModal();return}
     if(a==='modalOk'){const cb=modalCb;closeModal();if(cb)cb();return}

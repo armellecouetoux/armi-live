@@ -1,7 +1,7 @@
 {
  "v": 2,
  "isDemo": false,
- "seq": 33,
+ "seq": 34,
  "posts": [
   {
    "id": "CNT-001",
@@ -1191,6 +1191,32 @@
     }
    ],
    "sugAt": "2026-11-08T19:15:23.366078+00:00"
+  },
+  {
+   "id": "CNT-034",
+   "date": "2026-11-26",
+   "time": "",
+   "title": "Reel: Mesa de Thanksgiving",
+   "description": "",
+   "pillar": "",
+   "objective": "",
+   "audience": "",
+   "channel": "",
+   "format": "",
+   "type": "",
+   "copy": "",
+   "cta": "",
+   "brief": "",
+   "reference": "",
+   "owner": "tmif5ump",
+   "status": "briefing",
+   "asset": "",
+   "url": "",
+   "notes": "",
+   "viral": false,
+   "ads": false,
+   "updatedAt": "2026-11-08T21:20:26.318Z",
+   "createdAt": "2026-11-08T21:20:26.318Z"
   }
  ],
  "pillars": [
@@ -1328,7 +1354,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T21:19:51.736Z",
+ "updatedAt": "2026-11-08T21:20:26.319Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

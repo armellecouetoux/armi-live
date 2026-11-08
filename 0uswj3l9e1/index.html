@@ -490,6 +490,7 @@ let LANG='es';
 try{const l=localStorage.getItem('ecm-lang');if(l==='en'||l==='es')LANG=l;else if((navigator.language||'').toLowerCase().startsWith('en'))LANG='en'}catch(e){}
 const TX={
  v_overview:['Resumen','Overview'],v_calendar:['Calendario','Calendar'],v_database:['Contenidos','Content'],v_workflow:['Producción','Production'],v_pillars:['Pilares','Pillars'],v_paid:['Paid','Paid'],v_prompts:['Prompts IA','AI prompts'],v_ajustes:['Ajustes','Settings'],
+ genBrief:['✨ Mini brief','✨ Mini brief'],briefDone:['Mini brief listo: revísalo y guarda','Mini brief ready: review it and save'],
  sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],genNow:['✨ Otras propuestas ya','✨ New ideas now'],generating:['Generando…','Generating…'],
  genHint:['Usa lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Uses what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
  genDone:['✨ Nuevas propuestas listas','✨ New suggestions ready'],genErr:['No se pudo generar:','Couldn’t generate:'],genBadFormat:['respuesta sin formato válido','response in an unexpected format'],
@@ -1205,7 +1206,7 @@ function fld(k,lk,type,o={}){
   if(type==='textarea')inp=`<textarea class="inp" ${a} rows="${o.rows||3}">${esc(v)}</textarea>`;
   else if(type==='select')inp=`<select class="inp" ${a}>${o.html}</select>`;
   else inp=`<input class="inp" type="${type||'text'}" ${a} value="${esc(v)}">`;
-  return `<div class="fld ${o.full?'full':''}"><label>${t(lk)}${o.link&&isUrl(v)?`<a class="lk" href="${esc(v)}" target="_blank" rel="noopener">${t('openLink')}</a>`:''}</label>${inp}</div>`;
+  return `<div class="fld ${o.full?'full':''}"><label style="display:flex;align-items:center;gap:6px">${t(lk)}${o.extra||''}${o.link&&isUrl(v)?`<a class="lk" href="${esc(v)}" target="_blank" rel="noopener">${t('openLink')}</a>`:''}</label>${inp}</div>`;
 }
 function renderDrawer(){
   const d=draft,cur=SIDX[d.status]||0,fon=d.date?flightsOn(d.date):[],mon=d.date?momentsOn(d.date):[];
@@ -1226,7 +1227,7 @@ function renderDrawer(){
       ${fld('description','d_desc','textarea',{full:true,rows:2})}
       ${sugBlock(d)}${fld('copy','d_copy','textarea',{full:true,rows:4})}
       ${fld('cta','d_cta','text',{full:true})}
-      ${fld('brief','d_brief','textarea',{full:true,rows:2})}
+      ${fld('brief','d_brief','textarea',{full:true,rows:tv(draft,'brief').split('\n').length>2?8:2,extra:RO()?'':`<span style="flex:1"></span><button type="button" class="btn sm ${briefBusy?'':'pri'}" data-act="genBrief" ${briefBusy?'disabled':''}>${briefBusy?t('generating'):t('genBrief')}</button>`})}
       ${fld('notes','d_notes','textarea',{full:true,rows:2})}
     </div></div>
     <details class="dsec"><summary style="cursor:pointer;font-weight:700;color:var(--tx2)">${t('f_more')}</summary><div class="fgrid" style="margin-top:10px">
@@ -1290,6 +1291,44 @@ Responde SOLO con JSON válido: {"options":[{"es":"...","en":"..."},{"es":"...",
     if(!UI.drawer.isNew){const p=S.posts.find(x=>x.id===UI.drawer.id);if(p){p.sug=out;p.sugAt=draft.sugAt;p.wantCopy=false;save()}}
     renderDrawer();toast(t('genDone'))}
   else{renderDrawer();toast(t('genErr')+' '+err)}
+}
+let briefBusy=false;
+async function callClaude(sys,user,maxTokens){
+  let err='';
+  for(const model of ['claude-sonnet-5-5','claude-opus-5-5']){
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':aiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+        body:JSON.stringify({model,max_tokens:maxTokens||1500,system:sys,messages:[{role:'user',content:user}]})});
+      const j=await r.json();
+      if(!r.ok){err=(j&&j.error&&j.error.message)||('HTTP '+r.status);if(r.status===404||/model/i.test(err))continue;return {err}}
+      const txt=(j.content||[]).map(x=>x.text||'').join('');const m=txt.match(/\{[\s\S]*\}/);
+      try{return {data:JSON.parse(m[0])}}catch(e){return {err:t('genBadFormat')}}
+    }catch(e){return {err:String(e.message||e)}}
+  }
+  return {err};
+}
+async function genBrief(){
+  if(!draft||briefBusy)return;
+  if(!aiKey()){aiKeyModal(false);return}
+  briefBusy=true;renderDrawer();
+  const sys=`Eres estratega de contenido. Escribe un MINI BRIEF creativo, breve y accionable, para que diseño/producción pueda preparar la pieza descrita.
+Formato (texto plano, líneas cortas, sin markdown con asteriscos):
+🎯 Objetivo: 1 línea
+💡 Idea: 1–2 líneas
+🎬 Estructura: según el formato (Reel: 3–5 planos con duración aprox.; Carrusel: slide a slide, 4–8 slides; Stories: secuencia de 3–5 stories con stickers; otros: puntos clave)
+🎨 Visual: luz, encuadre, props, paleta (2–3 líneas)
+✍️ Texto en pieza: frases cortas que aparecen en imagen/vídeo (si aplica)
+👉 CTA: 1 línea
+✅ Checklist: 2–4 cosas a tener listas (material, fotos, validaciones)
+Reglas: usa toda la información disponible (pilar, objetivo, audiencia, tipo, CTA, referencia, concepto, notas, copy). Si hay una referencia, inspírate en ella sin copiarla. No inventes hechos (precios, fechas de envío, horarios, productos no mencionados); si falta algo, escribe "(confirmar)".
+"es" en español de España; "en" la misma idea en inglés natural.
+Responde SOLO con JSON válido: {"es":"...","en":"..."}`;
+  const res=await callClaude(sys,copyBrief(draft),1800);
+  briefBusy=false;if(!draft)return;
+  if(res.data&&(res.data.es||res.data.en)){
+    draft.brief=res.data.es||res.data.en;if(res.data.en){draft.en=draft.en||{};draft.en.brief=res.data.en}
+    markDirty();renderDrawer();toast(t('briefDone'))
+  }else{renderDrawer();toast(t('genErr')+' '+(res.err||''))}
 }
 function aiKeyModal(fromGen){
   openModal(`<form data-form="aikey"><div class="mh">✨ ${t('aiT')}</div><div class="mb"><p style="margin-top:0">${t('aiM')}</p>
@@ -1409,6 +1448,7 @@ document.addEventListener('click',e=>{
     if(a==='dupDraft'){if(UI.dirty)return;const nid=duplicate(UI.drawer.id);openPost(nid);return}
     if(a==='delDraft'){delPost(UI.drawer.id);return}
     if(a==='genSug'){genSuggestions();return}
+    if(a==='genBrief'){genBrief();return}
     if(a==='aiKeyDel'){try{localStorage.removeItem('ecm-anthropic-key')}catch(_){}closeModal();render();return}
     if(a==='aiKey'){aiKeyModal(false);return}
     if(a==='askSug'){closeModal();if(draft){draft.wantCopy=true;markDirty();renderDrawer();toast(t('askedNew'))}return}

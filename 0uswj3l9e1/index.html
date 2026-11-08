@@ -376,6 +376,24 @@ tr:hover .rowact{opacity:1}
 .toast button{background:transparent;border:0;color:var(--lime);cursor:pointer;font-weight:700}
 .confetti{position:fixed;top:-10px;z-index:80;pointer-events:none;font-size:18px;animation:fall 1.6s cubic-bezier(.2,.6,.4,1) forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:.3}}
+.c .ev{font-size:10.5px;padding:3px 6px;gap:4px;align-items:flex-start;white-space:normal;border-radius:7px}
+.c .ev .n{font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;white-space:normal;overflow:hidden}
+.c .ev .fe{font-size:10px;line-height:1.25}
+.c .ev .s{margin-top:3px;width:6px;height:6px}
+.c .dn{font-size:11.5px;height:20px}
+.c{gap:3px;padding:4px}
+.band{font-size:10px;line-height:1.5;padding:1px 6px}
+.ms{font-size:9.5px}
+.hint{font-size:10px;padding:2px 6px}
+.mhead div{font-size:10.5px;padding:6px 8px}
+.wcol .kc .tt{font-size:12.5px}
+.wcol .kc .mt{font-size:11px}
+.sugs{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.sug{border:1px dashed #c8b2ff;background:#f7f2ff;border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.5;white-space:pre-wrap;position:relative}
+.sug .use{position:absolute;right:8px;top:8px}
+.sughead{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
+.sughead b{font-size:12px;color:#6b3fd6}
+.sughead .sp{flex:1}
 @media (max-width:1100px){.paidhero{grid-template-columns:1fr}}
 @media (max-width:980px){
   .two{grid-template-columns:1fr}
@@ -472,6 +490,9 @@ let LANG='es';
 try{const l=localStorage.getItem('ecm-lang');if(l==='en'||l==='es')LANG=l;else if((navigator.language||'').toLowerCase().startsWith('en'))LANG='en'}catch(e){}
 const TX={
  v_overview:['Resumen','Overview'],v_calendar:['Calendario','Calendar'],v_database:['Contenidos','Content'],v_workflow:['Producción','Production'],v_pillars:['Pilares','Pillars'],v_paid:['Paid','Paid'],v_prompts:['Prompts IA','AI prompts'],v_ajustes:['Ajustes','Settings'],
+ sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],useSug:['Usar','Use'],sugUsed:['Copy aplicado: revísalo y guarda','Copy applied: review it and save'],
+ askNew:['🔄 Pedir otras','🔄 Ask for new ones'],askedNew:['Pedido: Claude las renueva en la próxima pasada (cada mañana)','Requested: Claude refreshes them in the next run (every morning)'],
+ noSug:['Aún sin sugerencias: Claude las escribe cada mañana para los contenidos que no tienen.','No suggestions yet: Claude writes them every morning for content that has none.'],sugPending:['⏳ Pendiente de nuevas sugerencias','⏳ Waiting for new suggestions'],
  newContent:['＋ Nuevo contenido','＋ New content'],new:['＋ Nuevo','＋ New'],editorial:['Calendario editorial','Editorial calendar'],
  k_month:['Este mes','This month'],k_pending:['Por arrancar','Not started'],k_pendingH:['Idea + Briefing','Idea + Briefing'],k_late:['Retrasadas','Delayed'],k_lateH:['fecha pasada, sin publicar','past date, not published'],k_pub:['Publicadas','Published'],
  thisWeek:['Esta semana','This week'],slotsDone:[(a,b)=>`${a}/${b} huecos cubiertos`,(a,b)=>`${a}/${b} slots covered`],bonus:['Bonus','Bonus'],create:['＋ crear','＋ create'],
@@ -1190,7 +1211,7 @@ function renderDrawer(){
       ${fld('pillar','d_pillar','select',{html:pillarOpts(d.pillar,'—')})}
       ${fld('owner','d_owner','select',{html:ownerOpts(d.owner,t('unassigned')),full:true})}
       ${fld('description','d_desc','textarea',{full:true,rows:2})}
-      ${fld('copy','d_copy','textarea',{full:true,rows:4})}
+      ${sugBlock(d)}${fld('copy','d_copy','textarea',{full:true,rows:4})}
       ${fld('cta','d_cta','text',{full:true})}
       ${fld('brief','d_brief','textarea',{full:true,rows:2})}
       ${fld('notes','d_notes','textarea',{full:true,rows:2})}
@@ -1207,6 +1228,11 @@ function renderDrawer(){
   </div>
   <div class="dft">${!UI.drawer.isNew&&!RO()?`<button class="btn danger" data-act="delDraft">${t('del')}</button>`:''}<span class="sp"></span><span class="dirty" id="dirtyLbl">${UI.dirty?t('unsaved'):''}</span><button class="btn" data-act="closeDrawer">${RO()?t('close'):t('cancel')}</button>${RO()?'':`<button class="btn pri" data-act="saveDraft">${UI.drawer.isNew?t('createBtn'):t('save')}</button>`}</div>`;
   lockRO($('#drawer'));
+}
+function sugBlock(d){
+  const L=Array.isArray(d.sug)?d.sug:[];
+  return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:(RO()?'':`<button class="btn ghost sm" data-act="askSug">${t('askNew')}</button>`)}</div>
+   ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${RO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
 }
 function markDirty(){UI.dirty=true;const l=$('#dirtyLbl');if(l)l.textContent=t('unsaved')}
 function saveDraft(){
@@ -1295,9 +1321,10 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('ecm-lang
 
 document.addEventListener('click',e=>{
   if(!e.target.closest('#menu')&&!e.target.closest('[data-act=clientMenu]'))hideMenu();
-  const el=e.target.closest('[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
+  const el=e.target.closest('[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
   if(!el)return;if(e.target.closest('input,select,textarea')&&!el.matches('[data-act],[data-step]'))return;
   const ds=el.dataset;
+  if(ds.usesug!==undefined&&draft){const x=(draft.sug||[])[+ds.usesug];if(x){draft.copy=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.copy=x.en}markDirty();renderDrawer();toast(t('sugUsed'))}return}
   if(ds.copy){copyText(ds.copy,ds.copymsg||t('linkCopied'));return}
   if(ds.act){const a=ds.act;hideMenu();
     if(a==='clientMenu'){e.stopPropagation();showMenu(el,[...(GH?[['shareTeam',t('shareTeam')]]:[]),['renameClient',t('renameClient')],['askDelClient',t('deleteClient'),true]]);return}
@@ -1318,6 +1345,7 @@ document.addEventListener('click',e=>{
     if(a==='saveDraft'){saveDraft();return}
     if(a==='dupDraft'){if(UI.dirty)return;const nid=duplicate(UI.drawer.id);openPost(nid);return}
     if(a==='delDraft'){delPost(UI.drawer.id);return}
+    if(a==='askSug'){if(draft){draft.wantCopy=true;markDirty();renderDrawer();toast(t('askedNew'))}return}
     if(a==='advanceDraft'){const i=SIDX[draft.status];if(i<6){draft.status=STATUSES[i+1].k;markDirty();renderDrawer()}return}
     if(a==='closeModal'){closeModal();return}
     if(a==='modalOk'){const cb=modalCb;closeModal();if(cb)cb();return}

@@ -5,7 +5,7 @@
  "posts": [
   {
    "id": "CNT-001",
-   "date": "2026-11-09",
+   "date": "2026-11-10",
    "time": "",
    "title": "Volver a casa: el primer gesto es encender una vela",
    "description": "",
@@ -27,7 +27,7 @@
    "viral": false,
    "ads": false,
    "createdAt": "2026-11-06T08:57:22.529450+00:00",
-   "updatedAt": "2026-11-06T08:57:22.529450+00:00",
+   "updatedAt": "2026-11-08T19:11:56.470Z",
    "en": {
     "title": "Coming home: the first thing you do is light a candle",
     "notes": "Proposal."
@@ -1124,7 +1124,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-06T14:00:48.481Z",
+ "updatedAt": "2026-11-08T19:11:56.470Z",
  "rhythm": [
   {
    "id": "r1",

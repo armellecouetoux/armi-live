@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T20:56:59.628Z",
+ "updatedAt": "2026-11-08T20:57:06.844Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1698,7 +1698,7 @@
     {
      "id": "a3",
      "code": "BALI_FOTO",
-     "creative": "Foto de Bali con la caja verde",
+     "creative": "Foto de Bali",
      "dest": "Bali",
      "status": "ready",
      "en": {

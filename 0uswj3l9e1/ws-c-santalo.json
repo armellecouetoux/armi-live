@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T19:26:27.250Z",
+ "updatedAt": "2026-11-08T19:26:55.563Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1726,17 +1726,6 @@
      "en": {
       "creative": "Carousel of 4–6 Christmas products (XL Nutcracker, 6-candle pack, Tree…)",
       "dest": "Each card to its product page"
-     }
-    },
-    {
-     "id": "a5",
-     "code": "NAV_VID",
-     "creative": "Vídeo vertical de Navidad, 9–15 s",
-     "dest": "Colección Navidad",
-     "status": "ask",
-     "en": {
-      "creative": "Vertical Christmas video, 9–15 s",
-      "dest": "Christmas collection"
      }
     }
    ],

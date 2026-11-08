@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T20:57:08.343Z",
+ "updatedAt": "2026-11-08T20:57:09.693Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1705,6 +1705,13 @@
       "creative": "Photo of Bali with the green box",
       "dest": "Bali"
      }
+    },
+    {
+     "id": "a1i0j03",
+     "code": "",
+     "creative": "",
+     "dest": "",
+     "status": "todo"
     }
    ],
    "en": {

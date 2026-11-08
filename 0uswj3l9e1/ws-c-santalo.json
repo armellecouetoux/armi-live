@@ -1487,7 +1487,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T20:57:45.344Z",
+ "updatedAt": "2026-11-08T20:58:02.243Z",
  "rhythm": [
   {
    "id": "r1",
@@ -1744,7 +1744,15 @@
      "tbd": true
     }
    ],
-   "ads": []
+   "ads": [
+    {
+     "id": "a29w09u",
+     "code": "",
+     "creative": "",
+     "dest": "",
+     "status": "todo"
+    }
+   ]
   }
  ]
 }

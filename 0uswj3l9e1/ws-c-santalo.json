@@ -1,7 +1,7 @@
 {
  "v": 2,
  "isDemo": false,
- "seq": 37,
+ "seq": 38,
  "posts": [
   {
    "id": "CNT-001",
@@ -506,6 +506,36 @@
    "ads": false,
    "updatedAt": "2026-11-09T21:18:15.493Z",
    "createdAt": "2026-11-09T15:42:54.033Z"
+  },
+  {
+   "id": "CNT-038",
+   "date": "2026-11-11",
+   "time": "",
+   "title": "S",
+   "description": "P",
+   "pillar": "pl2",
+   "objective": "",
+   "audience": "",
+   "channel": "",
+   "format": "Post estático",
+   "type": "",
+   "copy": "",
+   "cta": "",
+   "brief": "",
+   "reference": "",
+   "owner": "",
+   "status": "progress",
+   "asset": "",
+   "url": "",
+   "notes": "",
+   "viral": false,
+   "ads": false,
+   "en": {
+    "title": "Sydney Candle",
+    "description": "Promocionar la vela Sydney?"
+   },
+   "updatedAt": "2026-11-09T21:35:23.385Z",
+   "createdAt": "2026-11-09T21:35:23.385Z"
   }
  ],
  "pillars": [
@@ -643,7 +673,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:34:55.707Z",
+ "updatedAt": "2026-11-09T21:35:23.385Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

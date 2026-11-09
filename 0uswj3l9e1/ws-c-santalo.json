@@ -643,7 +643,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:33:54.569Z",
+ "updatedAt": "2026-11-09T21:34:55.707Z",
  "rhythm": [],
  "moments": [],
  "milestones": [
@@ -770,6 +770,18 @@
      "status": "todo"
     }
    ]
+  }
+ ],
+ "requests": [
+  {
+   "id": "rqykivqm",
+   "createdAt": "2026-11-09T21:34:55.707Z",
+   "idea": "Sydney Candle",
+   "format": "Post estático",
+   "pillar": "pl2",
+   "cta": "",
+   "audience": "",
+   "status": "pending"
   }
  ]
 }

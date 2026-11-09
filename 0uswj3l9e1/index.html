@@ -556,7 +556,7 @@ const TX={
  addContent:['Añadir contenido','Add content'],add:['＋ Añadir','＋ Add'],more:['más','more'],showLess:['menos','less'],
  untitled:['(sin título)','(untitled)'],noPillar:['Sin pilar','No pillar'],unassigned:['Sin asignar','Unassigned'],delayed:['Retrasada','Delayed'],
  noResults:['No hay contenidos con estos filtros.','No content matches these filters.'],
- search:['Buscar…','Search…'],f_format:['Formato','Format'],f_pillar:['Pilar','Pillar'],f_status:['Estado','Status'],onlyLate:['⚠ Retrasadas','⚠ Delayed'],clear:['Limpiar','Clear'],
+ search:['Buscar…','Search…'],f_format:['Formato','Format'],f_pillar:['Pilar','Pillar'],f_owner:['Responsable','Owner'],f_noOwner:['Sin responsable','Unassigned'],f_status:['Estado','Status'],onlyLate:['⚠ Retrasadas','⚠ Delayed'],clear:['Limpiar','Clear'],
  c_id:['ID','ID'],c_title:['Título','Title'],c_date:['Fecha','Date'],c_format:['Formato','Format'],c_pillar:['Pilar','Pillar'],c_status:['Estado','Status'],
  openCard:['Abrir ficha','Open card'],duplicate:['Duplicar','Duplicate'],del:['Eliminar','Delete'],copyCSV:['Copiar CSV','Copy CSV'],
  wfNote:['Vista de consulta: aquí no se puede cambiar nada. Para editar, ve a Calendario o Contenidos.','View only: nothing can be changed here. To edit, go to Calendar or Content.'],advanceTo:['Avanzar a','Advance to'],
@@ -695,7 +695,7 @@ function demoState(){ // Spanish base + English translations in .en
 /* ============ STATE ============ */
 let CL=null,ACTIVE=null,S=null,WS_CACHE={},wsLoading=false;
 const TEAM=(()=>{try{return new URLSearchParams(location.search).get('c')||''}catch(e){return ''}})();
-const UI={view:'overview',cal:{mode:'month',cursor:today()},f:{q:'',format:'',pillar:'',status:'',delayed:false},sort:{key:'date',dir:1},drawer:null,dirty:false};
+const UI={view:'overview',cal:{mode:'month',cursor:today()},f:{q:'',format:'',pillar:'',status:'',owner:'',delayed:false},sort:{key:'date',dir:1},drawer:null,dirty:false};
 function normalize(st){
   if(!st||typeof st!=='object'||!Array.isArray(st.posts))return null;
   for(const k of ['pillars','team','paid','moments','milestones','rhythm'])if(!Array.isArray(st[k]))st[k]=[];
@@ -860,17 +860,18 @@ function filtered(list){
     if(f.format&&p.format!==f.format)return false;
     if(f.pillar&&p.pillar!==f.pillar)return false;
     if(f.status&&p.status!==f.status)return false;
+    if(f.owner&&(f.owner==='__none'?!!member(p.owner):p.owner!==f.owner))return false;
     if(f.delayed&&!isDelayed(p))return false;
     if(q){const hay=[p.id,p.title,p.description,p.copy,p.notes,p.cta,p.brief,p.en&&Object.values(p.en).join(' '),pillarName(p.pillar),p.format,lv(p.format)].join(' ').toLowerCase();if(!hay.includes(q))return false}
     return true;
   });
 }
-const setFilters=o=>{UI.f=Object.assign({q:'',format:'',pillar:'',status:'',delayed:false},o)};
+const setFilters=o=>{UI.f=Object.assign({q:'',format:'',pillar:'',status:'',owner:'',delayed:false},o)};
 function filterBar(o={}){
   const f=UI.f,n=Object.values(f).filter(Boolean).length;
   const sel=(k,html)=>`<select data-f="${k}" class="${f[k]?'act':''}">${html}</select>`;
   return `<div class="fbar"><div class="search"><span>⌕</span><input data-f="q" data-key="fq" placeholder="${t('search')}" value="${esc(f.q)}" class="${f.q?'act':''}"></div>
-    ${sel('pillar',pillarOpts(f.pillar,t('f_pillar')))}${sel('format',optsList(S.lists.formats,f.format,t('f_format')))}${o.noStatus?'':sel('status',optsKV(STATUSES.map(s=>[s.k,s.e+' '+s.l]),f.status,t('f_status')))}
+    ${sel('pillar',pillarOpts(f.pillar,t('f_pillar')))}${sel('format',optsList(S.lists.formats,f.format,t('f_format')))}${o.owner?sel('owner',optsKV([...S.team.map(m=>[m.id,'👤 '+m.name]),['__none',t('f_noOwner')]],f.owner,t('f_owner'))):''}${o.noStatus?'':sel('status',optsKV(STATUSES.map(s=>[s.k,s.e+' '+s.l]),f.status,t('f_status')))}
     <label class="chk ${f.delayed?'act':''}"><input type="checkbox" data-f="delayed" ${f.delayed?'checked':''} style="display:none">${t('onlyLate')}</label>
     ${n?`<button class="btn ghost sm" data-act="clearFilters">${t('clear')} (${n})</button>`:''}</div>`;
 }
@@ -1071,7 +1072,7 @@ function wfCard(p){
 }
 function vWorkflow(){
   const posts=filtered(S.posts);
-  return `${filterBar({noStatus:true})}<div class="kanban">${STATUSES.map(s=>{const list=posts.filter(p=>p.status===s.k).sort(cmpDate);
+  return `${filterBar({noStatus:true,owner:true})}<div class="kanban">${STATUSES.map(s=>{const list=posts.filter(p=>p.status===s.k).sort(cmpDate);
     return `<div class="kcol"><div class="kh"><span class="sw" style="background:${s.c};border-radius:50%"></span>${s.l}<span class="n">${list.length}</span></div><div class="kb">${list.map(wfCard).join('')}</div></div>`}).join('')}</div><div class="note">👀 ${t('wfNote')}</div>`;
 }
 

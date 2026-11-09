@@ -215,47 +215,6 @@
    "wantBrief": true
   },
   {
-   "id": "CNT-010",
-   "date": "2026-12-03",
-   "time": "",
-   "title": "Guía de regalos: una vela para cada persona",
-   "description": "",
-   "pillar": "pl2",
-   "objective": "",
-   "audience": "",
-   "channel": "Instagram",
-   "format": "Carrusel",
-   "type": "",
-   "copy": "",
-   "cta": "",
-   "brief": "Creativo - Vela Gaudi\nElegante - Venice\nCocinera - ...",
-   "reference": "",
-   "owner": "tm1",
-   "status": "idea",
-   "asset": "",
-   "url": "",
-   "notes": "",
-   "viral": true,
-   "ads": false,
-   "createdAt": "2026-11-06T08:57:22.529450+00:00",
-   "updatedAt": "2026-11-09T15:44:03.746Z",
-   "en": {
-    "title": "Gift guide: a candle for every person",
-    "notes": "Proposal."
-   },
-   "sug": [
-    {
-     "es": "Una vela para cada persona de tu lista:\n→ para quien lo tiene todo\n→ para quien necesita calma\n→ para quien acaba de mudarse\n\nDesliza y elige →",
-     "en": "A candle for everyone on your list:\n→ for the one who has everything\n→ for the one who needs calm\n→ for the one who just moved\n\nSwipe and choose →"
-    },
-    {
-     "es": "Regalar bien es pensar en la persona, no en el objeto. Nosotras te ayudamos con el resto. 🎁\n\nEnvía esta guía a quien siempre te pregunta qué regalar.",
-     "en": "Good gifting is about the person, not the object. We'll help with the rest. 🎁\n\nSend this guide to whoever always asks you what to give."
-    }
-   ],
-   "sugAt": "2026-11-08T19:15:23.366078+00:00"
-  },
-  {
    "id": "CNT-011",
    "date": "2026-11-30",
    "time": "",
@@ -766,7 +725,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:33:34.736Z",
+ "updatedAt": "2026-11-09T21:33:37.386Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

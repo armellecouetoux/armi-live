@@ -715,7 +715,7 @@ function lsLoad(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'null')}ca
 
 /* --- GitHub backend (one index file + one file per client) --- */
 const GH=window.ECM_GH||null;
-const ghTok=()=>{try{return localStorage.getItem('armi-gh-token')||localStorage.getItem('ecm-gh-token')||''}catch(e){return ''}};
+const ghTok=()=>{try{return localStorage.getItem('armi-gh-token')||(TEAM?localStorage.getItem('ecm-team-'+TEAM):localStorage.getItem('ecm-gh-token'))||''}catch(e){return ''}};
 const RO=()=>!!GH&&!ghTok();
 const dRO=()=>RO()||!!(UI.drawer&&UI.drawer.ro);
 const b64e=x=>btoa(unescape(encodeURIComponent(x)));
@@ -814,9 +814,9 @@ async function initDb(){
 Object.assign(TX,{
  shareTeam:['👥 Acceso del equipo','👥 Team access'],shareT:['Acceso para el equipo','Team access'],
  shareM:[n=>`Este enlace abre solo el calendario de ${n}: el equipo no ve tus otros clientes.`,n=>`This link opens only ${n}’s calendar: the team doesn’t see your other clients.`],
- shareSteps:['Para que puedan editar, cada persona pulsa «🔑 Conectar para editar» y pega el código de acceso que tú le das (un token de GitHub). Sin código, ven el calendario en solo lectura.','To edit, each person clicks “🔑 Connect to edit” and pastes the access code you give them (a GitHub token). Without it, they see the calendar read-only.'],
+ unlockT:['Entrar para editar','Sign in to edit'],unlockM:['Escribe la contraseña de este calendario que te ha dado Armi. Este navegador la recordará hasta que pulses «Salir».','Enter the password for this calendar that Armi gave you. This browser will remember it until you click “Sign out”.'],unlockBtn:['Entrar','Sign in'],password:['Contraseña','Password'],pwBad:['Contraseña incorrecta','Wrong password'],noLock:['Este calendario aún no tiene contraseña de edición. Pídesela a Armi.','This calendar has no edit password yet. Ask Armi for it.'],lockExpired:['La contraseña es correcta, pero el acceso ha caducado. Avisa a Armi.','The password is right but access has expired. Let Armi know.'],lnkT:['Enlace','Link'],pwT:['Contraseña para editar','Edit password'],lockOn:[d=>`✅ Activa (desde ${d}). Escribe una nueva para cambiarla: la anterior dejará de servir.`,d=>`✅ Active (since ${d}). Type a new one to change it: the old one will stop working.`],lockOff:['Aún no tiene contraseña: con el enlace solo se puede ver.','No password yet: the link is view-only.'],pwNew:['Nueva contraseña','New password'],pwGen:['Generar','Generate'],pwKeep:['Guárdala tú (por ejemplo, en tu gestor de contraseñas): no se guarda en ningún sitio y no se puede recuperar, solo cambiar.','Keep it yourself (e.g. in your password manager): it isn’t stored anywhere and can’t be recovered, only changed.'],teamTokT:['Clave de GitHub para el equipo (solo la primera vez)','GitHub key for the team (first time only)'],teamTokH:['Una clave aparte de la tuya, que solo pueda escribir en armi-live. Queda guardada cifrada con la contraseña.','A key separate from yours, that can only write to armi-live. It’s stored encrypted with the password.'],teamTokSteps:['Créala en GitHub: «Fine-grained token» → Repository access: Only select repositories → armi-live → Permissions: Contents = Read and write.','Create it on GitHub: “Fine-grained token” → Repository access: Only select repositories → armi-live → Permissions: Contents = Read and write.'],teamTokSaved:['🔑 La clave de GitHub del equipo ya está guardada en este navegador.','🔑 The team’s GitHub key is already saved in this browser.'],needTeamTok:['Falta la clave de GitHub del equipo','The team’s GitHub key is missing'],notOwnTok:['Usa una clave distinta de la tuya, solo para el equipo','Use a key separate from yours, just for the team'],pwShort:['Mínimo 8 caracteres','At least 8 characters'],saveLock:['Guardar contraseña','Save password'],rmLock:['Quitar contraseña','Remove password'],lockSaved:['Contraseña guardada ✓','Password saved ✓'],lockRemoved:['Contraseña quitada: el enlace queda en solo lectura','Password removed: the link is now view-only'],shareSteps:['Para que puedan editar, cada persona pulsa «🔑 Conectar para editar» y pega el código de acceso que tú le das (un token de GitHub). Sin código, ven el calendario en solo lectura.','To edit, each person clicks “🔑 Connect to edit” and pastes the access code you give them (a GitHub token). Without it, they see the calendar read-only.'],
  copyLink:['Copiar enlace','Copy link'],linkCopied:['Enlace copiado','Link copied'],
- roBanner:['👀 Solo lectura.','👀 Read-only.'],connect:['🔑 Conectar para editar','🔑 Connect to edit'],disconnect:['Desconectar','Disconnect'],
+ roBanner:['👀 Solo lectura.','👀 Read-only.'],connect:['🔑 Conectar para editar','🔑 Connect to edit'],disconnect:['Salir','Sign out'],
  connectT:['Conectar para editar','Connect to edit'],connectM:['Pega el código de acceso que te ha dado Armi. Se guarda solo en este navegador.','Paste the access code Armi gave you. It’s stored only in this browser.'],
  connectBtn:['Conectar','Connect'],connectOk:['Conectado: ya puedes editar','Connected: you can edit now'],connectBad:['Ese código no da permiso para editar','That code doesn’t grant edit access'],
  teamView:['Vista del equipo','Team view']
@@ -890,7 +890,7 @@ function renderSide(){
   const ct={database:S.posts.length,calendar:delayed?`<span class="ct red">${delayed} ⚠</span>`:''};
   $('#side').innerHTML=`
     <div class="brand"><div class="logo" style="background:${c.color}">${esc(initials(c.name)||'EC')}</div><div style="min-width:0"><b style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(c.name)}</b><small>${t('editorial')}</small></div></div>
-    ${RO()?`<button class="btn-new" data-act="connect">${t('connect')}</button>`:`<button class="btn-new" data-act="newPost">${t('newContent')}</button>`}
+    ${RO()?`<button class="btn-new" data-act="connect">${TEAM?'🔒 '+t('unlockT'):t('connect')}</button>`:`<button class="btn-new" data-act="newPost">${t('newContent')}</button>`}
     <nav class="nav">${VIEWS.map(k=>`<a data-view="${k}" class="${UI.view===k?'on':''}"><span class="ic">${ICONS[k]}</span>${t('v_'+k)}${typeof ct[k]==='number'?`<span class="ct">${ct[k]}</span>`:(ct[k]||'')}</a>`).join('')}</nav>
     <div class="foot"><div class="lang"><button class="${LANG==='es'?'on':''}" data-lang="es">ES</button><button class="${LANG==='en'?'on':''}" data-lang="en">EN</button></div>${GH&&ghTok()&&!localStorage.getItem('armi-gh-token')?`<button class="btn ghost sm" data-act="disconnect" style="color:#8f8a80">${t('disconnect')}</button>`:''}<div class="syn synch">${syncHTML()}</div></div>`;
 }
@@ -898,7 +898,7 @@ function renderTop(){
   $('#top').innerHTML=`<button class="mob-toggle" data-act="toggleSide">☰</button><div><h1>${t('v_'+UI.view)}</h1></div><div class="sp"></div>${UI.view==='overview'?`<span class="today">☀️ ${fmtLong(today())}</span>`:''}`;
 }
 function banner(){
-  if(RO())return `<div class="demo-banner">${t('roBanner')}<span class="sp"></span><button class="btn sm pri" data-act="connect">${t('connect')}</button></div>`;
+  if(RO())return `<div class="demo-banner">${t('roBanner')}<span class="sp"></span><button class="btn sm pri" data-act="connect">${TEAM?'🔒 '+t('unlockT'):t('connect')}</button></div>`;
   if(S.isDemo)return `<div class="demo-banner">${t('demoBanner')}</div>`;
   if(LANG==='en')return `<div class="note" style="margin:-2px 0 12px">🌐 ${t('transNote')}</div>`;
   return '';
@@ -1543,9 +1543,48 @@ function clientModal(id){
 }
 function shareModal(){
   const c=client(),url=location.origin+location.pathname+'?c='+encodeURIComponent(c.id);
-  openModal(`<div class="mh">${t('shareT')} · ${esc(c.name)}</div><div class="mb"><p style="margin-top:0">${t('shareM',esc(c.name))}</p><input class="inp keep" readonly value="${esc(url)}" style="width:100%" onclick="this.select()"><p>${t('shareSteps')}</p></div><div class="mf"><button class="btn" data-act="closeModal">${t('close')}</button><button class="btn pri" data-copy="${esc(url)}">${t('copyLink')}</button></div>`);
+  let hasTok=false;try{hasTok=!!localStorage.getItem('armi-team-token')}catch(e){}
+  openModal(`<form data-form="setlock"><div class="mh">${t('shareT')} · ${esc(c.name)}</div><div class="mb">
+    <p style="margin-top:0"><b>1 · ${t('lnkT')}</b><br>${t('shareM',esc(c.name))}</p>
+    <div style="display:flex;gap:6px"><input class="inp keep" readonly value="${esc(url)}" style="flex:1" onclick="this.select()"><button type="button" class="btn sm" data-copy="${esc(url)}">${t('copyLink')}</button></div>
+    <p><b>2 · ${t('pwT')}</b><br>${c.lock?t('lockOn',fmtShort(String(c.lock.at||'').slice(0,10))):t('lockOff')}</p>
+    <div style="display:flex;gap:6px"><input class="inp keep" name="pw" type="text" autocomplete="off" minlength="8" required style="flex:1;font-family:ui-monospace,monospace" placeholder="${c.lock?t('pwNew'):t('password')}"><button type="button" class="btn sm" data-act="genPw">🎲 ${t('pwGen')}</button></div>
+    <p class="meta" style="margin:6px 0 0">${t('pwKeep')}</p>
+    ${hasTok?`<p class="meta">${t('teamTokSaved')}</p>`:`<p><b>${t('teamTokT')}</b><br>${t('teamTokH')}</p><input class="inp keep" name="token" type="password" autocomplete="off" style="width:100%" placeholder="github_pat_…"><p class="meta">${t('teamTokSteps')} <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></p>`}
+  </div><div class="mf">${c.lock?`<button type="button" class="btn danger" data-act="rmLock">${t('rmLock')}</button>`:''}<span style="flex:1"></span><button type="button" class="btn" data-act="closeModal">${t('close')}</button><button class="btn pri" type="submit">${t('saveLock')}</button></div></form>`);
+}
+const u8b64=a=>btoa(String.fromCharCode(...a)),b64u8=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0));
+async function pwKey(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
+async function lockEnc(pw,tok){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await pwKey(pw,salt),new TextEncoder().encode(tok)));return {v:1,salt:u8b64(salt),iv:u8b64(iv),ct:u8b64(ct),at:new Date().toISOString()}}
+async function lockDec(pw,L){const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64u8(L.iv)},await pwKey(pw,b64u8(L.salt)),b64u8(L.ct));return new TextDecoder().decode(pt)}
+function genPw(){const A='abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';const r=crypto.getRandomValues(new Uint8Array(12));return [...r].map(x=>A[x%A.length]).join('').replace(/(.{4})(?=.)/g,'$1-')}
+async function tokOk(tok){try{const r=await fetch('https://api.github.com/repos/'+GH.repo,{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+tok}});const j=r.ok?await r.json():null;return !!(j&&j.permissions&&j.permissions.push)}catch(e){return false}}
+function unlockModal(){
+  const c=CL.list.find(x=>x.id===TEAM);
+  if(!c||!c.lock){openModal(`<div class="mh">${t('unlockT')}</div><div class="mb"><p style="margin-top:0">${t('noLock')}</p></div><div class="mf"><button class="btn pri" data-act="closeModal">${t('close')}</button></div>`);return}
+  openModal(`<form data-form="unlock"><div class="mh">🔒 ${t('unlockT')} · ${esc(c.name)}</div><div class="mb"><p style="margin-top:0">${t('unlockM')}</p><input class="inp keep" name="pw" type="password" autocomplete="current-password" required style="width:100%" placeholder="${t('password')}"></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('unlockBtn')}</button></div></form>`);
+  setTimeout(()=>{const i=document.querySelector('form[data-form="unlock"] input');if(i)i.focus()},50);
+}
+async function doUnlock(pw){
+  const c=CL.list.find(x=>x.id===TEAM);if(!c||!c.lock)return;
+  let tok='';try{tok=await lockDec(pw,c.lock)}catch(e){toast(t('pwBad'));return}
+  if(!(await tokOk(tok))){toast(t('lockExpired'));return}
+  try{localStorage.setItem('ecm-team-'+TEAM,tok)}catch(e){}
+  closeModal();toast(t('connectOk'));
+  const st=await ghLoadWs(ACTIVE);if(st){S=st;WS_CACHE[ACTIVE]=st}try{await ghGet(idxPath())}catch(e){}setSync('cloud','sync_gh');render();
+}
+async function doSetLock(fd){
+  const c=client();const pw=(fd.pw||'').trim();let tok=(fd.token||'').trim();
+  if(pw.length<8){toast(t('pwShort'));return}
+  if(!tok){try{tok=localStorage.getItem('armi-team-token')||''}catch(e){}}
+  if(!tok){toast(t('needTeamTok'));return}
+  if(!(await tokOk(tok))){toast(t('connectBad'));return}
+  if(tok===localStorage.getItem('armi-gh-token')){toast(t('notOwnTok'));return}
+  try{localStorage.setItem('armi-team-token',tok)}catch(e){}
+  c.lock=await lockEnc(pw,tok);saveClients();closeModal();toast(t('lockSaved'));render();
 }
 function connectModal(){
+  if(TEAM){unlockModal();return}
   openModal(`<form data-form="connect"><div class="mh">${t('connectT')}</div><div class="mb"><p style="margin-top:0">${t('connectM')}</p><input class="inp keep" name="token" type="password" autocomplete="off" required style="width:100%" placeholder="github_pat_…"></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('connectBtn')}</button></div></form>`);
 }
 async function doConnect(tok){
@@ -1600,7 +1639,9 @@ document.addEventListener('click',e=>{
     if(a==='clientMenu'){e.stopPropagation();showMenu(el,[...(GH?[['shareTeam',t('shareTeam')]]:[]),['renameClient',t('renameClient')],['askDelClient',t('deleteClient'),true]]);return}
     if(a==='shareTeam'){shareModal();return}
     if(a==='connect'){connectModal();return}
-    if(a==='disconnect'){try{localStorage.removeItem('ecm-gh-token')}catch(_){}render();return}
+    if(a==='genPw'){const i=document.querySelector('form[data-form="setlock"] input[name=pw]');if(i){i.value=genPw();i.select()}return}
+    if(a==='rmLock'){const c=client();delete c.lock;saveClients();closeModal();toast(t('lockRemoved'));render();return}
+    if(a==='disconnect'){try{localStorage.removeItem('ecm-gh-token');if(TEAM)localStorage.removeItem('ecm-team-'+TEAM)}catch(_){}render();return}
     if(a==='renameClient'){clientModal(ACTIVE);return}
     if(a==='askDelClient'){deleteClient();return}
     if(a==='newClient'){clientModal();return}
@@ -1699,6 +1740,8 @@ document.addEventListener('submit',e=>{
   if(f.dataset.form==='aikey'){const k=(fd.key||'').trim();try{if(k)localStorage.setItem('ecm-anthropic-key',k)}catch(_){}closeModal();toast(t('aiSaved'));render();if(UI.drawer)renderDrawer();return}
   if(f.dataset.form==='genreq'){if(RO())return;S.requests=S.requests||[];S.requests.push({id:uid('rq'),createdAt:new Date().toISOString(),idea:(fd.idea||'').trim(),format:fd.format||'',pillar:fd.pillar||'',cta:(fd.cta||'').trim(),audience:(fd.audience||'').trim(),status:'pending'});GEN.idea=null;GEN.paste=false;save();renderGen();toast(t('gSent'));return}
   if(f.dataset.form==='connect'){doConnect((fd.token||'').trim());return}
+  if(f.dataset.form==='unlock'){doUnlock(fd.pw||'');return}
+  if(f.dataset.form==='setlock'){doSetLock(fd);return}
   if(RO())return;
   if(f.dataset.form==='capture'){const title=(fd.title||'').trim();if(!title)return;const now=new Date().toISOString();const p=Object.assign({},EMPTY_POST,{id:nextId(),createdAt:now,updatedAt:now});setTv(p,'title',title);S.posts.push(p);save();render();toast(t('ideaAdded'));setTimeout(()=>{const i=document.querySelector('[data-key=capt]');if(i)i.focus()},20);return}
   if(f.dataset.form==='flight'){const c=S.paid.find(x=>x.id===f.dataset.c),o=c&&c.flights.find(x=>x.id===f.dataset.f);if(!o)return;setTv(o,'name',fd.name.trim());setTv(o,'focus',fd.focus.trim());o.start=fd.start;o.end=fd.end&&fd.end>=fd.start?fd.end:fd.start;o.daily=+fd.daily||0;o.tbd=!!fd.tbd;save();closeModal();render();return}

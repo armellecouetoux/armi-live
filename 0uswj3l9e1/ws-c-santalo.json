@@ -379,47 +379,6 @@
    "sugAt": "2026-11-08T19:15:23.366078+00:00"
   },
   {
-   "id": "CNT-019",
-   "date": "2026-12-10",
-   "time": "",
-   "title": "Evento en tienda: stories en directo + grabación para Reels",
-   "description": "",
-   "pillar": "pl4",
-   "objective": "",
-   "audience": "",
-   "channel": "Instagram",
-   "format": "Stories",
-   "type": "",
-   "copy": "",
-   "cta": "",
-   "brief": "",
-   "reference": "",
-   "owner": "tm1",
-   "status": "idea",
-   "asset": "",
-   "url": "",
-   "notes": "Propuesta. Diciembre se detalla el 27 nov con datos de las primeras semanas.",
-   "viral": false,
-   "ads": false,
-   "createdAt": "2026-11-06T08:57:22.529450+00:00",
-   "updatedAt": "2026-11-06T08:57:22.529450+00:00",
-   "en": {
-    "title": "In-store event: live stories + filming for Reels",
-    "notes": "Proposal. December gets detailed on Nov 27 using data from the first weeks."
-   },
-   "sug": [
-    {
-     "es": "Sticker 1: «¡Hoy es el día! 🕯️»\nSticker 2: ubicación de la tienda\nVídeos en directo del ambiente · cierre: «Gracias por venir»",
-     "en": "Sticker 1: “Today's the day! 🕯️”\nSticker 2: shop location\nLive videos of the atmosphere · closing: “Thank you for coming”"
-    },
-    {
-     "es": "Así está la tienda ahora mismo ✨ ¿Te vemos por aquí?\n(Encuesta: «¿Vienes hoy?» Sí / Me lo pierdo 😢)",
-     "en": "This is the shop right now ✨ See you here?\n(Poll: “Coming today?” Yes / I'll miss it 😢)"
-    }
-   ],
-   "sugAt": "2026-11-08T19:15:23.366078+00:00"
-  },
-  {
    "id": "CNT-023",
    "date": "2026-12-17",
    "time": "",
@@ -807,7 +766,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:33:32.436Z",
+ "updatedAt": "2026-11-09T21:33:34.736Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

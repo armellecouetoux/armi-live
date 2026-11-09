@@ -195,7 +195,8 @@
     "en": "🎯 Goal: inspire and earn saves with an easy-to-share format.\n💡 Idea: 3 corners of the home a candle transforms.\n🎬 Structure (Reel, 12–15 s): 3 shots of 4 s with a light-up transition: 1) bedside table · 2) bookshelf · 3) edge of the bath. Closing: all 3 candles lit.\n🎨 Visual: same warm light across the 3 shots, locked framing, slow pace; check the Drive reference in the notes.\n✍️ On-screen text: “1. Bedside · 2. Books · 3. Bath” + “Which one is yours?”\n👉 CTA: “Save it for inspiration.”\n✅ Checklist: 3 spots at home · candles (confirm models) · trending audio."
    },
    "briefSugAt": "2026-11-08T21:32:21.837314+00:00",
-   "wantCopy": false
+   "wantCopy": false,
+   "wantBrief": true
   },
   {
    "id": "CNT-008",
@@ -1353,7 +1354,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-08T21:22:19.970Z",
+ "updatedAt": "2026-11-09T10:20:10.840Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

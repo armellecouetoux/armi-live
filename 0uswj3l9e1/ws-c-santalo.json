@@ -1,7 +1,7 @@
 {
  "v": 2,
  "isDemo": false,
- "seq": 35,
+ "seq": 36,
  "posts": [
   {
    "id": "CNT-001",
@@ -1151,6 +1151,32 @@
    "ads": false,
    "updatedAt": "2026-11-09T11:01:28.023Z",
    "createdAt": "2026-11-09T11:01:09.657Z"
+  },
+  {
+   "id": "CNT-036",
+   "date": "2026-11-24",
+   "time": "",
+   "title": "Colección de Navidad",
+   "description": "",
+   "pillar": "pl2",
+   "objective": "",
+   "audience": "",
+   "channel": "",
+   "format": "Carrusel",
+   "type": "",
+   "copy": "",
+   "cta": "",
+   "brief": "Display de las piezas claves de la colección de Navidad (confirmar con Silvia)\nCarrusel dónde se ven las piezas en un entorno navideño, chic. ",
+   "reference": "",
+   "owner": "tmif5ump",
+   "status": "briefing",
+   "asset": "",
+   "url": "",
+   "notes": "",
+   "viral": false,
+   "ads": false,
+   "updatedAt": "2026-11-09T15:33:09.332Z",
+   "createdAt": "2026-11-09T15:33:09.332Z"
   }
  ],
  "pillars": [
@@ -1288,7 +1314,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T15:31:38.103Z",
+ "updatedAt": "2026-11-09T15:33:09.332Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

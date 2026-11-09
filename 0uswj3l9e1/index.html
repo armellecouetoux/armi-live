@@ -403,6 +403,23 @@ tr:hover .rowact{opacity:1}
 .sug .use{position:absolute;right:8px;top:8px}
 .sughead{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
 .sughead b{font-size:12px;color:#6b3fd6}
+.genfab{position:fixed;right:22px;bottom:22px;z-index:44;border:0;border-radius:30px;padding:12px 18px;background:#6b3fd6;color:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 10px 30px -8px rgba(107,63,214,.6);transition:transform .15s}
+.genfab:hover{transform:translateY(-2px) scale(1.03)}
+.genwin{position:fixed;right:22px;bottom:80px;width:min(440px,calc(100vw - 24px));max-height:min(640px,calc(100vh - 110px));z-index:46;background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(30,25,15,.28);display:none;flex-direction:column;overflow:hidden;border:1px solid #e6dcff}
+.genwin.on{display:flex}
+.genwin .gh{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#f7f2ff;cursor:move;user-select:none}
+.genwin .gh b{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;color:#4b2aa8}
+.genwin .gh .sp{flex:1}
+.genwin .gb{padding:12px 14px 16px;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.genwin .gtabs{display:flex;gap:4px;background:var(--bg2);border-radius:12px;padding:3px}
+.genwin .gtabs button{flex:1;border:0;background:transparent;padding:7px;border-radius:9px;font-weight:700;cursor:pointer;color:var(--tx2)}
+.genwin .gtabs button.on{background:#6b3fd6;color:#fff}
+.genwin .gsel{width:100%}
+.genwin .sug{padding-right:12px}
+.genwin .sug .acts{display:flex;gap:6px;margin-top:8px;justify-content:flex-end}
+.genwin .meta{font-size:11.5px;color:var(--tx3)}
+.genwin .reqs .req{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
+@media (max-width:860px){.genfab{right:12px;bottom:12px}.genwin{right:12px;bottom:66px}}
 .sughead.sugclosed{background:#f7f2ff;border-radius:10px;padding:6px 10px;margin:0}
 .sughead .sp{flex:1}
 @media (max-width:1100px){.paidhero{grid-template-columns:1fr}}
@@ -494,6 +511,8 @@ details>summary{list-style:none}details>summary::-webkit-details-marker{display:
 <div class="modal" id="modal"></div>
 <div class="menu" id="menu"></div>
 <div class="toast" id="toast"></div>
+<button class="genfab" id="genfab" data-act="genOpen">✨ <span></span></button>
+<div class="genwin" id="genwin"></div>
 <script>window.ECM_GH={repo:'armellecouetoux/armi-live',dir:'0uswj3l9e1'};</script>
 <script>
 /* ============ I18N ============ */
@@ -504,7 +523,17 @@ const TX={
  genBrief:['✨ Mini brief','✨ Mini brief'],briefDone:['Mini brief listo: revísalo y guarda','Mini brief ready: review it and save'],
  sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],genNow:['✨ Otras propuestas ya','✨ New ideas now'],generating:['Generando…','Generating…'],
  genHint:['Cada mañana (7:52) Claude deja propuestas nuevas usando lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Every morning (7:52) Claude leaves new ideas using what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
- hide:['▾ Ocultar','▾ Hide'],show:['▸ Mostrar','▸ Show'],
+ hide:['▾ Ocultar','▾ Hide'],
+ genTitle:['Generador de copy y brief','Copy & brief generator'],genFab:['Generador','Generator'],gCopy:['✍️ Copy','✍️ Copy'],gBrief:['📝 Brief','📝 Brief'],gNew:['💡 Idea nueva','💡 New idea'],
+ gPick:['Contenido','Content'],gUseCopy:['Usar como copy','Use as copy'],gUseBrief:['Usar como brief','Use as brief'],gCopyTxt:['Copiar texto','Copy text'],copied:['Copiado','Copied'],
+ gApplied:['Aplicado y guardado en el contenido','Applied and saved to the content'],gFrom:[d=>`Propuesta de Claude · ${d}`,d=>`Claude suggestion · ${d}`],
+ gNoCopy:['Aún no hay propuestas de copy para este contenido. Llegan cada mañana a las 7:52, o pídelas para mañana.','No copy suggestions for this content yet. They arrive every morning at 7:52, or ask for them for tomorrow.'],
+ gNoBrief:['Aún no hay mini brief de Claude para este contenido. Pídelo para mañana o usa la plantilla al instante.','No Claude mini brief for this content yet. Ask for it for tomorrow or use the instant template.'],
+ gTemplate:['⚡ Plantilla al instante','⚡ Instant template'],gTemplateH:['Se rellena al momento con los datos del contenido (sin IA): luego la completas tú.','Filled in instantly from the content’s fields (no AI): you complete it.'],
+ gAskCopy:['🔄 Pedir otras para mañana','🔄 Ask for new ones tomorrow'],gAskBrief:['📝 Pedir mini brief para mañana','📝 Ask for a mini brief tomorrow'],gPending:['⏳ Pedido para mañana 7:52','⏳ Requested for tomorrow 7:52'],
+ gNewH:['Describe una idea que aún no está en el calendario. Claude te deja copy y mini brief mañana a las 7:52.','Describe an idea that isn’t in the calendar yet. Claude leaves copy and a mini brief tomorrow at 7:52.'],
+ gIdea:['Idea o tema','Idea or topic'],gSend:['Pedir copy + brief','Ask for copy + brief'],gSent:['Pedido: lo tendrás mañana a las 7:52','Requested: you’ll have it tomorrow at 7:52'],gMyReqs:['Tus peticiones','Your requests'],gMakePost:['＋ Crear contenido con esto','＋ Create content from this'],gDelReq:['Quitar','Remove'],
+ gNone:['No hay contenidos.','No content.'],show:['▸ Mostrar','▸ Show'],
  briefUsed:['Mini brief aplicado: revísalo y guarda','Mini brief applied: review it and save'],
  briefSugT:['✨ Mini brief propuesto · Claude','✨ Suggested mini brief · Claude'],askBrief:['📝 Pedir mini brief','📝 Ask for a mini brief'],briefPending:['⏳ Mini brief para mañana','⏳ Mini brief tomorrow'],
  genDone:['✨ Nuevas propuestas listas','✨ New suggestions ready'],genErr:['No se pudo generar:','Couldn’t generate:'],genBadFormat:['respuesta sin formato válido','response in an unexpected format'],
@@ -881,7 +910,7 @@ function render(){
   if(!S||wsLoading){$('#content').innerHTML=`<div class="loadingws">${t('loadingWs')}</div>`;return}
   renderSide();renderTop();
   const fn={overview:vOverview,calendar:vCalendar,database:vDatabase,workflow:vWorkflow,pillars:vPillars,paid:vPaid,prompts:vPrompts,ajustes:vSettings}[UI.view]||vOverview;
-  $('#content').innerHTML=banner()+fn();lockRO($('#content'));restoreFocus();
+  $('#content').innerHTML=banner()+fn();renderGen();lockRO($('#content'));restoreFocus();
 }
 function go(view){UI.view=view;try{history.replaceState(null,'',location.search+'#'+view)}catch(e){}$('#side').classList.remove('open');$('#content').scrollTop=0;render()}
 async function switchClient(id){
@@ -1252,9 +1281,9 @@ function renderDrawer(){
       ${fld('pillar','d_pillar','select',{html:pillarOpts(d.pillar,'—')})}
       ${fld('owner','d_owner','select',{html:ownerOpts(d.owner,t('unassigned')),full:true})}
       ${fld('description','d_desc','textarea',{full:true,rows:2})}
-      ${sugBlock(d)}${fld('copy','d_copy','textarea',{full:true,rows:4})}
+      ${fld('copy','d_copy','textarea',{full:true,rows:4})}
       ${fld('cta','d_cta','text',{full:true})}
-      ${fld('brief','d_brief','textarea',{full:true,rows:tv(draft,'brief').split('\n').length>2?8:2,extra:`<span style="flex:1"></span>${draft.wantBrief?`<span class="tag viral">${t('briefPending')}</span>`:(dRO()?'':`<button type="button" class="btn sm" data-act="askBrief">${t('askBrief')}</button>`)}`})}${briefSugBlock(draft)}
+      ${fld('brief','d_brief','textarea',{full:true,rows:tv(draft,'brief').split('\n').length>2?8:2,})}
       ${fld('notes','d_notes','textarea',{full:true,rows:2})}
     </div></div>
     <details class="dsec"><summary style="cursor:pointer;font-weight:700;color:var(--tx2)">${t('f_more')}</summary><div class="fgrid" style="margin-top:10px">
@@ -1280,6 +1309,62 @@ function briefSugBlock(d){
   if(HIDE.brief)return `<div class="fld full"><div class="sughead sugclosed"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div></div>`;
   return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
 }
+/* ===== floating generator ===== */
+const GEN={open:false,tab:'copy',pid:null};
+function genDefaultPid(){const td=today();const L=S.posts.filter(p=>p.status!=='published').sort(cmpDate);const n=L.find(p=>p.date&&p.date>=td)||L[0];return n?n.id:null}
+function briefTemplate(p){
+  const fmt=String(p.format||'').toLowerCase(),pl=pillar(p.pillar);
+  const struct=fmt.includes('reel')||fmt.includes('víd')||fmt.includes('vid')?(LANG==='en'?'1) hook (2 s) · 2) … (3 s) · 3) … (3 s) · 4) closing shot (3 s)':'1) gancho (2 s) · 2) … (3 s) · 3) … (3 s) · 4) plano final (3 s)')
+    :fmt.includes('carr')?(LANG==='en'?'Slide 1 cover · Slides 2–5 one idea each · last slide CTA':'Slide 1 portada · Slides 2–5 una idea por slide · última slide CTA')
+    :fmt.includes('stor')?(LANG==='en'?'3–5 stories: intro · content · sticker (poll / question) · close':'3–5 stories: intro · contenido · sticker (encuesta / pregunta) · cierre')
+    :(LANG==='en'?'Composition: …':'Composición: …');
+  const L=LANG==='en'?['🎯 Goal','💡 Idea','👥 Audience','🎬 Structure','🎨 Visual','✍️ On-piece text','👉 CTA','🔗 Reference','✅ Checklist']:['🎯 Objetivo','💡 Idea','👥 Audiencia','🎬 Estructura','🎨 Visual','✍️ Texto en pieza','👉 CTA','🔗 Referencia','✅ Checklist'];
+  return [`${L[0]}: ${lv(p.objective)||'…'}${pl?' · '+tv(pl,'name'):''}`,`${L[1]}: ${tv(p,'description')||tv(p,'title')}`,`${L[2]}: ${tv(p,'audience')||'…'}`,`${L[3]}: ${lv(p.format)} — ${struct}`,`${L[4]}: …`,`${L[5]}: …`,`${L[6]}: ${tv(p,'cta')||'…'}`,`${L[7]}: ${p.reference||'—'}`,`${L[8]}: …`].join('\n');
+}
+function renderGen(){
+  const w=$('#genwin'),fab=$('#genfab');if(!w)return;
+  fab.querySelector('span').textContent=t('genFab');fab.style.display=S?'':'none';
+  w.classList.toggle('on',GEN.open);if(!GEN.open||!S)return;
+  if(!GEN.pid||!S.posts.some(p=>p.id===GEN.pid))GEN.pid=genDefaultPid();
+  const p=S.posts.find(x=>x.id===GEN.pid);
+  const opts=[...S.posts].sort(cmpDate).map(x=>`<option value="${x.id}" ${x.id===GEN.pid?'selected':''}>${x.status==='published'?'✓ ':''}${x.date?fmtShort(x.date)+' · ':''}${esc(tv(x,'title')||t('untitled'))}</option>`).join('');
+  const pick=`<label class="meta">${t('gPick')}</label><select class="inp gsel keep" data-genpick>${opts}</select>`;
+  const txt=x=>LANG==='en'?(x.en||x.es):(x.es||x.en);
+  let body='';
+  if(GEN.tab==='copy'){
+    if(!p)body=`<div class="note">${t('gNone')}</div>`;else{
+    const L=Array.isArray(p.sug)?p.sug:[];
+    body=pick+(p.sugAt?`<div class="meta">${t('gFrom',fmtShort(p.sugAt.slice(0,10)))}</div>`:'')+(L.length?L.map((x,i)=>`<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="copy|${i}">${t('gUseCopy')}</button>`}</div></div>`).join(''):`<div class="note">${t('gNoCopy')}</div>`)
+      +(RO()?'':(p.wantCopy?`<span class="tag viral">${t('gPending')}</span>`:`<button class="btn sm" data-gask="wantCopy">${t('gAskCopy')}</button>`));}
+  }else if(GEN.tab==='brief'){
+    if(!p)body=`<div class="note">${t('gNone')}</div>`;else{
+    const x=p.briefSug;
+    body=pick+(x&&(x.es||x.en)?`${p.briefSugAt?`<div class="meta">${t('gFrom',fmtShort(p.briefSugAt.slice(0,10)))}</div>`:''}<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="brief|0">${t('gUseBrief')}</button>`}</div></div>`:`<div class="note">${t('gNoBrief')}</div>`)
+      +(RO()?'':`<div style="display:flex;gap:6px;flex-wrap:wrap">${p.wantBrief?`<span class="tag viral">${t('gPending')}</span>`:`<button class="btn sm" data-gask="wantBrief">${t('gAskBrief')}</button>`}<button class="btn sm" data-gtemplate="1" title="${t('gTemplateH')}">${t('gTemplate')}</button></div><div class="meta">${t('gTemplateH')}</div>`);}
+  }else{
+    const R=S.requests||[];
+    body=`<div class="note" style="color:var(--tx2)">${t('gNewH')}</div>${RO()?'':`<form data-form="genreq" style="display:flex;flex-direction:column;gap:8px">
+      <textarea class="inp keep" name="idea" rows="3" placeholder="${t('gIdea')}" required></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><select class="inp keep" name="format">${optsList(S.lists.formats,'',t('format'))}</select><select class="inp keep" name="pillar">${pillarOpts('',t('pillar'))}</select>
+      <input class="inp keep" name="cta" placeholder="CTA"><input class="inp keep" name="audience" placeholder="${t('d_audience')}"></div>
+      <button class="btn pri" type="submit">${t('gSend')}</button></form>`}
+      ${R.length?`<b style="margin-top:6px">${t('gMyReqs')}</b><div class="reqs" style="display:flex;flex-direction:column;gap:8px">${[...R].reverse().map(r=>`<div class="req"><div style="font-weight:700">${esc(r.idea)}</div><div class="meta">${[lv(r.format),pillarName(r.pillar),r.cta].filter(Boolean).map(esc).join(' · ')}</div>
+        ${r.status==='done'?`${(r.copy||[]).map(x=>`<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button></div></div>`).join('')}${r.brief?`<div class="sug">${esc(txt(r.brief))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(r.brief))}">${t('gCopyTxt')}</button></div></div>`:''}${RO()?'':`<button class="btn sm" data-gmake="${r.id}">${t('gMakePost')}</button>`}`:`<span class="tag viral">${t('gPending')}</span>`}
+        ${RO()?'':`<button class="btn ghost sm" data-gdel="${r.id}" style="align-self:flex-end">${t('gDelReq')}</button>`}</div>`).join('')}</div>`:''}`;
+  }
+  w.innerHTML=`<div class="gh" id="genhead"><b>✨ ${t('genTitle')}</b><span class="sp"></span><button class="btn ghost icon sm" data-act="genClose">✕</button></div>
+   <div class="gb"><div class="gtabs"><button class="${GEN.tab==='copy'?'on':''}" data-gtab="copy">${t('gCopy')}</button><button class="${GEN.tab==='brief'?'on':''}" data-gtab="brief">${t('gBrief')}</button><button class="${GEN.tab==='new'?'on':''}" data-gtab="new">${t('gNew')}</button></div>${body}</div>`;
+}
+function genApply(kind,i){
+  const p=S.posts.find(x=>x.id===GEN.pid);if(!p||RO())return;
+  const x=kind==='copy'?(p.sug||[])[i]:p.briefSug;if(!x)return;
+  p[kind==='copy'?'copy':'brief']=x.es||x.en||'';if(x.en){p.en=p.en||{};p.en[kind==='copy'?'copy':'brief']=x.en}
+  p.updatedAt=new Date().toISOString();save();toast(t('gApplied'));
+  if(UI.drawer&&UI.drawer.id===p.id&&!UI.dirty)refreshDrawerFromState();render();
+}
+(function(){let drag=null;document.addEventListener('mousedown',e=>{const h=e.target.closest('#genhead');if(!h||e.target.closest('button'))return;const w=$('#genwin'),r=w.getBoundingClientRect();drag={dx:e.clientX-r.left,dy:e.clientY-r.top};e.preventDefault()});
+ document.addEventListener('mousemove',e=>{if(!drag)return;const w=$('#genwin');w.style.left=Math.max(4,Math.min(innerWidth-60,e.clientX-drag.dx))+'px';w.style.top=Math.max(4,Math.min(innerHeight-60,e.clientY-drag.dy))+'px';w.style.right='auto';w.style.bottom='auto'});
+ document.addEventListener('mouseup',()=>{drag=null})})();
 function askFlag(flag){
   if(!draft)return;draft[flag]=true;
   if(!UI.drawer.isNew){const p=S.posts.find(x=>x.id===UI.drawer.id);if(p){p[flag]=true;save()}}
@@ -1464,7 +1549,7 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('ecm-lang
 
 document.addEventListener('click',e=>{
   if(!e.target.closest('#menu')&&!e.target.closest('[data-act=clientMenu]'))hideMenu();
-  const el=e.target.closest('[data-hide],[data-openro],[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
+  const el=e.target.closest('[data-gtab],[data-guse],[data-gcopy],[data-gask],[data-gtemplate],[data-gmake],[data-gdel],[data-hide],[data-openro],[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
   if(!el)return;if(e.target.closest('input,select,textarea')&&!el.matches('[data-act],[data-step]'))return;
   const ds=el.dataset;
   if(ds.usesug!==undefined&&draft){const x=(draft.sug||[])[+ds.usesug];if(x){draft.copy=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.copy=x.en}markDirty();renderDrawer();toast(t('sugUsed'))}return}
@@ -1492,6 +1577,8 @@ document.addEventListener('click',e=>{
     if(a==='genBrief'){genBrief();return}
     if(a==='aiKeyDel'){try{localStorage.removeItem('ecm-anthropic-key')}catch(_){}closeModal();render();return}
     if(a==='aiKey'){aiKeyModal(false);return}
+    if(a==='genOpen'){GEN.open=!GEN.open;renderGen();return}
+    if(a==='genClose'){GEN.open=false;renderGen();return}
     if(a==='askSug'){askFlag('wantCopy');return}
     if(a==='askBrief'){askFlag('wantBrief');return}
     if(a==='useBrief'){const x=draft&&draft.briefSug;if(x){draft.brief=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.brief=x.en}markDirty();renderDrawer();toast(t('briefUsed'))}return}
@@ -1529,6 +1616,13 @@ document.addEventListener('click',e=>{
   if(ds.editpillar){pillarModal(ds.editpillar);return}
   if(ds.delpillar){const p=pillar(ds.delpillar);confirmModal(t('delPillarT'),t('delPillarM',tv(p,'name')),t('del'),()=>{snapshotForUndo();S.pillars=S.pillars.filter(x=>x.id!==p.id);S.posts.forEach(x=>{if(x.pillar===p.id)x.pillar=''});save();render();toast(t('deleted'),true)},true);return}
   if(ds.filterpillar){setFilters({pillar:ds.filterpillar});go('database');return}
+  if(ds.gtab){GEN.tab=ds.gtab;renderGen();return}
+  if(ds.gcopy!==undefined){copyText(ds.gcopy,t('copied'));return}
+  if(ds.guse){const [k,i]=ds.guse.split('|');genApply(k,+i);return}
+  if(ds.gask){const p=S.posts.find(x=>x.id===GEN.pid);if(p&&!RO()){p[ds.gask]=true;save();renderGen();toast(t('gSent'))}return}
+  if(ds.gtemplate){const p=S.posts.find(x=>x.id===GEN.pid);if(p){copyText(briefTemplate(p),t('copied'));if(!RO()&&!tv(p,'brief')){setTv(p,'brief',briefTemplate(p));save();toast(t('gApplied'));render()}}return}
+  if(ds.gmake){const r=(S.requests||[]).find(x=>x.id===ds.gmake);if(r){const c=(r.copy||[])[0]||{};openPost(null,{title:r.idea.slice(0,80),format:r.format,pillar:r.pillar,cta:r.cta,audience:r.audience,copy:c.es||'',brief:(r.brief&&r.brief.es)||'',en:{copy:c.en||'',brief:(r.brief&&r.brief.en)||''},status:'idea'})}return}
+  if(ds.gdel){S.requests=(S.requests||[]).filter(x=>x.id!==ds.gdel);save();renderGen();return}
   if(ds.hide){togHide(ds.hide);return}
   if(ds.openro){openPost(ds.openro,null,true);return}
   if(ds.open){openPost(ds.open);return}
@@ -1545,6 +1639,7 @@ document.addEventListener('input',e=>{const el=e.target;
   if(el.dataset.d!==undefined&&draft){if(TXT.includes(el.dataset.d))setTv(draft,el.dataset.d,el.value);else draft[el.dataset.d]=el.value;markDirty()}
 });
 document.addEventListener('change',e=>{const el=e.target;
+  if(el.dataset.genpick!==undefined){GEN.pid=el.value;renderGen();return}
   if(el.dataset.f&&el.dataset.f!=='q'){UI.f[el.dataset.f]=el.type==='checkbox'?el.checked:el.value;render();return}
   if(RO())return;
   if(el.dataset.x){xSet(el.dataset.x,el.type==='checkbox'?el.checked:el.value);return}
@@ -1558,6 +1653,7 @@ document.addEventListener('change',e=>{const el=e.target;
 document.addEventListener('submit',e=>{
   const f=e.target;if(!f.dataset.form)return;e.preventDefault();const fd=Object.fromEntries(new FormData(f).entries());
   if(f.dataset.form==='aikey'){const k=(fd.key||'').trim();try{if(k)localStorage.setItem('ecm-anthropic-key',k)}catch(_){}closeModal();toast(t('aiSaved'));render();if(UI.drawer)renderDrawer();return}
+  if(f.dataset.form==='genreq'){if(RO())return;S.requests=S.requests||[];S.requests.push({id:uid('rq'),createdAt:new Date().toISOString(),idea:(fd.idea||'').trim(),format:fd.format||'',pillar:fd.pillar||'',cta:(fd.cta||'').trim(),audience:(fd.audience||'').trim(),status:'pending'});save();renderGen();toast(t('gSent'));return}
   if(f.dataset.form==='connect'){doConnect((fd.token||'').trim());return}
   if(RO())return;
   if(f.dataset.form==='capture'){const title=(fd.title||'').trim();if(!title)return;const now=new Date().toISOString();const p=Object.assign({},EMPTY_POST,{id:nextId(),createdAt:now,updatedAt:now});setTv(p,'title',title);S.posts.push(p);save();render();toast(t('ideaAdded'));setTimeout(()=>{const i=document.querySelector('[data-key=capt]');if(i)i.focus()},20);return}

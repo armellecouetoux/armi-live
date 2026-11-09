@@ -217,6 +217,10 @@ tr:hover .rowact{opacity:1}
 .kc{background:#fff;border:1px solid var(--line);border-left:5px solid var(--pc,var(--line2));border-radius:13px;padding:10px 11px;cursor:pointer;display:flex;flex-direction:column;gap:7px;transition:transform .15s,box-shadow .15s}
 .kc:hover{transform:translateY(-2px) rotate(-.4deg);box-shadow:var(--sh)}
 .kc .tt{font-weight:600;line-height:1.35;white-space:normal}
+.wfinfo{display:flex;flex-direction:column;gap:2px;font-size:11.5px}
+.wfi{display:flex;gap:6px}.wfi span{color:var(--tx3);min-width:72px;flex:none}.wfi b{font-weight:600;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wfcopy{font-size:11.5px;color:var(--tx2);background:var(--bg2);border-radius:8px;padding:6px 8px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.kanban .kc{cursor:zoom-in}
 .kc .mt{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;color:var(--tx2)}
 .kc .mt .sp{flex:1}
 .kc.late{border-color:#ffc9c9;border-left-color:var(--red)}
@@ -516,7 +520,7 @@ const TX={
  search:['Buscar…','Search…'],f_format:['Formato','Format'],f_pillar:['Pilar','Pillar'],f_status:['Estado','Status'],onlyLate:['⚠ Retrasadas','⚠ Delayed'],clear:['Limpiar','Clear'],
  c_id:['ID','ID'],c_title:['Título','Title'],c_date:['Fecha','Date'],c_format:['Formato','Format'],c_pillar:['Pilar','Pillar'],c_status:['Estado','Status'],
  openCard:['Abrir ficha','Open card'],duplicate:['Duplicar','Duplicate'],del:['Eliminar','Delete'],copyCSV:['Copiar CSV','Copy CSV'],
- wfNote:['Arrastra las tarjetas entre columnas o usa → para avanzar.','Drag cards between columns or use → to advance.'],advanceTo:['Avanzar a','Advance to'],
+ wfNote:['Vista de consulta: aquí no se puede cambiar nada. Para editar, ve a Calendario o Contenidos.','View only: nothing can be changed here. To edit, go to Calendar or Content.'],advanceTo:['Avanzar a','Advance to'],
  pillars:['Pilares','Pillars'],newPillar:['＋ Pilar','＋ Pillar'],real:['real','actual'],items:['contenidos','items'],noPillars:['Aún no hay pilares.','No pillars yet.'],
  sumWarn:[n=>`Los objetivos suman ${n}% (deberían sumar 100%).`,n=>`Targets add up to ${n}% (should be 100%).`],
  imbalance:['Desequilibrio','Imbalance'],above:['por encima','above'],below:['por debajo','below'],
@@ -674,6 +678,7 @@ function lsLoad(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'null')}ca
 const GH=window.ECM_GH||null;
 const ghTok=()=>{try{return localStorage.getItem('armi-gh-token')||localStorage.getItem('ecm-gh-token')||''}catch(e){return ''}};
 const RO=()=>!!GH&&!ghTok();
+const dRO=()=>RO()||!!(UI.drawer&&UI.drawer.ro);
 const b64e=x=>btoa(unescape(encodeURIComponent(x)));
 const b64d=x=>decodeURIComponent(escape(atob(x.replace(/\s/g,''))));
 const ghApi=p=>'https://api.github.com/repos/'+GH.repo+'/contents/'+p;
@@ -861,7 +866,7 @@ function banner(){
 let focusInfo=null;
 function captureFocus(){const a=document.activeElement;focusInfo=a&&a.dataset&&a.dataset.key?{key:a.dataset.key,s:a.selectionStart,e:a.selectionEnd}:null}
 function restoreFocus(){if(!focusInfo)return;const el=document.querySelector(`[data-key="${focusInfo.key}"]`);if(el){el.focus();try{el.setSelectionRange(focusInfo.s,focusInfo.e)}catch(e){}}}
-function lockRO(root){if(!RO())return;root.querySelectorAll('input,select,textarea').forEach(el=>{if(el.dataset.f===undefined&&!el.classList.contains('keep'))el.disabled=true});root.querySelectorAll('[draggable]').forEach(el=>el.draggable=false)}
+function lockRO(root,force){if(!RO()&&!force)return;root.querySelectorAll('input,select,textarea').forEach(el=>{if(el.dataset.f===undefined&&!el.classList.contains('keep'))el.disabled=true});root.querySelectorAll('[draggable]').forEach(el=>el.draggable=false)}
 function render(){
   if(!CL)return;document.documentElement.lang=LANG;document.body.classList.toggle('ro',RO());
   captureFocus();renderTabs();
@@ -1012,10 +1017,23 @@ function vDatabase(){
 }
 
 /* ============ WORKFLOW ============ */
+function wfCard(p){
+  const L=[];const add=(k,v)=>{if(v)L.push(`<div class="wfi"><span>${t(k)}</span><b>${esc(v)}</b></div>`)};
+  add('c_date',p.date?fmtShort(p.date)+(p.time?' · '+p.time:''):t('noDate'));
+  add('d_pillar',pillarName(p.pillar));add('d_owner',(member(p.owner)||{}).name);
+  add('d_objective',lv(p.objective));add('d_audience',tv(p,'audience'));add('d_cta',tv(p,'cta'));
+  const cp=tv(p,'copy');
+  return `<div class="kc ${isDelayed(p)?'late':''}" data-openro="${p.id}" style="--pc:${pColor(p.pillar)}">
+    <div class="mt"><span>${fEmo(p.format)}</span><span>${esc(lv(p.format))}</span>${p.viral?'<span class="tag viral">🧪</span>':''}${p.ads?'<span class="tag ads">💸</span>':''}${isDelayed(p)?`<span class="tag red">${t('delayed')}</span>`:''}</div>
+    <div class="tt">${esc(tv(p,'title')||t('untitled'))}</div>
+    <div class="wfinfo">${L.join('')}</div>
+    ${cp?`<div class="wfcopy">${esc(cp)}</div>`:''}
+    <div class="mt">${tv(p,'brief')?`<span class="tag">📝 Brief</span>`:''}${cp?'<span class="tag">✍️ Copy</span>':''}${p.asset?'<span class="tag">🖼️ Asset</span>':''}</div></div>`;
+}
 function vWorkflow(){
   const posts=filtered(S.posts);
-  return `${filterBar({noStatus:true})}<div class="kanban">${STATUSES.map((s,i)=>{const list=posts.filter(p=>p.status===s.k).sort(cmpDate);
-    return `<div class="kcol" data-drop-status="${s.k}"><div class="kh"><span class="sw" style="background:${s.c};border-radius:50%"></span>${s.l}<span class="n">${list.length}</span></div><div class="kb">${list.map(p=>`<div class="kc ${isDelayed(p)?'late':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}" style="--pc:${pColor(p.pillar)}"><div class="mt"><span>${fEmo(p.format)}</span><span>${esc(lv(p.format))}</span>${p.viral?'<span class="tag viral">🧪</span>':''}</div><div class="tt">${esc(tv(p,'title')||t('untitled'))}</div><div class="mt"><span style="color:${isDelayed(p)?'var(--red)':'var(--tx3)'}">${p.date?fmtShort(p.date):t('noDate')}</span><span class="sp"></span>${avatar(p.owner)}${i<6&&!RO()?`<button class="btn ghost icon sm" data-advance="${p.id}" title="${t('advanceTo')} ${STATUSES[i+1].l}">→</button>`:''}</div></div>`).join('')}</div></div>`}).join('')}</div><div class="note">${t('wfNote')}</div>`;
+  return `${filterBar({noStatus:true})}<div class="kanban">${STATUSES.map(s=>{const list=posts.filter(p=>p.status===s.k).sort(cmpDate);
+    return `<div class="kcol"><div class="kh"><span class="sw" style="background:${s.c};border-radius:50%"></span>${s.l}<span class="n">${list.length}</span></div><div class="kb">${list.map(wfCard).join('')}</div></div>`}).join('')}</div><div class="note">👀 ${t('wfNote')}</div>`;
 }
 
 /* ============ PILLARS ============ */
@@ -1195,8 +1213,8 @@ function vSettings(){
 let draft=null;
 const EMPTY_POST={id:'',date:'',time:'',title:'',description:'',pillar:'',objective:'',audience:'',channel:'',format:'',type:'',copy:'',cta:'',brief:'',reference:'',owner:'',status:'idea',asset:'',url:'',notes:'',viral:false,ads:false};
 const TXT=['title','description','copy','cta','brief','notes','audience','reference'];
-function openPost(id,preset){
-  if(id){const p=S.posts.find(x=>x.id===id);if(!p)return;draft=JSON.parse(JSON.stringify(p));UI.drawer={id,isNew:false}}
+function openPost(id,preset,ro){
+  if(id){const p=S.posts.find(x=>x.id===id);if(!p)return;draft=JSON.parse(JSON.stringify(p));UI.drawer={id,isNew:false,ro:!!ro}}
   else{if(RO())return;draft=Object.assign({},EMPTY_POST,{id:LANG==='en'?'(new)':'(nuevo)'},preset||{});UI.drawer={id:null,isNew:true}}
   UI.dirty=false;renderDrawer();$('#drawer').classList.add('on');$('#scrim').classList.add('on');
   setTimeout(()=>{const ti=$('#drawer .tinput');if(ti&&UI.drawer&&UI.drawer.isNew)ti.focus()},210);
@@ -1213,10 +1231,10 @@ function renderDrawer(){
   const d=draft,cur=SIDX[d.status]||0,fon=d.date?flightsOn(d.date):[],mon=d.date?momentsOn(d.date):[];
   $('#drawer').innerHTML=`
   <div class="dhd" style="--pc:${pColor(d.pillar)}">
-    <div class="row"><span class="tag">${esc(d.id)}</span>${isDelayed(d)&&!UI.drawer.isNew?`<span class="tag red">⚠ ${t('delayed')}</span>`:''}<span class="sp"></span>${!UI.drawer.isNew&&!RO()?`<button class="btn ghost icon" data-act="dupDraft" title="${t('duplicate')}">⧉</button>`:''}<button class="btn ghost icon" data-act="closeDrawer" title="${t('close')}">✕</button></div>
+    <div class="row"><span class="tag">${esc(d.id)}</span>${isDelayed(d)&&!UI.drawer.isNew?`<span class="tag red">⚠ ${t('delayed')}</span>`:''}<span class="sp"></span>${!UI.drawer.isNew&&!dRO()?`<button class="btn ghost icon" data-act="dupDraft" title="${t('duplicate')}">⧉</button>`:''}<button class="btn ghost icon" data-act="closeDrawer" title="${t('close')}">✕</button></div>
     <input class="tinput" data-d="title" data-key="d-title" value="${esc(tv(d,'title'))}" placeholder="${t('ph_title')}">
     <div class="steps">${STATUSES.map((s,i)=>`<button data-step="${s.k}" class="${i===cur?'on':''} ${i<cur?'done':''}" style="--c:${s.c}"><i></i>${s.l}</button>`).join('')}</div>
-    <div class="toggles">${cur<6&&!RO()?`<button class="btn sm pri" data-act="advanceDraft">${t('advanceTo')} ${STATUSES[cur+1].e} ${STATUSES[cur+1].l} →</button>`:''}<label class="tog v ${d.viral?'on':''}"><input type="checkbox" data-dchk="viral" ${d.viral?'checked':''}>${t('viral')}</label><label class="tog a ${d.ads?'on':''}"><input type="checkbox" data-dchk="ads" ${d.ads?'checked':''}>${t('toAds')}</label></div>
+    <div class="toggles">${cur<6&&!dRO()?`<button class="btn sm pri" data-act="advanceDraft">${t('advanceTo')} ${STATUSES[cur+1].e} ${STATUSES[cur+1].l} →</button>`:''}<label class="tog v ${d.viral?'on':''}"><input type="checkbox" data-dchk="viral" ${d.viral?'checked':''}>${t('viral')}</label><label class="tog a ${d.ads?'on':''}"><input type="checkbox" data-dchk="ads" ${d.ads?'checked':''}>${t('toAds')}</label></div>
     ${fon.length||mon.length?`<div class="paidnote">${[...fon.map(x=>t('paidOn',tv(x.f,'name'),x.f.daily)),...mon.map(m=>t('momOn',tv(m,'name')))].join('<br>')}</div>`:''}
   </div>
   <div class="dbd">
@@ -1228,7 +1246,7 @@ function renderDrawer(){
       ${fld('description','d_desc','textarea',{full:true,rows:2})}
       ${sugBlock(d)}${fld('copy','d_copy','textarea',{full:true,rows:4})}
       ${fld('cta','d_cta','text',{full:true})}
-      ${fld('brief','d_brief','textarea',{full:true,rows:tv(draft,'brief').split('\n').length>2?8:2,extra:`<span style="flex:1"></span>${draft.wantBrief?`<span class="tag viral">${t('briefPending')}</span>`:(RO()?'':`<button type="button" class="btn sm" data-act="askBrief">${t('askBrief')}</button>`)}`})}${briefSugBlock(draft)}
+      ${fld('brief','d_brief','textarea',{full:true,rows:tv(draft,'brief').split('\n').length>2?8:2,extra:`<span style="flex:1"></span>${draft.wantBrief?`<span class="tag viral">${t('briefPending')}</span>`:(dRO()?'':`<button type="button" class="btn sm" data-act="askBrief">${t('askBrief')}</button>`)}`})}${briefSugBlock(draft)}
       ${fld('notes','d_notes','textarea',{full:true,rows:2})}
     </div></div>
     <details class="dsec"><summary style="cursor:pointer;font-weight:700;color:var(--tx2)">${t('f_more')}</summary><div class="fgrid" style="margin-top:10px">
@@ -1241,14 +1259,14 @@ function renderDrawer(){
       ${fld('url','d_url','text',{full:true,link:true})}
     </div></details>
   </div>
-  <div class="dft">${!UI.drawer.isNew&&!RO()?`<button class="btn danger" data-act="delDraft">${t('del')}</button>`:''}<span class="sp"></span><span class="dirty" id="dirtyLbl">${UI.dirty?t('unsaved'):''}</span><button class="btn" data-act="closeDrawer">${RO()?t('close'):t('cancel')}</button>${RO()?'':`<button class="btn pri" data-act="saveDraft">${UI.drawer.isNew?t('createBtn'):t('save')}</button>`}</div>`;
-  lockRO($('#drawer'));
+  <div class="dft">${!UI.drawer.isNew&&!dRO()?`<button class="btn danger" data-act="delDraft">${t('del')}</button>`:''}<span class="sp"></span><span class="dirty" id="dirtyLbl">${UI.dirty?t('unsaved'):''}</span><button class="btn" data-act="closeDrawer">${dRO()?t('close'):t('cancel')}</button>${dRO()?'':`<button class="btn pri" data-act="saveDraft">${UI.drawer.isNew?t('createBtn'):t('save')}</button>`}</div>`;
+  lockRO($('#drawer'),dRO());
 }
 const aiKey=()=>{try{return localStorage.getItem('ecm-anthropic-key')||''}catch(e){return ''}};
 let genBusy=false;
 function briefSugBlock(d){
   const x=d.briefSug;if(!x||!(x.es||x.en))return '';
-  return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b></div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${RO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
+  return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b></div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
 }
 function askFlag(flag){
   if(!draft)return;draft[flag]=true;
@@ -1257,10 +1275,10 @@ function askFlag(flag){
 }
 function sugBlock(d){
   const L=Array.isArray(d.sug)?d.sug:[];
-  const btn=RO()||d.wantCopy?'':`<button class="btn sm" data-act="askSug">${t('askNew')}</button>`;
+  const btn=dRO()||d.wantCopy?'':`<button class="btn sm" data-act="askSug">${t('askNew')}</button>`;
   return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${btn}</div>
    <div class="note" style="margin:-4px 0 8px">${t('genHint')}</div>
-   ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${RO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
+   ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
 }
 function copyBrief(d){
   const pl=pillar(d.pillar),c=client();
@@ -1433,7 +1451,7 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('ecm-lang
 
 document.addEventListener('click',e=>{
   if(!e.target.closest('#menu')&&!e.target.closest('[data-act=clientMenu]'))hideMenu();
-  const el=e.target.closest('[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
+  const el=e.target.closest('[data-openro],[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
   if(!el)return;if(e.target.closest('input,select,textarea')&&!el.matches('[data-act],[data-step]'))return;
   const ds=el.dataset;
   if(ds.usesug!==undefined&&draft){const x=(draft.sug||[])[+ds.usesug];if(x){draft.copy=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.copy=x.en}markDirty();renderDrawer();toast(t('sugUsed'))}return}
@@ -1454,7 +1472,7 @@ document.addEventListener('click',e=>{
     if(a==='calToday'){UI.cal.cursor=today();render();return}
     if(a==='goWeek'){UI.cal.mode='week';UI.cal.cursor=today();go('calendar');return}
     if(a==='closeDrawer'){closeDrawer();return}
-    if(a==='saveDraft'){saveDraft();return}
+    if(a==='saveDraft'){if(!dRO())saveDraft();return}
     if(a==='dupDraft'){if(UI.dirty)return;const nid=duplicate(UI.drawer.id);openPost(nid);return}
     if(a==='delDraft'){delPost(UI.drawer.id);return}
     if(a==='genSug'){genSuggestions();return}
@@ -1464,6 +1482,7 @@ document.addEventListener('click',e=>{
     if(a==='askSug'){askFlag('wantCopy');return}
     if(a==='askBrief'){askFlag('wantBrief');return}
     if(a==='useBrief'){const x=draft&&draft.briefSug;if(x){draft.brief=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.brief=x.en}markDirty();renderDrawer();toast(t('briefUsed'))}return}
+    if(a==='advanceDraft'&&dRO())return;
     if(a==='advanceDraft'){const i=SIDX[draft.status];if(i<6){draft.status=STATUSES[i+1].k;markDirty();renderDrawer()}return}
     if(a==='closeModal'){closeModal();return}
     if(a==='modalOk'){const cb=modalCb;closeModal();if(cb)cb();return}
@@ -1490,13 +1509,14 @@ document.addEventListener('click',e=>{
   if(ds.newdate){openPost(null,{date:ds.newdate,status:'idea'});return}
   if(ds.expand!==undefined){UI.cal.expanded=ds.expand||null;render();return}
   if(ds.advance){const p=S.posts.find(x=>x.id===ds.advance),i=SIDX[p.status];if(i<6)updatePost(p.id,{status:STATUSES[i+1].k},`${p.id} → ${STATUSES[i+1].l}`);return}
-  if(ds.step){draft.status=ds.step;markDirty();renderDrawer();return}
+  if(ds.step){if(dRO())return;draft.status=ds.step;markDirty();renderDrawer();return}
   if(ds.sort){if(UI.sort.key===ds.sort)UI.sort.dir*=-1;else UI.sort={key:ds.sort,dir:1};render();return}
   if(ds.dup){duplicate(ds.dup);return}
   if(ds.del){delPost(ds.del);return}
   if(ds.editpillar){pillarModal(ds.editpillar);return}
   if(ds.delpillar){const p=pillar(ds.delpillar);confirmModal(t('delPillarT'),t('delPillarM',tv(p,'name')),t('del'),()=>{snapshotForUndo();S.pillars=S.pillars.filter(x=>x.id!==p.id);S.posts.forEach(x=>{if(x.pillar===p.id)x.pillar=''});save();render();toast(t('deleted'),true)},true);return}
   if(ds.filterpillar){setFilters({pillar:ds.filterpillar});go('database');return}
+  if(ds.openro){openPost(ds.openro,null,true);return}
   if(ds.open){openPost(ds.open);return}
 });
 $('#scrim').addEventListener('click',()=>closeDrawer());
@@ -1514,7 +1534,7 @@ document.addEventListener('change',e=>{const el=e.target;
   if(el.dataset.f&&el.dataset.f!=='q'){UI.f[el.dataset.f]=el.type==='checkbox'?el.checked:el.value;render();return}
   if(RO())return;
   if(el.dataset.x){xSet(el.dataset.x,el.type==='checkbox'?el.checked:el.value);return}
-  if(el.dataset.dchk&&draft){draft[el.dataset.dchk]=el.checked;markDirty();renderDrawer();return}
+  if(el.dataset.dchk&&draft&&!dRO()){draft[el.dataset.dchk]=el.checked;markDirty();renderDrawer();return}
   if(el.dataset.edit){const f=el.dataset.edit,p=S.posts.find(x=>x.id===el.dataset.id);if(p&&(f==='title'?tv(p,'title'):p[f])!==el.value)updatePost(p.id,{[f]:el.value},f==='status'?`${p.id} → ${SMAP[el.value].l}`:null);return}
   if(el.dataset.d!==undefined&&draft){if(TXT.includes(el.dataset.d))setTv(draft,el.dataset.d,el.value);else draft[el.dataset.d]=el.value;markDirty();if(['date','status','pillar'].includes(el.dataset.d))renderDrawer();return}
   if(el.dataset.list){S.lists[el.dataset.list]=el.value.split(',').map(s=>s.trim()).filter(Boolean);save();return}

@@ -1523,7 +1523,6 @@ function shareModal(){
     <p><b>2 · ${t('pwT')}</b><br>${c.lock?t('lockOn',fmtShort(String(c.lock.at||'').slice(0,10))):t('lockOff')}</p>
     <div style="display:flex;gap:6px"><input class="inp keep" name="pw" type="text" autocomplete="off" minlength="8" required style="flex:1;font-family:ui-monospace,monospace" placeholder="${c.lock?t('pwNew'):t('password')}"><button type="button" class="btn sm" data-act="genPw">🎲 ${t('pwGen')}</button></div>
     <p class="meta" style="margin:6px 0 0">${t('pwKeep')}</p>
-    ${hasTok?`<p class="meta">${t('teamTokSaved')}</p>`:`<p><b>${t('teamTokT')}</b><br>${t('teamTokH')}</p><input class="inp keep" name="token" type="password" autocomplete="off" style="width:100%" placeholder="github_pat_…"><p class="meta">${t('teamTokSteps')} <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></p>`}
   </div><div class="mf">${c.lock?`<button type="button" class="btn danger" data-act="rmLock">${t('rmLock')}</button>`:''}<span style="flex:1"></span><button type="button" class="btn" data-act="closeModal">${t('close')}</button><button class="btn pri" type="submit">${t('saveLock')}</button></div></form>`);
 }
 const u8b64=a=>btoa(String.fromCharCode(...a)),b64u8=x=>Uint8Array.from(atob(x),c=>c.charCodeAt(0));
@@ -1562,11 +1561,9 @@ async function doUnlock(pw){
 async function doSetLock(fd){
   const c=client();const pw=(fd.pw||'').trim();let tok=(fd.token||'').trim();
   if(pw.length<8){toast(t('pwShort'));return}
-  if(!tok){try{tok=localStorage.getItem('armi-team-token')||''}catch(e){}}
+  if(!tok){try{tok=localStorage.getItem('armi-team-token')||localStorage.getItem('armi-gh-token')||''}catch(e){}}
   if(!tok){toast(t('needTeamTok'));return}
   if(!(await tokOk(tok))){toast(t('connectBad'));return}
-  if(tok===localStorage.getItem('armi-gh-token')){toast(t('notOwnTok'));return}
-  try{localStorage.setItem('armi-team-token',tok)}catch(e){}
   const dk=u8b64(crypto.getRandomValues(new Uint8Array(32))),kid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
   const L=await lockEnc(pw,JSON.stringify({tok,dk}));L.v=2;L.kid=kid;c.lock=L;dkStore(c.id,dk,kid);LOCKED[c.id]=false;
   saveClients();save();closeModal();toast(t('lockSaved'));render();

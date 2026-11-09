@@ -625,47 +625,6 @@
    "sugAt": "2026-11-08T19:15:23.366078+00:00"
   },
   {
-   "id": "CNT-030",
-   "date": "2026-12-30",
-   "time": "",
-   "title": "Reyes: ideas de regalo en tienda y tarjeta regalo (si existe)",
-   "description": "",
-   "pillar": "pl2",
-   "objective": "",
-   "audience": "",
-   "channel": "Instagram",
-   "format": "Carrusel",
-   "type": "",
-   "copy": "",
-   "cta": "",
-   "brief": "",
-   "reference": "",
-   "owner": "tm1",
-   "status": "idea",
-   "asset": "",
-   "url": "",
-   "notes": "Propuesta. Confirmar si hay tarjeta regalo. Diciembre se detalla el 27 nov con datos de las primeras semanas.",
-   "viral": false,
-   "ads": false,
-   "createdAt": "2026-11-06T08:57:22.529450+00:00",
-   "updatedAt": "2026-11-06T08:57:22.529450+00:00",
-   "en": {
-    "title": "Three Kings: gift ideas in store and a gift card (if there is one)",
-    "notes": "Proposal. Confirm whether there is a gift card. December gets detailed on Nov 27 using data from the first weeks."
-   },
-   "sug": [
-    {
-     "es": "Reyes está a la vuelta de la esquina 👑 Ideas de regalo que encuentras en la tienda.\n\nDesliza →",
-     "en": "Three Kings is around the corner 👑 Gift ideas you'll find in the shop.\n\nSwipe →"
-    },
-    {
-     "es": "Para quien llega tarde a todo (pero con buen gusto): regalos de Reyes con calma.\n\nGuárdalo para tu lista.",
-     "en": "For the one who's always late (but has great taste): calm Three Kings gifts.\n\nSave it for your list."
-    }
-   ],
-   "sugAt": "2026-11-08T19:15:23.366078+00:00"
-  },
-  {
    "id": "CNT-032",
    "date": "2027-01-04",
    "time": "",
@@ -1012,7 +971,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:33:16.437Z",
+ "updatedAt": "2026-11-09T21:33:18.953Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

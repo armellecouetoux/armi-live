@@ -1561,9 +1561,9 @@ async function doUnlock(pw){
 async function doSetLock(fd){
   const c=client();const pw=(fd.pw||'').trim();let tok=(fd.token||'').trim();
   if(pw.length<8){toast(t('pwShort'));return}
-  if(!tok){try{tok=localStorage.getItem('armi-team-token')||localStorage.getItem('armi-gh-token')||''}catch(e){}}
-  if(!tok){toast(t('needTeamTok'));return}
-  if(!(await tokOk(tok))){toast(t('connectBad'));return}
+  if(!tok){let tt='',own='';try{tt=localStorage.getItem('armi-team-token')||'';own=localStorage.getItem('armi-gh-token')||''}catch(e){}
+    if(tt&&await tokOk(tt))tok=tt;else{try{localStorage.removeItem('armi-team-token')}catch(e){}if(own&&await tokOk(own))tok=own}}
+  if(!tok){toast(t('connectBad'));return}
   const dk=u8b64(crypto.getRandomValues(new Uint8Array(32))),kid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
   const L=await lockEnc(pw,JSON.stringify({tok,dk}));L.v=2;L.kid=kid;c.lock=L;dkStore(c.id,dk,kid);LOCKED[c.id]=false;
   saveClients();save();closeModal();toast(t('lockSaved'));render();

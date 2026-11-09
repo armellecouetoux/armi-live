@@ -725,7 +725,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:33:37.386Z",
+ "updatedAt": "2026-11-09T21:33:45.819Z",
  "rhythm": [],
  "moments": [],
  "milestones": [
@@ -789,45 +789,6 @@
      "en": {
       "name": "Phase 1",
       "focus": "Bali + Christmas · includes Black Friday"
-     }
-    },
-    {
-     "id": "f2",
-     "name": "Fase 2",
-     "start": "2026-12-01",
-     "end": "2026-12-18",
-     "daily": 14,
-     "focus": "Más peso a Navidad · sprint de regalos",
-     "tbd": false,
-     "en": {
-      "name": "Phase 2",
-      "focus": "More weight on Christmas · gift sprint"
-     }
-    },
-    {
-     "id": "f3",
-     "name": "Fase 3",
-     "start": "2026-12-19",
-     "end": "2026-12-30",
-     "daily": 4,
-     "focus": "Solo Bali · Navidad en pausa",
-     "tbd": false,
-     "en": {
-      "name": "Phase 3",
-      "focus": "Bali only · Christmas paused"
-     }
-    },
-    {
-     "id": "f4",
-     "name": "Enero",
-     "start": "2027-01-01",
-     "end": "2027-01-31",
-     "daily": 0,
-     "focus": "Bali + prueba B2B · por definir",
-     "tbd": true,
-     "en": {
-      "name": "January",
-      "focus": "Bali + B2B test · TBD"
      }
     }
    ],

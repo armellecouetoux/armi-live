@@ -521,7 +521,7 @@ details>summary{list-style:none}details>summary::-webkit-details-marker{display:
 let LANG='es';
 try{const l=localStorage.getItem('ecm-lang');if(l==='en'||l==='es')LANG=l;else if((navigator.language||'').toLowerCase().startsWith('en'))LANG='en'}catch(e){}
 const TX={
- v_overview:['Resumen','Overview'],v_calendar:['Calendario','Calendar'],v_database:['Contenidos','Content'],v_workflow:['Producción','Production'],v_pillars:['Pilares','Pillars'],v_paid:['Paid','Paid'],v_prompts:['Prompts IA','AI prompts'],v_ajustes:['Ajustes','Settings'],
+ v_overview:['Resumen','Overview'],v_calendar:['Calendario','Calendar'],v_database:['Contenidos','Content'],v_workflow:['Producción','Production'],v_pillars:['Pilares','Pillars'],v_paid:['Paid','Paid'],v_drive:['Carpeta de contenido','Content folder'],driveOpen:['Abrir en Google Drive','Open in Google Drive'],driveH:['Fotos, vídeos y material del cliente. Se abre en Google Drive con la cuenta que tenga acceso a la carpeta.','Client photos, videos and assets. It opens in Google Drive with the account that has access to the folder.'],driveNone:['Aún no hay carpeta. Pega el enlace de Google Drive.','No folder yet. Paste the Google Drive link.'],v_ajustes:['Ajustes','Settings'],
  genBrief:['✨ Mini brief','✨ Mini brief'],briefDone:['Mini brief listo: revísalo y guarda','Mini brief ready: review it and save'],
  sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],genNow:['✨ Otras propuestas ya','✨ New ideas now'],generating:['Generando…','Generating…'],
  genHint:['Cada mañana (7:52) Claude deja propuestas nuevas usando lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Every morning (7:52) Claude leaves new ideas using what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
@@ -877,8 +877,8 @@ function filterBar(o={}){
 }
 
 /* ============ SHELL ============ */
-const VIEWS=['overview','calendar','database','workflow','pillars','paid','prompts','ajustes'];
-const ICONS={overview:'🏡',calendar:'📅',database:'🗂️',workflow:'🏭',pillars:'🎯',paid:'💸',prompts:'🍌',ajustes:'⚙️'};
+const VIEWS=['overview','calendar','database','workflow','pillars','paid','drive','ajustes'];
+const ICONS={overview:'🏡',calendar:'📅',database:'🗂️',workflow:'🏭',pillars:'🎯',paid:'💸',drive:'📁',ajustes:'⚙️'};
 function renderTabs(){
   const L=visibleClients();
   $('#tabs').innerHTML=L.map(c=>{const on=c.id===ACTIVE;const st=on?S:WS_CACHE[c.id];const late=st&&st.posts?st.posts.filter(isDelayed).length:0;
@@ -912,7 +912,7 @@ function render(){
   captureFocus();renderTabs();
   if(!S||wsLoading){$('#content').innerHTML=`<div class="loadingws">${t('loadingWs')}</div>`;return}
   renderSide();renderTop();
-  const fn={overview:vOverview,calendar:vCalendar,database:vDatabase,workflow:vWorkflow,pillars:vPillars,paid:vPaid,prompts:vPrompts,ajustes:vSettings}[UI.view]||vOverview;
+  const fn={overview:vOverview,calendar:vCalendar,database:vDatabase,workflow:vWorkflow,pillars:vPillars,paid:vPaid,drive:vDrive,ajustes:vSettings}[UI.view]||vOverview;
   $('#content').innerHTML=banner()+fn();renderGen();lockRO($('#content'));restoreFocus();
 }
 function go(view){UI.view=view;try{history.replaceState(null,'',location.search+'#'+view)}catch(e){}$('#side').classList.remove('open');$('#content').scrollTop=0;render()}
@@ -1092,54 +1092,17 @@ function vPillars(){
   <div class="card sec"><h3>🎁 ${t('momentsT')} <small>${t('momentsH')}</small><span class="sp"></span><button class="btn sm" data-xadd="mom|">${t('addMom')}</button></h3><div class="tblwrap mini-tbl"><table><thead><tr><th>${t('color')}</th><th>${t('name')}</th><th>${t('start')}</th><th>${t('end')}</th><th>${t('descr')}</th><th></th></tr></thead><tbody>${mom}</tbody></table></div></div>`;
 }
 
-/* ============ PROMPTS IA (Nano Banana) ============ */
-const PRM_BASE=`Use the photo I'm attaching as the product. Keep the candle exactly as it is: same shape, same carved detail, same ivory colour, same box. Don't redesign it, and don't add any text, letters or logos to the image.
-
-Make it look like a real photograph taken by a small design studio in Barcelona, not a render. 35mm film look, natural light from a window on one side, a little grain, soft shadows that fall where they really would. Nothing perfectly centred or perfectly clean: a slightly creased linen cloth, a used match left on the table, a small wax drip are all fine.
-
-The world around it: plaster walls in warm sand, dark old wood, handmade grey tiles, a bit of moss, dry branches, a couple of art books. Quiet colours only: ivory, sand, olive green, a touch of antique gold. The feeling of a calm apothecary shelf in late-afternoon Mediterranean light.
-
-It must not look like AI: no plastic skin, no glossy CGI surfaces, no impossible reflections, no perfect symmetry, no extra or merged fingers.
-
-Square format, 1:1.`;
-const PRM_HANDS=`
-
-The person: we only see hands and forearms. Real skin with texture, short natural nails, a cream knit or linen sleeve, at most one thin gold ring. The gesture is slow and unposed, as if caught in the middle of the movement. Never show a face.`;
-const PRM_XMAS=`
-
-Christmas, but quiet and chic. The festive feeling comes from the light and from a few natural things, not from decorations: a fir branch, a couple of pine cones, dried orange slices, a thin deep-red velvet ribbon left loose on the table, warm lights far behind and out of focus. No Santa, no fake snow, no glitter, no tinsel, no bright red-and-green together.`;
-const PRM_SERIES=`Same light, same colours, same camera height and same mood as the previous image, so all the cards look like one series shot on the same afternoon.`;
-const PROMPTS={'c-santalo':[
- {id:'p1',tag:'Bali',card:'Tarjeta “momento” · también vale como anuncio suelto',title:'Encender Bali',use:'Sube una foto de Bali. Es la imagen humana principal.',human:true,xmas:false,
-  scene:`Scene: a woman leans in and lights Bali with a long wooden match. The flame has just caught the wick and a thin line of smoke rises from the match. Bali sits on two stacked art books on a dark wooden tray, plaster wall behind, a piece of moss beside it. Shot from the side, at table height, a little closer than a catalogue photo would be. Leave calm empty space above the candle.`},
- {id:'p2',tag:'Bali',card:'Tarjeta de producto',title:'Bali sola, la forma',use:'Sube una foto de Bali. Sin manos: aquí lo importante es que se vea bien la escultura.',human:false,xmas:false,
-  scene:`Scene: Bali on its own on handmade grey tiles, unlit. Low side light grazing its braided surface so every curve shows. A folded linen cloth at the edge of the frame. Plenty of quiet space above it.`},
- {id:'p3',tag:'Bali',card:'Tarjeta final · marca',title:'La caja verde',use:'Sube una foto de la caja hexagonal verde (y si puedes, otra de Bali).',human:false,xmas:false,
-  scene:`Scene: the olive-green hexagonal Santaló box with its gold line drawing, Bali next to it, late sun grazing the side of the box. Keep the box design exactly as in the photo.`},
- {id:'p4',tag:'Navidad',card:'Portada del carrusel de Navidad',title:'Encender la vela de Navidad',use:'Sube la foto de una vela de Navidad. Solo cuando las fichas de Navidad estén publicadas.',human:true,xmas:true,
-  scene:`Scene: Christmas Eve at home, a little before the guests arrive. A hand lights the Christmas candle with a long wooden match on a dark wooden table. The flame has just caught. Table height, light from a window at dusk.`},
- {id:'p5',tag:'Navidad',card:'Tarjetas 2–4 · un producto por tarjeta',title:'Vela de Navidad sola',use:'Una foto de producto cada vez. Sin manos, para que se vea bien la vela.',human:false,xmas:true,
-  scene:`Scene: the Christmas candle alone on dark wood, unlit, a fir branch crossing the foreground slightly out of focus. Side light, quiet space above the candle.`},
- {id:'p6',tag:'Navidad',card:'Tarjeta “selección de regalos”',title:'La selección para regalar',use:'Sube 2–3 fotos de velas de Navidad y la de la caja verde.',human:true,xmas:true,
-  scene:`Scene: three or four Christmas candles grouped like a gift selection next to the green Santaló box. A hand is lighting one of them with a long wooden match; the others stay unlit. Seen from slightly above, at the edge of the table.`}
-]};
-const prmFull=p=>PRM_BASE+(p.human?PRM_HANDS:'')+(p.xmas?PRM_XMAS:'')+'\n\n'+p.scene;
-function vPrompts(){
-  const L=PROMPTS[(client()||{}).id]||[];
-  if(!L.length)return `<div class="empty"><span class="big">🍌</span>Sin prompts para este cliente.</div>`;
-  const card=p=>`<div class="card sec"><div class="prmh"><span class="prmtag ${p.tag==='Navidad'?'nav':''}">${esc(p.tag)}</span><h3>${esc(p.title)}</h3><span class="sp"></span><button class="btn pri sm" data-copy="${esc(prmFull(p))}" data-copymsg="Prompt copiado">Copiar prompt</button></div>
-    <div class="note" style="margin-top:6px"><b>${esc(p.card)}.</b> ${esc(p.use)}</div><pre class="prm">${esc(p.scene)}</pre><div class="note" style="margin-top:6px">${p.human?'+ manos · ':''}${p.xmas?'+ Navidad chic · ':''}El botón copia el prompt completo (base + escena).</div></div>`;
-  return `<div class="card sec"><h3>🍌 Prompts para Gemini (Nano Banana)</h3>
-    <ul class="prmlist">
-      <li>Cada prompt ya está completo: copia, pega en Gemini y adjunta la foto de producto que indica.</li>
-      <li>Desde la segunda imagen, añade al final la línea de “serie” para que el carrusel parezca de la misma sesión.</li>
-      <li>Antes de usar una imagen: el producto idéntico al real y las manos bien (cuenta los dedos). Si falla, regenera.</li>
-      <li>El texto y el logo se ponen luego en Canva, con la tipografía de Santaló. No lo pidas a la IA.</li>
-      <li><b>Navidad:</b> las fichas de Navidad de la web daban 404 el 6 nov. No publiques esas tarjetas hasta que estén activas.</li>
-    </ul>
-    <div class="prmh" style="margin-top:12px"><b style="font-size:13px">Base de marca (va dentro de todos los prompts)</b></div><pre class="prm">${esc(PRM_BASE)}</pre><div class="prmh" style="margin-top:12px"><b style="font-size:13px">Bloque manos</b></div><pre class="prm">${esc(PRM_HANDS.trim())}</pre><div class="prmh" style="margin-top:12px"><b style="font-size:13px">Bloque Navidad chic</b></div><pre class="prm">${esc(PRM_XMAS.trim())}</pre>
-    <div class="prmh" style="margin-top:12px"><b style="font-size:13px">Línea de serie</b><span class="sp"></span><button class="btn sm" data-copy="${esc(PRM_SERIES)}" data-copymsg="Copiado">Copiar</button></div><pre class="prm">${esc(PRM_SERIES)}</pre></div>
-  ${L.map(card).join('')}`;
+/* ============ CARPETA DE CONTENIDO (Drive) ============ */
+const DRIVE_DEFAULT={'c-santalo':'https://drive.google.com/drive/u/3/folders/1pGHTPX0sUv05pbOwDEyPxvf4FtV08vCO'};
+const driveUrl=()=>(S&&S.driveUrl)||DRIVE_DEFAULT[(client()||{}).id]||'';
+const driveId=u=>{const m=String(u||'').match(/folders\/([A-Za-z0-9_-]+)/)||String(u||'').match(/[?&]id=([A-Za-z0-9_-]+)/);return m?m[1]:''};
+function vDrive(){
+  const u=driveUrl();
+  const edit=RO()?'':`<form data-form="drive" style="display:flex;gap:6px;margin-top:12px"><input class="inp" name="url" value="${esc(u)}" placeholder="https://drive.google.com/drive/folders/…" style="flex:1"><button class="btn sm" type="submit">${t('save')}</button></form>`;
+  if(!u)return `<div class="card sec"><h3>📁 ${t('v_drive')}</h3><p class="meta">${t('driveNone')}</p>${edit}</div>`;
+  return `<div class="card sec"><div class="prmh"><h3>📁 ${t('v_drive')}</h3><span class="sp"></span><a class="btn pri" href="${esc(u)}" target="_blank" rel="noopener" style="text-decoration:none">${t('driveOpen')} ↗</a></div>
+    <p class="meta" style="margin:6px 0 12px">${t('driveH')}</p>
+    ${edit}</div>`;
 }
 
 /* ============ PAID ============ */
@@ -1740,6 +1703,7 @@ document.addEventListener('submit',e=>{
   if(f.dataset.form==='aikey'){const k=(fd.key||'').trim();try{if(k)localStorage.setItem('ecm-anthropic-key',k)}catch(_){}closeModal();toast(t('aiSaved'));render();if(UI.drawer)renderDrawer();return}
   if(f.dataset.form==='genreq'){if(RO())return;S.requests=S.requests||[];S.requests.push({id:uid('rq'),createdAt:new Date().toISOString(),idea:(fd.idea||'').trim(),format:fd.format||'',pillar:fd.pillar||'',cta:(fd.cta||'').trim(),audience:(fd.audience||'').trim(),status:'pending'});GEN.idea=null;GEN.paste=false;save();renderGen();toast(t('gSent'));return}
   if(f.dataset.form==='connect'){doConnect((fd.token||'').trim());return}
+  if(f.dataset.form==='drive'){S.driveUrl=(fd.url||'').trim();save();render();toast(t('saved')||'OK');return}
   if(f.dataset.form==='unlock'){doUnlock(fd.pw||'');return}
   if(f.dataset.form==='setlock'){doSetLock(fd);return}
   if(RO())return;

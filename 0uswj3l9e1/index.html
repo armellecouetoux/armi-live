@@ -403,6 +403,7 @@ tr:hover .rowact{opacity:1}
 .sug .use{position:absolute;right:8px;top:8px}
 .sughead{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
 .sughead b{font-size:12px;color:#6b3fd6}
+.sughead.sugclosed{background:#f7f2ff;border-radius:10px;padding:6px 10px;margin:0}
 .sughead .sp{flex:1}
 @media (max-width:1100px){.paidhero{grid-template-columns:1fr}}
 @media (max-width:980px){
@@ -503,6 +504,7 @@ const TX={
  genBrief:['✨ Mini brief','✨ Mini brief'],briefDone:['Mini brief listo: revísalo y guarda','Mini brief ready: review it and save'],
  sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],genNow:['✨ Otras propuestas ya','✨ New ideas now'],generating:['Generando…','Generating…'],
  genHint:['Cada mañana (7:52) Claude deja propuestas nuevas usando lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Every morning (7:52) Claude leaves new ideas using what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
+ hide:['▾ Ocultar','▾ Hide'],show:['▸ Mostrar','▸ Show'],
  briefUsed:['Mini brief aplicado: revísalo y guarda','Mini brief applied: review it and save'],
  briefSugT:['✨ Mini brief propuesto · Claude','✨ Suggested mini brief · Claude'],askBrief:['📝 Pedir mini brief','📝 Ask for a mini brief'],briefPending:['⏳ Mini brief para mañana','⏳ Mini brief tomorrow'],
  genDone:['✨ Nuevas propuestas listas','✨ New suggestions ready'],genErr:['No se pudo generar:','Couldn’t generate:'],genBadFormat:['respuesta sin formato válido','response in an unexpected format'],
@@ -1270,9 +1272,13 @@ function renderDrawer(){
 }
 const aiKey=()=>{try{return localStorage.getItem('ecm-anthropic-key')||''}catch(e){return ''}};
 let genBusy=false;
+const HIDE=(()=>{try{return JSON.parse(localStorage.getItem('ecm-hide')||'{}')}catch(e){return {}}})();
+function togHide(k){HIDE[k]=!HIDE[k];try{localStorage.setItem('ecm-hide',JSON.stringify(HIDE))}catch(e){}renderDrawer()}
+const hideBtn=k=>`<button type="button" class="btn ghost sm" data-hide="${k}">${HIDE[k]?t('show'):t('hide')}</button>`;
 function briefSugBlock(d){
   const x=d.briefSug;if(!x||!(x.es||x.en))return '';
-  return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b></div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
+  if(HIDE.brief)return `<div class="fld full"><div class="sughead sugclosed"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div></div>`;
+  return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
 }
 function askFlag(flag){
   if(!draft)return;draft[flag]=true;
@@ -1282,7 +1288,8 @@ function askFlag(flag){
 function sugBlock(d){
   const L=Array.isArray(d.sug)?d.sug:[];
   const btn=dRO()||d.wantCopy?'':`<button class="btn sm" data-act="askSug">${t('askNew')}</button>`;
-  return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${btn}</div>
+  if(HIDE.copy)return `<div class="fld full"><div class="sughead sugclosed"><b>${t('sugT')}</b>${L.length?`<span class="tag">${L.length}</span>`:''}<span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${hideBtn('copy')}</div></div>`;
+  return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${btn}${hideBtn('copy')}</div>
    <div class="note" style="margin:-4px 0 8px">${t('genHint')}</div>
    ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
 }
@@ -1457,7 +1464,7 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('ecm-lang
 
 document.addEventListener('click',e=>{
   if(!e.target.closest('#menu')&&!e.target.closest('[data-act=clientMenu]'))hideMenu();
-  const el=e.target.closest('[data-openro],[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
+  const el=e.target.closest('[data-hide],[data-openro],[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
   if(!el)return;if(e.target.closest('input,select,textarea')&&!el.matches('[data-act],[data-step]'))return;
   const ds=el.dataset;
   if(ds.usesug!==undefined&&draft){const x=(draft.sug||[])[+ds.usesug];if(x){draft.copy=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.copy=x.en}markDirty();renderDrawer();toast(t('sugUsed'))}return}
@@ -1522,6 +1529,7 @@ document.addEventListener('click',e=>{
   if(ds.editpillar){pillarModal(ds.editpillar);return}
   if(ds.delpillar){const p=pillar(ds.delpillar);confirmModal(t('delPillarT'),t('delPillarM',tv(p,'name')),t('del'),()=>{snapshotForUndo();S.pillars=S.pillars.filter(x=>x.id!==p.id);S.posts.forEach(x=>{if(x.pillar===p.id)x.pillar=''});save();render();toast(t('deleted'),true)},true);return}
   if(ds.filterpillar){setFilters({pillar:ds.filterpillar});go('database');return}
+  if(ds.hide){togHide(ds.hide);return}
   if(ds.openro){openPost(ds.openro,null,true);return}
   if(ds.open){openPost(ds.open);return}
 });

@@ -738,7 +738,9 @@ function ghWrite(path,getObj){
 async function ghRun(path,retry){
   const q=ghQ[path];if(q.busy){q.again=true;return}q.busy=true;
   try{
-    const body={message:'Calendario editorial: guardar',content:b64e(JSON.stringify(q.get(),null,1)),branch:'main'};
+    let obj=q.get();const wid=(path.match(/\/ws-(.+)\.json$/)||[])[1];
+    if(wid&&lockOf(wid)){if(LOCKED[wid]||!dkOk(wid))throw 'locked';obj=await encWs(wid,obj)}
+    const body={message:'Calendario editorial: guardar',content:b64e(JSON.stringify(obj,null,1)),branch:'main'};
     if(shas[path]===undefined){try{const g=await fetch(ghApi(path)+'?ref=main&t='+Date.now(),{headers:ghH(),cache:'no-store'});shas[path]=g.ok?(await g.json()).sha:null}catch(e){}}
     if(shas[path])body.sha=shas[path];
     const r=await fetch(ghApi(path),{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},ghH()),body:JSON.stringify(body)});
@@ -749,8 +751,13 @@ async function ghRun(path,retry){
   }catch(e){setSync('err','sync_gherr')}
   q.busy=false;if(q.again){q.again=false;ghRun(path)}
 }
+const LOCKED={};
 async function ghLoadWs(id){
-  let st=null;try{st=normalize(await ghGet(wsPath(id)))}catch(e){}
+  let raw=null;try{raw=await ghGet(wsPath(id))}catch(e){}
+  if(raw&&raw.enc){
+    try{raw=await decWs(id,raw);LOCKED[id]=false}catch(e){LOCKED[id]=true;delete WS_CACHE[id];return null}
+  }else if(lockOf(id)&&!raw){LOCKED[id]=!dkOk(id)}else LOCKED[id]=false;
+  let st=null;try{st=normalize(raw)}catch(e){}
   return st;
 }
 
@@ -815,7 +822,7 @@ async function initDb(){
 Object.assign(TX,{
  shareTeam:['👥 Acceso del equipo','👥 Team access'],shareT:['Acceso para el equipo','Team access'],
  shareM:[n=>`Este enlace abre solo el calendario de ${n}: el equipo no ve tus otros clientes.`,n=>`This link opens only ${n}’s calendar: the team doesn’t see your other clients.`],
- unlockT:['Entrar para editar','Sign in to edit'],unlockM:['Escribe la contraseña de este calendario que te ha dado Armi. Este navegador la recordará hasta que pulses «Salir».','Enter the password for this calendar that Armi gave you. This browser will remember it until you click “Sign out”.'],unlockBtn:['Entrar','Sign in'],password:['Contraseña','Password'],pwBad:['Contraseña incorrecta','Wrong password'],noLock:['Este calendario aún no tiene contraseña de edición. Pídesela a Armi.','This calendar has no edit password yet. Ask Armi for it.'],lockExpired:['La contraseña es correcta, pero el acceso ha caducado. Avisa a Armi.','The password is right but access has expired. Let Armi know.'],lnkT:['Enlace','Link'],pwT:['Contraseña para editar','Edit password'],lockOn:[d=>`✅ Activa (desde ${d}). Escribe una nueva para cambiarla: la anterior dejará de servir.`,d=>`✅ Active (since ${d}). Type a new one to change it: the old one will stop working.`],lockOff:['Aún no tiene contraseña: con el enlace solo se puede ver.','No password yet: the link is view-only.'],pwNew:['Nueva contraseña','New password'],pwGen:['Generar','Generate'],pwKeep:['Guárdala tú (por ejemplo, en tu gestor de contraseñas): no se guarda en ningún sitio y no se puede recuperar, solo cambiar.','Keep it yourself (e.g. in your password manager): it isn’t stored anywhere and can’t be recovered, only changed.'],teamTokT:['Clave de GitHub para el equipo (solo la primera vez)','GitHub key for the team (first time only)'],teamTokH:['Una clave aparte de la tuya, que solo pueda escribir en armi-live. Queda guardada cifrada con la contraseña.','A key separate from yours, that can only write to armi-live. It’s stored encrypted with the password.'],teamTokSteps:['Créala en GitHub: «Fine-grained token» → Repository access: Only select repositories → armi-live → Permissions: Contents = Read and write.','Create it on GitHub: “Fine-grained token” → Repository access: Only select repositories → armi-live → Permissions: Contents = Read and write.'],teamTokSaved:['🔑 La clave de GitHub del equipo ya está guardada en este navegador.','🔑 The team’s GitHub key is already saved in this browser.'],needTeamTok:['Falta la clave de GitHub del equipo','The team’s GitHub key is missing'],notOwnTok:['Usa una clave distinta de la tuya, solo para el equipo','Use a key separate from yours, just for the team'],pwShort:['Mínimo 8 caracteres','At least 8 characters'],saveLock:['Guardar contraseña','Save password'],rmLock:['Quitar contraseña','Remove password'],lockSaved:['Contraseña guardada ✓','Password saved ✓'],lockRemoved:['Contraseña quitada: el enlace queda en solo lectura','Password removed: the link is now view-only'],shareSteps:['Para que puedan editar, cada persona pulsa «🔑 Conectar para editar» y pega el código de acceso que tú le das (un token de GitHub). Sin código, ven el calendario en solo lectura.','To edit, each person clicks “🔑 Connect to edit” and pastes the access code you give them (a GitHub token). Without it, they see the calendar read-only.'],
+ lockScrM:['Este calendario está protegido. Escribe la contraseña que te ha dado Armi.','This calendar is protected. Enter the password Armi gave you.'],unlockT:['Entrar para editar','Sign in to edit'],unlockM:['Escribe la contraseña de este calendario que te ha dado Armi. Este navegador la recordará hasta que pulses «Salir».','Enter the password for this calendar that Armi gave you. This browser will remember it until you click “Sign out”.'],unlockBtn:['Entrar','Sign in'],password:['Contraseña','Password'],pwBad:['Contraseña incorrecta','Wrong password'],noLock:['Este calendario aún no tiene contraseña de edición. Pídesela a Armi.','This calendar has no edit password yet. Ask Armi for it.'],lockExpired:['La contraseña es correcta, pero el acceso ha caducado. Avisa a Armi.','The password is right but access has expired. Let Armi know.'],lnkT:['Enlace','Link'],pwT:['Contraseña para ver y editar','Password to view and edit'],lockOn:[d=>`✅ Activa (desde ${d}). Escribe una nueva para cambiarla: la anterior dejará de servir.`,d=>`✅ Active (since ${d}). Type a new one to change it: the old one will stop working.`],lockOff:['Aún no tiene contraseña: cualquiera con el enlace puede verlo (sin editar).','No password yet: anyone with the link can view it (not edit).'],pwNew:['Nueva contraseña','New password'],pwGen:['Generar','Generate'],pwKeep:['Guárdala tú (por ejemplo, en tu gestor de contraseñas): no se guarda en ningún sitio y no se puede recuperar, solo cambiar.','Keep it yourself (e.g. in your password manager): it isn’t stored anywhere and can’t be recovered, only changed.'],teamTokT:['Clave de GitHub para el equipo (solo la primera vez)','GitHub key for the team (first time only)'],teamTokH:['Una clave aparte de la tuya, que solo pueda escribir en armi-live. Queda guardada cifrada con la contraseña.','A key separate from yours, that can only write to armi-live. It’s stored encrypted with the password.'],teamTokSteps:['Créala en GitHub: «Fine-grained token» → Repository access: Only select repositories → armi-live → Permissions: Contents = Read and write.','Create it on GitHub: “Fine-grained token” → Repository access: Only select repositories → armi-live → Permissions: Contents = Read and write.'],teamTokSaved:['🔑 La clave de GitHub del equipo ya está guardada en este navegador.','🔑 The team’s GitHub key is already saved in this browser.'],needTeamTok:['Falta la clave de GitHub del equipo','The team’s GitHub key is missing'],notOwnTok:['Usa una clave distinta de la tuya, solo para el equipo','Use a key separate from yours, just for the team'],pwShort:['Mínimo 8 caracteres','At least 8 characters'],saveLock:['Guardar contraseña','Save password'],rmLock:['Quitar contraseña','Remove password'],lockSaved:['Contraseña guardada ✓','Password saved ✓'],lockRemoved:['Contraseña quitada: el enlace queda en solo lectura','Password removed: the link is now view-only'],shareSteps:['Para que puedan editar, cada persona pulsa «🔑 Conectar para editar» y pega el código de acceso que tú le das (un token de GitHub). Sin código, ven el calendario en solo lectura.','To edit, each person clicks “🔑 Connect to edit” and pastes the access code you give them (a GitHub token). Without it, they see the calendar read-only.'],
  copyLink:['Copiar enlace','Copy link'],linkCopied:['Enlace copiado','Link copied'],
  roBanner:['👀 Solo lectura.','👀 Read-only.'],connect:['🔑 Conectar para editar','🔑 Connect to edit'],disconnect:['Salir','Sign out'],
  connectT:['Conectar para editar','Connect to edit'],connectM:['Pega el código de acceso que te ha dado Armi. Se guarda solo en este navegador.','Paste the access code Armi gave you. It’s stored only in this browser.'],
@@ -911,6 +918,8 @@ function lockRO(root,force){if(!RO()&&!force)return;root.querySelectorAll('input
 function render(){
   if(!CL)return;document.documentElement.lang=LANG;document.body.classList.toggle('ro',RO());
   captureFocus();renderTabs();
+  if(LOCKED[ACTIVE]){$('#side').innerHTML='';$('#genfab').style.display='none';$('#genwin').classList.remove('on');$('#content').innerHTML=vLocked();setTimeout(()=>{const i=document.querySelector('.lockscr input');if(i)i.focus()},30);return}
+  $('#genfab').style.display='';
   if(!S||wsLoading){$('#content').innerHTML=`<div class="loadingws">${t('loadingWs')}</div>`;return}
   renderSide();renderTop();
   const fn={overview:vOverview,calendar:vCalendar,database:vDatabase,workflow:vWorkflow,pillars:vPillars,paid:vPaid,drive:vDrive,ajustes:vSettings}[UI.view]||vOverview;
@@ -921,7 +930,7 @@ async function switchClient(id){
   if(id===ACTIVE)return;if(UI.drawer)closeDrawer(true);
   ACTIVE=id;setFilters({});undoStack=null;
   S=WS_CACHE[id]?normalize(WS_CACHE[id]):null;
-  if(GH){wsLoading=!S;render();const st=await ghLoadWs(id);if(ACTIVE!==id)return;if(st){S=st;WS_CACHE[id]=st}else if(!S){S=blankState();WS_CACHE[id]=S}wsLoading=false;lsSave();render();return}
+  if(GH){wsLoading=!S;render();const st=await ghLoadWs(id);if(ACTIVE!==id)return;if(LOCKED[id]){S=null;wsLoading=false;render();return}if(st){S=st;WS_CACHE[id]=st}else if(!S){S=blankState();WS_CACHE[id]=S}wsLoading=false;lsSave();render();return}
   wsLoading=!S&&!!(db&&cloud);if(!S&&!(db&&cloud)){S=blankState();WS_CACHE[id]=S}
   lsSave();render();subscribeWs(id);
 }
@@ -1521,21 +1530,34 @@ const u8b64=a=>btoa(String.fromCharCode(...a)),b64u8=x=>Uint8Array.from(atob(x),
 async function pwKey(pw,salt){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
 async function lockEnc(pw,tok){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await pwKey(pw,salt),new TextEncoder().encode(tok)));return {v:1,salt:u8b64(salt),iv:u8b64(iv),ct:u8b64(ct),at:new Date().toISOString()}}
 async function lockDec(pw,L){const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64u8(L.iv)},await pwKey(pw,b64u8(L.salt)),b64u8(L.ct));return new TextDecoder().decode(pt)}
+const lockOf=id=>{const c=CL&&CL.list.find(x=>x.id===id);return c&&c.lock&&c.lock.v===2?c.lock:null};
+const DKS={};
+function dkOk(id){const L=lockOf(id);if(!L)return false;try{return localStorage.getItem('ecm-kid-'+id)===L.kid&&!!localStorage.getItem('ecm-dk-'+id)}catch(e){return false}}
+async function dkKey(id){if(DKS[id]&&DKS[id].kid===(lockOf(id)||{}).kid)return DKS[id].k;const raw=b64u8(localStorage.getItem('ecm-dk-'+id));const k=await crypto.subtle.importKey('raw',raw,'AES-GCM',false,['encrypt','decrypt']);DKS[id]={k,kid:localStorage.getItem('ecm-kid-'+id)};return k}
+function dkStore(id,dk,kid){try{localStorage.setItem('ecm-dk-'+id,dk);localStorage.setItem('ecm-kid-'+id,kid)}catch(e){}delete DKS[id]}
+function dkForget(id){try{localStorage.removeItem('ecm-dk-'+id);localStorage.removeItem('ecm-kid-'+id)}catch(e){}delete DKS[id]}
+async function encWs(id,obj){const L=lockOf(id);const iv=crypto.getRandomValues(new Uint8Array(12));const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await dkKey(id),new TextEncoder().encode(JSON.stringify(obj))));return {enc:1,kid:L.kid,iv:u8b64(iv),ct:u8b64(ct)}}
+async function decWs(id,o){if(!dkOk(id)||o.kid!==(lockOf(id)||{}).kid)throw 'nokey';const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64u8(o.iv)},await dkKey(id),b64u8(o.ct));return JSON.parse(new TextDecoder().decode(pt))}
+function vLocked(){
+  const c=client()||{};
+  return `<div class="lockscr"><div class="card sec" style="max-width:440px;margin:8vh auto;text-align:center"><div style="font-size:44px">🔒</div><h3 style="margin:6px 0">${esc(c.name||'')}</h3><p class="meta">${t('lockScrM')}</p>
+  <form data-form="unlock" style="display:flex;gap:6px;margin-top:12px"><input class="inp keep" name="pw" type="password" autocomplete="current-password" required style="flex:1" placeholder="${t('password')}"><button class="btn pri" type="submit">${t('unlockBtn')}</button></form></div></div>`;
+}
 function genPw(){const A='abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';const r=crypto.getRandomValues(new Uint8Array(12));return [...r].map(x=>A[x%A.length]).join('').replace(/(.{4})(?=.)/g,'$1-')}
 async function tokOk(tok){try{const r=await fetch('https://api.github.com/repos/'+GH.repo,{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+tok}});const j=r.ok?await r.json():null;return !!(j&&j.permissions&&j.permissions.push)}catch(e){return false}}
 function unlockModal(){
   const c=CL.list.find(x=>x.id===TEAM);
-  if(!c||!c.lock){openModal(`<div class="mh">${t('unlockT')}</div><div class="mb"><p style="margin-top:0">${t('noLock')}</p></div><div class="mf"><button class="btn pri" data-act="closeModal">${t('close')}</button></div>`);return}
+  if(!c||!lockOf(TEAM)){openModal(`<div class="mh">${t('unlockT')}</div><div class="mb"><p style="margin-top:0">${t('noLock')}</p></div><div class="mf"><button class="btn pri" data-act="closeModal">${t('close')}</button></div>`);return}
   openModal(`<form data-form="unlock"><div class="mh">🔒 ${t('unlockT')} · ${esc(c.name)}</div><div class="mb"><p style="margin-top:0">${t('unlockM')}</p><input class="inp keep" name="pw" type="password" autocomplete="current-password" required style="width:100%" placeholder="${t('password')}"></div><div class="mf"><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('unlockBtn')}</button></div></form>`);
   setTimeout(()=>{const i=document.querySelector('form[data-form="unlock"] input');if(i)i.focus()},50);
 }
 async function doUnlock(pw){
-  const c=CL.list.find(x=>x.id===TEAM);if(!c||!c.lock)return;
-  let tok='';try{tok=await lockDec(pw,c.lock)}catch(e){toast(t('pwBad'));return}
-  if(!(await tokOk(tok))){toast(t('lockExpired'));return}
-  try{localStorage.setItem('ecm-team-'+TEAM,tok)}catch(e){}
-  closeModal();toast(t('connectOk'));
-  const st=await ghLoadWs(ACTIVE);if(st){S=st;WS_CACHE[ACTIVE]=st}try{await ghGet(idxPath())}catch(e){}setSync('cloud','sync_gh');render();
+  const id=TEAM||ACTIVE;const L=lockOf(id);if(!L)return;
+  let o=null;try{o=JSON.parse(await lockDec(pw,L))}catch(e){toast(t('pwBad'));return}
+  dkStore(id,o.dk,L.kid);
+  if(TEAM){if(o.tok&&await tokOk(o.tok)){try{localStorage.setItem('ecm-team-'+TEAM,o.tok)}catch(e){}}else toast(t('lockExpired'))}
+  closeModal();if(TEAM&&ghTok())toast(t('connectOk'));
+  const st=await ghLoadWs(ACTIVE);if(st){S=st;WS_CACHE[ACTIVE]=st}else if(LOCKED[ACTIVE])S=null;try{await ghGet(idxPath())}catch(e){}setSync(ghTok()?'cloud':'local',ghTok()?'sync_gh':'sync_ghlocal');render();
 }
 async function doSetLock(fd){
   const c=client();const pw=(fd.pw||'').trim();let tok=(fd.token||'').trim();
@@ -1545,7 +1567,9 @@ async function doSetLock(fd){
   if(!(await tokOk(tok))){toast(t('connectBad'));return}
   if(tok===localStorage.getItem('armi-gh-token')){toast(t('notOwnTok'));return}
   try{localStorage.setItem('armi-team-token',tok)}catch(e){}
-  c.lock=await lockEnc(pw,tok);saveClients();closeModal();toast(t('lockSaved'));render();
+  const dk=u8b64(crypto.getRandomValues(new Uint8Array(32))),kid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+  const L=await lockEnc(pw,JSON.stringify({tok,dk}));L.v=2;L.kid=kid;c.lock=L;dkStore(c.id,dk,kid);LOCKED[c.id]=false;
+  saveClients();save();closeModal();toast(t('lockSaved'));render();
 }
 function connectModal(){
   if(TEAM){unlockModal();return}
@@ -1555,7 +1579,7 @@ async function doConnect(tok){
   try{const r=await fetch('https://api.github.com/repos/'+GH.repo,{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+tok}});const j=r.ok?await r.json():null;
     if(!j||!j.permissions||!j.permissions.push){toast(t('connectBad'));return}
     localStorage.setItem('ecm-gh-token',tok);closeModal();toast(t('connectOk'));
-    const st=await ghLoadWs(ACTIVE);if(st){S=st;WS_CACHE[ACTIVE]=st}try{await ghGet(idxPath())}catch(e){}setSync('cloud','sync_gh');render();
+    const st=await ghLoadWs(ACTIVE);if(st){S=st;WS_CACHE[ACTIVE]=st}else if(LOCKED[ACTIVE])S=null;try{await ghGet(idxPath())}catch(e){}setSync('cloud','sync_gh');render();
   }catch(e){toast(t('connectBad'))}
 }
 function showMenu(anchor,items){const m=$('#menu');m.innerHTML=items.map(([a,l,d])=>`<button data-act="${a}" class="${d?'danger':''}">${l}</button>`).join('');const r=anchor.getBoundingClientRect();m.style.left=Math.min(r.left,innerWidth-200)+'px';m.style.top=(r.bottom+4)+'px';m.classList.add('on')}
@@ -1604,8 +1628,8 @@ document.addEventListener('click',e=>{
     if(a==='shareTeam'){shareModal();return}
     if(a==='connect'){connectModal();return}
     if(a==='genPw'){const i=document.querySelector('form[data-form="setlock"] input[name=pw]');if(i){i.value=genPw();i.select()}return}
-    if(a==='rmLock'){const c=client();delete c.lock;saveClients();closeModal();toast(t('lockRemoved'));render();return}
-    if(a==='disconnect'){try{localStorage.removeItem('ecm-gh-token');if(TEAM)localStorage.removeItem('ecm-team-'+TEAM)}catch(_){}render();return}
+    if(a==='rmLock'){const c=client();delete c.lock;dkForget(c.id);LOCKED[c.id]=false;saveClients();save();closeModal();toast(t('lockRemoved'));render();return}
+    if(a==='disconnect'){try{localStorage.removeItem('ecm-gh-token');if(TEAM)localStorage.removeItem('ecm-team-'+TEAM)}catch(_){}if(TEAM){dkForget(TEAM);location.reload();return}render();return}
     if(a==='renameClient'){clientModal(ACTIVE);return}
     if(a==='askDelClient'){deleteClient();return}
     if(a==='newClient'){clientModal();return}
@@ -1740,6 +1764,8 @@ window.addEventListener('hashchange',()=>{const h=(location.hash||'').slice(1);i
       CL=idx.clients;WS_CACHE=Object.assign({},(ls&&ls.ws)||{},idx.ws||{}); // idx.ws = legacy single-file format
       ACTIVE=TEAM&&CL.list.some(c=>c.id===TEAM)?TEAM:(ls&&CL.list.some(c=>c.id===ls.active)?ls.active:CL.list[0].id);
       const st=await ghLoadWs(ACTIVE);if(st)WS_CACHE[ACTIVE]=st;
+      for(const c of CL.list){if(lockOf(c.id)&&!dkOk(c.id)){dkForget(c.id);if(c.id!==ACTIVE)delete WS_CACHE[c.id]}}
+      if(LOCKED[ACTIVE]){S=null;setSync(ghTok()?'cloud':'local',ghTok()?'sync_gh':'sync_ghlocal');lsSave();render();return}
       S=WS_CACHE[ACTIVE]?normalize(WS_CACHE[ACTIVE]):blankState();WS_CACHE[ACTIVE]=S;
       if(idx.ws&&ghTok()&&!TEAM){for(const id of Object.keys(idx.ws)){const s2=normalize(idx.ws[id]);if(s2)ghWrite(wsPath(id),()=>s2)}saveClients()}
       setSync(ghTok()?'cloud':'local',ghTok()?'sync_gh':'sync_ghlocal');lsSave();render();return;

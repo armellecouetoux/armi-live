@@ -455,47 +455,6 @@
    "sugAt": "2026-11-08T19:15:23.366078+00:00"
   },
   {
-   "id": "CNT-016",
-   "date": "2026-12-05",
-   "time": "",
-   "title": "Stories: cuenta atrás para el evento",
-   "description": "",
-   "pillar": "pl4",
-   "objective": "",
-   "audience": "",
-   "channel": "Instagram",
-   "format": "Stories",
-   "type": "",
-   "copy": "",
-   "cta": "",
-   "brief": "",
-   "reference": "",
-   "owner": "tm1",
-   "status": "idea",
-   "asset": "",
-   "url": "",
-   "notes": "Propuesta. Diciembre se detalla el 27 nov con datos de las primeras semanas.",
-   "viral": false,
-   "ads": false,
-   "createdAt": "2026-11-06T08:57:22.529450+00:00",
-   "updatedAt": "2026-11-06T08:57:22.529450+00:00",
-   "en": {
-    "title": "Stories: countdown to the event",
-    "notes": "Proposal. December gets detailed on Nov 27 using data from the first weeks."
-   },
-   "sug": [
-    {
-     "es": "Sticker 1: «Faltan pocos días ⏳»\nSticker 2: cuenta atrás al evento\nSticker 3: encuesta «¿Qué te apetece ver?»",
-     "en": "Sticker 1: “Only a few days left ⏳”\nSticker 2: countdown to the event\nSticker 3: poll “What would you like to see?”"
-    },
-    {
-     "es": "Preparando el evento en la tienda… y con muchas ganas de verte.\n(Recordatorio + caja de preguntas)",
-     "en": "Getting the in-store event ready… and really looking forward to seeing you.\n(Reminder + question box)"
-    }
-   ],
-   "sugAt": "2026-11-08T19:15:23.366078+00:00"
-  },
-  {
    "id": "CNT-017",
    "date": "2026-12-07",
    "time": "",
@@ -1313,7 +1272,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T10:21:50.861Z",
+ "updatedAt": "2026-11-09T10:21:59.606Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

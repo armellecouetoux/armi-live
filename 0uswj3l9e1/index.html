@@ -319,6 +319,7 @@ tr:hover .rowact{opacity:1}
 .mini .tt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
 .note{font-size:12px;color:var(--tx3);line-height:1.5}
 .prm{white-space:pre-wrap;font:12.5px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg3);border-radius:12px;padding:12px 14px;margin:10px 0 0;color:var(--tx);max-height:340px;overflow:auto}
+.wfst{display:flex;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);font-size:12px;color:var(--tx3)}.wfst select{flex:1;min-width:0}
 .prmh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.prmh h3{margin:0}.prmh .sp{flex:1}
 .prmtag{font-size:11px;font-weight:600;border-radius:20px;padding:3px 9px;background:var(--bg3);color:var(--tx2)}.prmtag.nav{background:#f6e3e1;color:#8c2f26}
 .prmlist{margin:8px 0 0;padding-left:18px;font-size:13px;line-height:1.6;color:var(--tx2)}
@@ -559,7 +560,7 @@ const TX={
  search:['Buscar…','Search…'],f_format:['Formato','Format'],f_pillar:['Pilar','Pillar'],f_owner:['Responsable','Owner'],f_noOwner:['Sin responsable','Unassigned'],f_status:['Estado','Status'],onlyLate:['⚠ Retrasadas','⚠ Delayed'],clear:['Limpiar','Clear'],
  c_id:['ID','ID'],c_title:['Título','Title'],c_date:['Fecha','Date'],c_format:['Formato','Format'],c_pillar:['Pilar','Pillar'],c_status:['Estado','Status'],
  openCard:['Abrir ficha','Open card'],duplicate:['Duplicar','Duplicate'],del:['Eliminar','Delete'],copyCSV:['Copiar CSV','Copy CSV'],
- wfNote:['Vista de consulta: aquí no se puede cambiar nada. Para editar, ve a Calendario o Contenidos.','View only: nothing can be changed here. To edit, go to Calendar or Content.'],advanceTo:['Avanzar a','Advance to'],
+ wfNote:['Aquí solo se cambia el estado (abajo de cada tarjeta). Para editar el resto, ve a Calendario o Contenidos.','Only the status can be changed here (bottom of each card). To edit anything else, go to Calendar or Content.'],wfStatus:['Estado','Status'],advanceTo:['Avanzar a','Advance to'],
  pillars:['Pilares','Pillars'],newPillar:['＋ Pilar','＋ Pillar'],real:['real','actual'],items:['contenidos','items'],noPillars:['Aún no hay pilares.','No pillars yet.'],
  sumWarn:[n=>`Los objetivos suman ${n}% (deberían sumar 100%).`,n=>`Targets add up to ${n}% (should be 100%).`],
  imbalance:['Desequilibrio','Imbalance'],above:['por encima','above'],below:['por debajo','below'],
@@ -1068,7 +1069,7 @@ function wfCard(p){
     <div class="tt">${esc(tv(p,'title')||t('untitled'))}</div>
     <div class="wfinfo">${L.join('')}</div>
     ${cp?`<div class="wfcopy">${esc(cp)}</div>`:''}
-    <div class="mt">${tv(p,'brief')?`<span class="tag">📝 Brief</span>`:''}${cp?'<span class="tag">✍️ Copy</span>':''}${p.asset?'<span class="tag">🖼️ Asset</span>':''}</div></div>`;
+    <div class="mt">${tv(p,'brief')?`<span class="tag">📝 Brief</span>`:''}${cp?'<span class="tag">✍️ Copy</span>':''}${p.asset?'<span class="tag">🖼️ Asset</span>':''}</div>${RO()?'':`<label class="wfst" onclick="event.stopPropagation()"><span>${t('wfStatus')}</span><select class="cell keep" data-wfst="${p.id}">${STATUSES.map(x=>`<option value="${x.k}" ${x.k===p.status?'selected':''}>${esc(x.l)}</option>`).join('')}</select></label>`}</div>`;
 }
 function vWorkflow(){
   const posts=filtered(S.posts);
@@ -1688,6 +1689,7 @@ document.addEventListener('input',e=>{const el=e.target;
 });
 document.addEventListener('change',e=>{const el=e.target;
   if(el.dataset.genpick!==undefined){GEN.pid=el.value;renderGen();return}
+  if(el.dataset.wfst){const p=S.posts.find(x=>x.id===el.dataset.wfst);if(p&&!RO()){p.status=el.value;save();render();toast(t('saved'))}return}
   if(el.dataset.f&&el.dataset.f!=='q'){UI.f[el.dataset.f]=el.type==='checkbox'?el.checked:el.value;render();return}
   if(RO())return;
   if(el.dataset.x){xSet(el.dataset.x,el.type==='checkbox'?el.checked:el.value);return}

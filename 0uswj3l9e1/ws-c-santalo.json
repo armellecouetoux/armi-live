@@ -523,8 +523,8 @@
    "cta": "",
    "brief": "",
    "reference": "",
-   "owner": "",
-   "status": "progress",
+   "owner": "tm2",
+   "status": "review",
    "asset": "",
    "url": "",
    "notes": "",
@@ -534,7 +534,7 @@
     "title": "Sydney Candle",
     "description": "Promocionar la vela Sydney?"
    },
-   "updatedAt": "2026-11-09T21:35:23.385Z",
+   "updatedAt": "2026-11-09T21:35:31.769Z",
    "createdAt": "2026-11-09T21:35:23.385Z"
   }
  ],
@@ -673,7 +673,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:35:23.385Z",
+ "updatedAt": "2026-11-09T21:35:31.769Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

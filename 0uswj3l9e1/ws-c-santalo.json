@@ -1,7 +1,7 @@
 {
  "v": 2,
  "isDemo": false,
- "seq": 34,
+ "seq": 35,
  "posts": [
   {
    "id": "CNT-001",
@@ -1135,6 +1135,32 @@
    "ads": false,
    "updatedAt": "2026-11-08T21:20:26.318Z",
    "createdAt": "2026-11-08T21:20:26.318Z"
+  },
+  {
+   "id": "CNT-035",
+   "date": "2026-11-09",
+   "time": "09:00",
+   "title": "(sin título)",
+   "description": "",
+   "pillar": "pl2",
+   "objective": "Awareness",
+   "audience": "",
+   "channel": "Instagram",
+   "format": "Carrusel",
+   "type": "Promocional",
+   "copy": "✨ Santaló Candles crea velas escultóricas y perfumadas elaboradas en Barcelona con cera de soja, combinando artesanía y diseño contemporáneo con impresión 3D y herramientas digitales.\n\nEn el Disseny Market Barcelona presentarán dos nuevas colecciones: Oda, inspirada en la obra de grandes escultoras contemporáneas, y Gaudí, una reinterpretación del modernismo barcelonés convertido en escultura olfativa.\n\n📅 18.12.26 – 20.12.26\n📍 Disseny Hub Barcelona\n🔗 designmarket.barcelona (link in bio)",
+   "cta": "",
+   "brief": "",
+   "reference": "",
+   "owner": "",
+   "status": "published",
+   "asset": "",
+   "url": "https://www.instagram.com/p/DfgzVACkg-4/?utm_source=ig_web_copy_link&dlrf=MzRlODBiNWFlZA==&srtk=MzRlODBiNWFlZA==",
+   "notes": "Post en colaboración con @dissenymarketbcn",
+   "viral": false,
+   "ads": false,
+   "updatedAt": "2026-11-09T11:01:09.657Z",
+   "createdAt": "2026-11-09T11:01:09.657Z"
   }
  ],
  "pillars": [
@@ -1272,7 +1298,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T10:59:51.114Z",
+ "updatedAt": "2026-11-09T11:01:09.658Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

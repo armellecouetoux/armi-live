@@ -625,47 +625,6 @@
    "sugAt": "2026-11-08T19:15:23.366078+00:00"
   },
   {
-   "id": "CNT-027",
-   "date": "2026-12-24",
-   "time": "",
-   "title": "Stories: tienda abierta para última hora",
-   "description": "",
-   "pillar": "pl4",
-   "objective": "",
-   "audience": "",
-   "channel": "Instagram",
-   "format": "Stories",
-   "type": "",
-   "copy": "",
-   "cta": "",
-   "brief": "",
-   "reference": "",
-   "owner": "tm1",
-   "status": "idea",
-   "asset": "",
-   "url": "",
-   "notes": "Propuesta. Confirmar horario de la tienda. Diciembre se detalla el 27 nov con datos de las primeras semanas.",
-   "viral": false,
-   "ads": false,
-   "createdAt": "2026-11-06T08:57:22.529450+00:00",
-   "updatedAt": "2026-11-06T08:57:22.529450+00:00",
-   "en": {
-    "title": "Stories: shop open for last-minute gifts",
-    "notes": "Proposal. Confirm shop opening hours. December gets detailed on Nov 27 using data from the first weeks."
-   },
-   "sug": [
-    {
-     "es": "Sticker 1: «Seguimos aquí 🕯️»\nSticker 2: horario de hoy (confirmar)\nSticker 3: ubicación",
-     "en": "Sticker 1: “We're still here 🕯️”\nSticker 2: today's opening hours (to confirm)\nSticker 3: location"
-    },
-    {
-     "es": "¿Te falta un regalo? Ven a por él.\n(Encuesta: «¿Ya lo tienes todo?» Sí / Socorro 😅)",
-     "en": "Missing a gift? Come and get it.\n(Poll: “Got everything?” Yes / Help 😅)"
-    }
-   ],
-   "sugAt": "2026-11-08T19:15:23.366078+00:00"
-  },
-  {
    "id": "CNT-028",
    "date": "2026-12-26",
    "time": "",
@@ -1135,7 +1094,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T21:33:07.154Z",
+ "updatedAt": "2026-11-09T21:33:10.220Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

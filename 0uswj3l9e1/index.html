@@ -738,7 +738,14 @@ function ghWrite(path,getObj){
 async function ghRun(path,retry){
   const q=ghQ[path];if(q.busy){q.again=true;return}q.busy=true;
   try{
-    let obj=q.get();const wid=(path.match(/\/ws-(.+)\.json$/)||[])[1];
+    let obj=q.get();const wid=(path.match(/\/ws-(.+)\.json$/)||[])[1];let merged=null,localSnap=null;
+    if(wid&&BASE[wid]){
+      localSnap=JSON.stringify(obj);
+      let rem=null;try{rem=await ghGet(path)}catch(e){}
+      if(rem&&rem.enc){try{rem=await decWs(wid,rem)}catch(e){rem=null}}
+      rem=rem?normalize(rem):null;
+      if(rem){merged=mergeWs(JSON.parse(BASE[wid]),JSON.parse(localSnap),rem);obj=merged}
+    }
     if(wid&&lockOf(wid)){if(LOCKED[wid]||!dkOk(wid))throw 'locked';obj=await encWs(wid,obj)}
     const body={message:'Calendario editorial: guardar',content:b64e(JSON.stringify(obj,null,1)),branch:'main'};
     if(shas[path]===undefined){try{const g=await fetch(ghApi(path)+'?ref=main&t='+Date.now(),{headers:ghH(),cache:'no-store'});shas[path]=g.ok?(await g.json()).sha:null}catch(e){}}
@@ -747,6 +754,10 @@ async function ghRun(path,retry){
     if((r.status===409||r.status===422)&&!retry){delete shas[path];q.busy=false;return ghRun(path,true)}
     if(!r.ok)throw r.status;
     shas[path]=(await r.json()).content.sha;
+    if(wid&&merged){BASE[wid]=JSON.stringify(merged);
+      if(JSON.stringify(merged)!==localSnap){const m=normalize(JSON.parse(BASE[wid]));WS_CACHE[wid]=m;
+        if(wid===ACTIVE&&S&&JSON.stringify(S)===localSnap){S=m;if(UI.drawer&&!UI.dirty)refreshDrawerFromState();if(!UI.drawer)render();lsSave()}}}
+    else if(wid&&!BASE[wid]){try{BASE[wid]=JSON.stringify(q.get())}catch(e){}}
     if(!Object.values(ghQ).some(x=>x!==q&&(x.busy||x.again)))setSync('cloud','sync_gh');
   }catch(e){setSync('err','sync_gherr')}
   q.busy=false;if(q.again){q.again=false;ghRun(path)}
@@ -758,7 +769,36 @@ async function ghLoadWs(id){
     try{raw=await decWs(id,raw);LOCKED[id]=false}catch(e){LOCKED[id]=true;delete WS_CACHE[id];return null}
   }else if(lockOf(id)&&!raw){LOCKED[id]=!dkOk(id)}else LOCKED[id]=false;
   let st=null;try{st=normalize(raw)}catch(e){}
+  if(st)BASE[id]=JSON.stringify(st);
   return st;
+}
+/* --- merge: keep everyone's changes (3-way, per item id) --- */
+const BASE={};
+const jq=x=>JSON.stringify(x===undefined?null:x);
+function mergeArr(b,l,r){
+  b=Array.isArray(b)?b:[];l=Array.isArray(l)?l:[];r=Array.isArray(r)?r:[];
+  if(![...b,...l,...r].every(x=>x&&typeof x==='object'&&x.id!=null)){return jq(l)!==jq(b)?l:r}
+  const B=new Map(b.map(x=>[x.id,x])),L=new Map(l.map(x=>[x.id,x])),R=new Map(r.map(x=>[x.id,x]));const out=[];
+  for(const x of r){const id=x.id,bx=B.get(id),lx=L.get(id);
+    if(lx){out.push(bx&&jq(lx)===jq(bx)?x:lx)}
+    else if(bx){if(jq(x)!==jq(bx))out.push(x)} /* deleted locally: keep only if someone else changed it */
+    else out.push(x)}
+  for(const x of l){if(R.has(x.id))continue;const bx=B.get(x.id);if(!bx||jq(x)!==jq(bx))out.push(x)}
+  return out;
+}
+function mergeWs(b,l,r){
+  if(!b||!r)return l;
+  const out={};const keys=new Set([...Object.keys(l),...Object.keys(r)]);
+  for(const k of keys){
+    if(k==='updatedAt'){out[k]=l[k];continue}
+    if(k==='seq'){out[k]=Math.max(+l.seq||0,+r.seq||0);continue}
+    const lv=l[k],rv=r[k],bv=b[k];
+    if(Array.isArray(lv)||Array.isArray(rv)){out[k]=jq(lv)===jq(bv)?rv:(jq(rv)===jq(bv)?lv:mergeArr(bv,lv,rv))}
+    else if(lv&&rv&&typeof lv==='object'&&typeof rv==='object'&&!Array.isArray(lv)){out[k]=jq(lv)===jq(bv)?rv:(jq(rv)===jq(bv)?lv:mergeWs(bv||{},lv,rv))}
+    else out[k]=jq(lv)!==jq(bv)?lv:rv;
+    if(out[k]===undefined)delete out[k];
+  }
+  return out;
 }
 
 /* --- Claude artifact backend (db capability) --- */

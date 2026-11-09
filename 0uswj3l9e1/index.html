@@ -420,6 +420,8 @@ tr:hover .rowact{opacity:1}
 .genwin .meta{font-size:11.5px;color:var(--tx3)}
 .genwin .reqs .req{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
 @media (max-width:860px){.genfab{right:12px;bottom:12px}.genwin{right:12px;bottom:66px}}
+body:has(.drawer.on) .genfab{bottom:96px;right:34px}body:has(.drawer.on) .genwin:not([style*=top]){bottom:150px}
+@media (max-width:860px){body:has(.drawer.on) .genfab{bottom:84px;right:22px}}
 .sughead.sugclosed{background:#f7f2ff;border-radius:10px;padding:6px 10px;margin:0}
 .sughead .sp{flex:1}
 @media (max-width:1100px){.paidhero{grid-template-columns:1fr}}
@@ -524,14 +526,14 @@ const TX={
  sugT:['✨ Sugerencias de copy · Claude','✨ Copy suggestions · Claude'],genNow:['✨ Otras propuestas ya','✨ New ideas now'],generating:['Generando…','Generating…'],
  genHint:['Cada mañana (7:52) Claude deja propuestas nuevas usando lo que hayas rellenado: CTA, audiencia, objetivo, tipo de contenido, referencia, concepto y notas (también en «Más detalles»).','Every morning (7:52) Claude leaves new ideas using what you’ve filled in: CTA, audience, objective, content type, reference, concept and notes (also under “More details”).'],
  hide:['▾ Ocultar','▾ Hide'],
- genTitle:['Generador de copy y brief','Copy & brief generator'],genFab:['Generador','Generator'],gCopy:['✍️ Copy','✍️ Copy'],gBrief:['📝 Brief','📝 Brief'],gNew:['💡 Idea nueva','💡 New idea'],
+ genTitle:['Generador de copy y brief','Copy & brief generator'],gInst:['⚡ Al instante con Claude','⚡ Instant with Claude'],gInstH:['Copia la ficha y abre el generador en Claude: pégala allí (Cmd/Ctrl+V) y sale al momento.','Copies the content card and opens the generator in Claude: paste it there (Cmd/Ctrl+V) and it’s ready in seconds.'],gPaste:['📥 Pegar resultado de Claude','📥 Paste result from Claude'],gPasteH:['Pega aquí lo que copiaste con «📋 Copiar para el calendario».','Paste what you copied with “📋 Copy for the calendar”.'],gPasteSave:['Guardar en este contenido','Save to this content'],gPasteBad:['No reconozco el texto. Usa «📋 Copiar para el calendario» en el generador.','Text not recognised. Use “📋 Copy for the calendar” in the generator.'],gPasteOk:['Guardado ✓ Ya lo ves arriba','Saved ✓ You can see it above'],gInstCopied:['Ficha copiada ✓ Pégala en el generador','Card copied ✓ Paste it in the generator'],gIdeaFirst:['Escribe primero la idea','Write the idea first'],gPasteIdea:['Guardar como idea','Save as idea'],genFab:['Generador','Generator'],gCopy:['✍️ Copy','✍️ Copy'],gBrief:['📝 Brief','📝 Brief'],gNew:['💡 Idea nueva','💡 New idea'],
  gPick:['Contenido','Content'],gUseCopy:['Usar como copy','Use as copy'],gUseBrief:['Usar como brief','Use as brief'],gCopyTxt:['Copiar texto','Copy text'],copied:['Copiado','Copied'],
  gApplied:['Aplicado y guardado en el contenido','Applied and saved to the content'],gFrom:[d=>`Propuesta de Claude · ${d}`,d=>`Claude suggestion · ${d}`],
  gNoCopy:['Aún no hay propuestas de copy para este contenido. Llegan cada mañana a las 7:52, o pídelas para mañana.','No copy suggestions for this content yet. They arrive every morning at 7:52, or ask for them for tomorrow.'],
  gNoBrief:['Aún no hay mini brief de Claude para este contenido. Pídelo para mañana o usa la plantilla al instante.','No Claude mini brief for this content yet. Ask for it for tomorrow or use the instant template.'],
  gTemplate:['⚡ Plantilla al instante','⚡ Instant template'],gTemplateH:['Se rellena al momento con los datos del contenido (sin IA): luego la completas tú.','Filled in instantly from the content’s fields (no AI): you complete it.'],
  gAskCopy:['🔄 Pedir otras para mañana','🔄 Ask for new ones tomorrow'],gAskBrief:['📝 Pedir mini brief para mañana','📝 Ask for a mini brief tomorrow'],gPending:['⏳ Pedido para mañana 7:52','⏳ Requested for tomorrow 7:52'],
- gNewH:['Describe una idea que aún no está en el calendario. Claude te deja copy y mini brief mañana a las 7:52.','Describe an idea that isn’t in the calendar yet. Claude leaves copy and a mini brief tomorrow at 7:52.'],
+ gNewH:['Describe una idea que aún no está en el calendario. Para tenerlo ya: «⚡ Al instante con Claude». Si lo pides para mañana, llega a las 7:52.','Describe an idea that isn’t in the calendar yet. For it right now: “⚡ Instant with Claude”. If you ask for tomorrow, it arrives at 7:52.'],
  gIdea:['Idea o tema','Idea or topic'],gSend:['Pedir copy + brief','Ask for copy + brief'],gSent:['Pedido: lo tendrás mañana a las 7:52','Requested: you’ll have it tomorrow at 7:52'],gMyReqs:['Tus peticiones','Your requests'],gMakePost:['＋ Crear contenido con esto','＋ Create content from this'],gDelReq:['Quitar','Remove'],
  gNone:['No hay contenidos.','No content.'],show:['▸ Mostrar','▸ Show'],
  briefUsed:['Mini brief aplicado: revísalo y guarda','Mini brief applied: review it and save'],
@@ -1310,7 +1312,45 @@ function briefSugBlock(d){
   return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
 }
 /* ===== floating generator ===== */
-const GEN={open:false,tab:'copy',pid:null};
+const GEN={open:false,tab:'copy',pid:null,paste:false};
+const GEN_URL='https://claude.ai/artifact/YVH2N7qXzAuUCtLb3krMhi';
+function genPayload(p){
+  const tv=(o,k)=>String(o[k]||(o.en&&o.en[k])||'');const pl=pillar(p.pillar)||{};const L=[];const add=(k,v)=>{v=String(v??'').trim();if(v)L.push(k+': '+v)};
+  add('Cliente',client().name);add('Título',tv(p,'title'));add('Concepto',tv(p,'description'));add('Formato',p.format);add('Canal',p.channel);add('Fecha',p.date);
+  add('Pilar',[tv(pl,'name'),tv(pl,'description')].filter(Boolean).join(' — '));add('Objetivo de marketing',p.objective);add('Audiencia',tv(p,'audience'));add('Tipo de contenido',p.type);
+  add('CTA',tv(p,'cta'));add('Brief actual',tv(p,'brief'));add('Referencia / inspiración',p.reference);add('Notas',tv(p,'notes'));add('Copy actual',tv(p,'copy'));
+  return L.join('\n');
+}
+function genPayloadIdea(){
+  const v=genFormVals();if(!v)return '';GEN.idea=v;const g=n=>v[n]||'';
+  if(!g('idea'))return '';const pl=pillar(g('pillar'))||{};
+  return ['Cliente: '+client().name,'Idea: '+g('idea'),g('format')&&'Formato: '+g('format'),g('pillar')&&('Pilar: '+[tv(pl,'name'),tv(pl,'description')].filter(Boolean).join(' — ')),g('cta')&&'CTA: '+g('cta'),g('audience')&&'Audiencia: '+g('audience')].filter(Boolean).join('\n');
+}
+function genInstBlock(){
+  return `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"><a class="btn pri sm" href="${GEN_URL}" target="_blank" rel="noopener" data-ginst="1" style="text-decoration:none">${t('gInst')}</a>${RO()?'':`<button class="btn ghost sm" data-gpaste="1">${t('gPaste')}</button>`}</div><div class="meta">${t('gInstH')}</div>`
+   +(GEN.paste&&!RO()?`<div style="display:flex;flex-direction:column;gap:6px"><textarea class="inp keep" id="gpastebox" rows="3" placeholder="${t('gPasteH')}"></textarea><button class="btn sm" data-gpastesave="1" style="align-self:flex-end">${GEN.tab==='new'?t('gPasteIdea'):t('gPasteSave')}</button></div>`:'');
+}
+function genFormVals(){const fm=document.querySelector('#genwin form[data-form="genreq"]');if(!fm)return null;const o={};['idea','format','pillar','cta','audience'].forEach(n=>o[n]=(fm.elements[n]&&fm.elements[n].value||'').trim());return o}
+function genFormRestore(){const fm=document.querySelector('#genwin form[data-form="genreq"]');if(!fm||!GEN.idea)return;Object.entries(GEN.idea).forEach(([k,v])=>{if(fm.elements[k])fm.elements[k].value=v})}
+function genParse(txt){const i=txt.indexOf('ECM-GEN ');if(i<0)return null;try{const r=JSON.parse(txt.slice(i+8).trim());return r&&(r.copy||r.brief)?r:null}catch(e){return null}}
+function genPasteSave(){
+  const r=genParse(($('#gpastebox')||{}).value||'');if(!r){toast(t('gPasteBad'));return}
+  const now=new Date().toISOString();
+  if(GEN.tab==='new'){
+    const v=genFormVals()||GEN.idea||{};const g=n=>v[n]||'';GEN.idea=null;
+    S.requests=S.requests||[];S.requests.push({id:uid('rq'),createdAt:now,idea:g('idea')||'—',format:g('format'),pillar:g('pillar'),cta:g('cta'),audience:g('audience'),status:'done',doneAt:now,copy:r.copy||[],brief:r.brief||null});
+  }else{
+    const p=S.posts.find(x=>x.id===GEN.pid);if(!p)return;
+    if(r.copy&&r.copy.length){p.sug=r.copy;p.sugAt=now;p.wantCopy=false}
+    if(r.brief){p.briefSug=r.brief;p.briefSugAt=now;p.wantBrief=false}
+  }
+  GEN.paste=false;save();toast(t('gPasteOk'));render();
+}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-ginst]');if(!a)return;
+  const txt=GEN.tab==='new'?genPayloadIdea():(()=>{const p=S.posts.find(x=>x.id===GEN.pid);return p?genPayload(p):''})();
+  if(!txt){e.preventDefault();toast(t('gIdeaFirst'));return}
+  try{navigator.clipboard.writeText(txt).then(()=>toast(t('gInstCopied')),()=>{})}catch(_){}
+  GEN.paste=!RO();setTimeout(renderGen,300);},true);
 function genDefaultPid(){const td=today();const L=S.posts.filter(p=>p.status!=='published').sort(cmpDate);const n=L.find(p=>p.date&&p.date>=td)||L[0];return n?n.id:null}
 function briefTemplate(p){
   const fmt=String(p.format||'').toLowerCase(),pl=pillar(p.pillar);
@@ -1334,12 +1374,12 @@ function renderGen(){
   if(GEN.tab==='copy'){
     if(!p)body=`<div class="note">${t('gNone')}</div>`;else{
     const L=Array.isArray(p.sug)?p.sug:[];
-    body=pick+(p.sugAt?`<div class="meta">${t('gFrom',fmtShort(p.sugAt.slice(0,10)))}</div>`:'')+(L.length?L.map((x,i)=>`<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="copy|${i}">${t('gUseCopy')}</button>`}</div></div>`).join(''):`<div class="note">${t('gNoCopy')}</div>`)
+    body=pick+genInstBlock()+(p.sugAt?`<div class="meta">${t('gFrom',fmtShort(p.sugAt.slice(0,10)))}</div>`:'')+(L.length?L.map((x,i)=>`<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="copy|${i}">${t('gUseCopy')}</button>`}</div></div>`).join(''):`<div class="note">${t('gNoCopy')}</div>`)
       +(RO()?'':(p.wantCopy?`<span class="tag viral">${t('gPending')}</span>`:`<button class="btn sm" data-gask="wantCopy">${t('gAskCopy')}</button>`));}
   }else if(GEN.tab==='brief'){
     if(!p)body=`<div class="note">${t('gNone')}</div>`;else{
     const x=p.briefSug;
-    body=pick+(x&&(x.es||x.en)?`${p.briefSugAt?`<div class="meta">${t('gFrom',fmtShort(p.briefSugAt.slice(0,10)))}</div>`:''}<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="brief|0">${t('gUseBrief')}</button>`}</div></div>`:`<div class="note">${t('gNoBrief')}</div>`)
+    body=pick+genInstBlock()+(x&&(x.es||x.en)?`${p.briefSugAt?`<div class="meta">${t('gFrom',fmtShort(p.briefSugAt.slice(0,10)))}</div>`:''}<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="brief|0">${t('gUseBrief')}</button>`}</div></div>`:`<div class="note">${t('gNoBrief')}</div>`)
       +(RO()?'':`<div style="display:flex;gap:6px;flex-wrap:wrap">${p.wantBrief?`<span class="tag viral">${t('gPending')}</span>`:`<button class="btn sm" data-gask="wantBrief">${t('gAskBrief')}</button>`}<button class="btn sm" data-gtemplate="1" title="${t('gTemplateH')}">${t('gTemplate')}</button></div><div class="meta">${t('gTemplateH')}</div>`);}
   }else{
     const R=S.requests||[];
@@ -1347,13 +1387,14 @@ function renderGen(){
       <textarea class="inp keep" name="idea" rows="3" placeholder="${t('gIdea')}" required></textarea>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><select class="inp keep" name="format">${optsList(S.lists.formats,'',t('format'))}</select><select class="inp keep" name="pillar">${pillarOpts('',t('pillar'))}</select>
       <input class="inp keep" name="cta" placeholder="CTA"><input class="inp keep" name="audience" placeholder="${t('d_audience')}"></div>
-      <button class="btn pri" type="submit">${t('gSend')}</button></form>`}
+      <button class="btn pri" type="submit">${t('gSend')}</button></form>${genInstBlock()}`}
       ${R.length?`<b style="margin-top:6px">${t('gMyReqs')}</b><div class="reqs" style="display:flex;flex-direction:column;gap:8px">${[...R].reverse().map(r=>`<div class="req"><div style="font-weight:700">${esc(r.idea)}</div><div class="meta">${[lv(r.format),pillarName(r.pillar),r.cta].filter(Boolean).map(esc).join(' · ')}</div>
         ${r.status==='done'?`${(r.copy||[]).map(x=>`<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button></div></div>`).join('')}${r.brief?`<div class="sug">${esc(txt(r.brief))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(r.brief))}">${t('gCopyTxt')}</button></div></div>`:''}${RO()?'':`<button class="btn sm" data-gmake="${r.id}">${t('gMakePost')}</button>`}`:`<span class="tag viral">${t('gPending')}</span>`}
         ${RO()?'':`<button class="btn ghost sm" data-gdel="${r.id}" style="align-self:flex-end">${t('gDelReq')}</button>`}</div>`).join('')}</div>`:''}`;
   }
   w.innerHTML=`<div class="gh" id="genhead"><b>✨ ${t('genTitle')}</b><span class="sp"></span><button class="btn ghost icon sm" data-act="genClose">✕</button></div>
    <div class="gb"><div class="gtabs"><button class="${GEN.tab==='copy'?'on':''}" data-gtab="copy">${t('gCopy')}</button><button class="${GEN.tab==='brief'?'on':''}" data-gtab="brief">${t('gBrief')}</button><button class="${GEN.tab==='new'?'on':''}" data-gtab="new">${t('gNew')}</button></div>${body}</div>`;
+  if(GEN.tab==='new')genFormRestore();
 }
 function genApply(kind,i){
   const p=S.posts.find(x=>x.id===GEN.pid);if(!p||RO())return;
@@ -1549,7 +1590,7 @@ function setLang(l){if(l===LANG)return;LANG=l;try{localStorage.setItem('ecm-lang
 
 document.addEventListener('click',e=>{
   if(!e.target.closest('#menu')&&!e.target.closest('[data-act=clientMenu]'))hideMenu();
-  const el=e.target.closest('[data-gtab],[data-guse],[data-gcopy],[data-gask],[data-gtemplate],[data-gmake],[data-gdel],[data-hide],[data-openro],[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
+  const el=e.target.closest('[data-gpaste],[data-gpastesave],[data-gtab],[data-guse],[data-gcopy],[data-gask],[data-gtemplate],[data-gmake],[data-gdel],[data-hide],[data-openro],[data-usesug],[data-editflight],[data-editad],[data-editms],[data-copy],[data-slot],[data-band],[data-view2],[data-xadd],[data-xdel],[data-delcamp],[data-act],[data-view],[data-open],[data-dup],[data-del],[data-calmode],[data-newdate],[data-expand],[data-advance],[data-step],[data-sort],[data-editpillar],[data-delpillar],[data-filterpillar],[data-client],[data-lang]');
   if(!el)return;if(e.target.closest('input,select,textarea')&&!el.matches('[data-act],[data-step]'))return;
   const ds=el.dataset;
   if(ds.usesug!==undefined&&draft){const x=(draft.sug||[])[+ds.usesug];if(x){draft.copy=x.es||x.en||'';if(x.en){draft.en=draft.en||{};draft.en.copy=x.en}markDirty();renderDrawer();toast(t('sugUsed'))}return}
@@ -1616,7 +1657,9 @@ document.addEventListener('click',e=>{
   if(ds.editpillar){pillarModal(ds.editpillar);return}
   if(ds.delpillar){const p=pillar(ds.delpillar);confirmModal(t('delPillarT'),t('delPillarM',tv(p,'name')),t('del'),()=>{snapshotForUndo();S.pillars=S.pillars.filter(x=>x.id!==p.id);S.posts.forEach(x=>{if(x.pillar===p.id)x.pillar=''});save();render();toast(t('deleted'),true)},true);return}
   if(ds.filterpillar){setFilters({pillar:ds.filterpillar});go('database');return}
-  if(ds.gtab){GEN.tab=ds.gtab;renderGen();return}
+  if(ds.gpaste){GEN.paste=!GEN.paste;renderGen();const b=$('#gpastebox');if(b)b.focus();return}
+  if(ds.gpastesave){genPasteSave();return}
+  if(ds.gtab){GEN.tab=ds.gtab;GEN.paste=false;renderGen();return}
   if(ds.gcopy!==undefined){copyText(ds.gcopy,t('copied'));return}
   if(ds.guse){const [k,i]=ds.guse.split('|');genApply(k,+i);return}
   if(ds.gask){const p=S.posts.find(x=>x.id===GEN.pid);if(p&&!RO()){p[ds.gask]=true;save();renderGen();toast(t('gSent'))}return}
@@ -1653,7 +1696,7 @@ document.addEventListener('change',e=>{const el=e.target;
 document.addEventListener('submit',e=>{
   const f=e.target;if(!f.dataset.form)return;e.preventDefault();const fd=Object.fromEntries(new FormData(f).entries());
   if(f.dataset.form==='aikey'){const k=(fd.key||'').trim();try{if(k)localStorage.setItem('ecm-anthropic-key',k)}catch(_){}closeModal();toast(t('aiSaved'));render();if(UI.drawer)renderDrawer();return}
-  if(f.dataset.form==='genreq'){if(RO())return;S.requests=S.requests||[];S.requests.push({id:uid('rq'),createdAt:new Date().toISOString(),idea:(fd.idea||'').trim(),format:fd.format||'',pillar:fd.pillar||'',cta:(fd.cta||'').trim(),audience:(fd.audience||'').trim(),status:'pending'});save();renderGen();toast(t('gSent'));return}
+  if(f.dataset.form==='genreq'){if(RO())return;S.requests=S.requests||[];S.requests.push({id:uid('rq'),createdAt:new Date().toISOString(),idea:(fd.idea||'').trim(),format:fd.format||'',pillar:fd.pillar||'',cta:(fd.cta||'').trim(),audience:(fd.audience||'').trim(),status:'pending'});GEN.idea=null;GEN.paste=false;save();renderGen();toast(t('gSent'));return}
   if(f.dataset.form==='connect'){doConnect((fd.token||'').trim());return}
   if(RO())return;
   if(f.dataset.form==='capture'){const title=(fd.title||'').trim();if(!title)return;const now=new Date().toISOString();const p=Object.assign({},EMPTY_POST,{id:nextId(),createdAt:now,updatedAt:now});setTv(p,'title',title);S.posts.push(p);save();render();toast(t('ideaAdded'));setTimeout(()=>{const i=document.querySelector('[data-key=capt]');if(i)i.focus()},20);return}

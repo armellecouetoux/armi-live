@@ -403,9 +403,9 @@ tr:hover .rowact{opacity:1}
 .sug .use{position:absolute;right:8px;top:8px}
 .sughead{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
 .sughead b{font-size:12px;color:#6b3fd6}
-.genfab{position:fixed;right:22px;bottom:22px;z-index:44;border:0;border-radius:30px;padding:12px 18px;background:#6b3fd6;color:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 10px 30px -8px rgba(107,63,214,.6);transition:transform .15s}
+.genfab{position:fixed;right:22px;bottom:22px;z-index:56;border:0;border-radius:30px;padding:12px 18px;background:#6b3fd6;color:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 10px 30px -8px rgba(107,63,214,.6);transition:transform .15s}
 .genfab:hover{transform:translateY(-2px) scale(1.03)}
-.genwin{position:fixed;right:22px;bottom:80px;width:min(440px,calc(100vw - 24px));max-height:min(640px,calc(100vh - 110px));z-index:46;background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(30,25,15,.28);display:none;flex-direction:column;overflow:hidden;border:1px solid #e6dcff}
+.genwin{position:fixed;right:22px;bottom:80px;width:min(440px,calc(100vw - 24px));max-height:min(640px,calc(100vh - 110px));z-index:57;background:#fff;border-radius:20px;box-shadow:0 24px 70px rgba(30,25,15,.28);display:none;flex-direction:column;overflow:hidden;border:1px solid #e6dcff}
 .genwin.on{display:flex}
 .genwin .gh{display:flex;align-items:center;gap:8px;padding:12px 14px;background:#f7f2ff;cursor:move;user-select:none}
 .genwin .gh b{font-family:'Bricolage Grotesque',sans-serif;font-size:16px;color:#4b2aa8}
@@ -1577,7 +1577,7 @@ document.addEventListener('click',e=>{
     if(a==='genBrief'){genBrief();return}
     if(a==='aiKeyDel'){try{localStorage.removeItem('ecm-anthropic-key')}catch(_){}closeModal();render();return}
     if(a==='aiKey'){aiKeyModal(false);return}
-    if(a==='genOpen'){GEN.open=!GEN.open;renderGen();return}
+    if(a==='genOpen'){GEN.open=!GEN.open;if(GEN.open&&UI.drawer&&UI.drawer.id)GEN.pid=UI.drawer.id;renderGen();return}
     if(a==='genClose'){GEN.open=false;renderGen();return}
     if(a==='askSug'){askFlag('wantCopy');return}
     if(a==='askBrief'){askFlag('wantBrief');return}

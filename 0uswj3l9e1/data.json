@@ -1,19 +1,12 @@
 {
  "v": 3,
- "updatedAt": "2026-11-09T21:29:37.830Z",
+ "updatedAt": "2026-11-09T21:40:20.682Z",
  "clients": {
   "list": [
    {
     "id": "c-santalo",
     "name": "Santaló Candles",
-    "color": "#e07a2f",
-    "lock": {
-     "v": 1,
-     "salt": "zO4YxyieJWY7p3hwVClZwA==",
-     "iv": "ViMru6f7gIpgFwtD",
-     "ct": "2P46SCDWUtqXx5IH1AbI3MO2ULm5/mcbrCiC0PbV1chVU5oB1SKMgkemoIl+6PNbNinIzfTMDTNTpaL9crO+xDv5F57Bf6NpjqVFwsLs6ww4bST6pKLniD+aNrfKy1LwK1ZLyEO6iykGbOyITw==",
-     "at": "2026-11-09T21:29:36.828Z"
-    }
+    "color": "#e07a2f"
    }
   ]
  }

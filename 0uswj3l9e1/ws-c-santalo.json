@@ -1,7 +1,7 @@
 {
  "v": 2,
  "isDemo": false,
- "seq": 36,
+ "seq": 37,
  "posts": [
   {
    "id": "CNT-001",
@@ -1136,6 +1136,32 @@
    "ads": false,
    "updatedAt": "2026-11-09T15:33:09.332Z",
    "createdAt": "2026-11-09T15:33:09.332Z"
+  },
+  {
+   "id": "CNT-037",
+   "date": "2026-11-18",
+   "time": "",
+   "title": "Colección Gaudi",
+   "description": "",
+   "pillar": "",
+   "objective": "Conversión",
+   "audience": "",
+   "channel": "Instagram",
+   "format": "",
+   "type": "Promocional",
+   "copy": "",
+   "cta": "",
+   "brief": "\nShots de los productos + del procesos + de los moldes. ",
+   "reference": "https://drive.google.com/file/d/1fMnN-Op8nY44L5Um1gU5Ef27riGaGhSO/view?usp=drive_link",
+   "owner": "",
+   "status": "idea",
+   "asset": "",
+   "url": "",
+   "notes": "",
+   "viral": false,
+   "ads": false,
+   "updatedAt": "2026-11-09T15:42:54.033Z",
+   "createdAt": "2026-11-09T15:42:54.033Z"
   }
  ],
  "pillars": [
@@ -1273,7 +1299,7 @@
    "Fidelización"
   ]
  },
- "updatedAt": "2026-11-09T15:41:42.140Z",
+ "updatedAt": "2026-11-09T15:42:54.033Z",
  "rhythm": [],
  "moments": [],
  "milestones": [

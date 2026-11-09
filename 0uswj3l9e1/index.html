@@ -586,7 +586,7 @@ const TX={
  d_date:['Fecha','Date'],d_time:['Hora','Time'],d_format:['Formato','Format'],d_pillar:['Pilar','Pillar'],d_owner:['Responsable','Owner'],d_desc:['Concepto','Concept'],d_copy:['Caption / copy','Caption / copy'],d_cta:['CTA','CTA'],d_brief:['Brief creativo','Creative brief'],d_notes:['Notas','Notes'],
  d_channel:['Canal','Channel'],d_type:['Tipo de contenido','Content type'],d_objective:['Objetivo de marketing','Marketing objective'],d_audience:['Audiencia','Audience'],d_ref:['Referencia / inspiración','Reference / inspiration'],d_asset:['Link del asset','Asset link'],d_url:['URL publicada','Published URL'],
  ph_title:['Título del contenido','Content title'],choose:['—','—'],openLink:['abrir ↗','open ↗'],close:['Cerrar','Close'],
- unsaved:['Cambios sin guardar','Unsaved changes'],cancel:['Cancelar','Cancel'],createBtn:['Crear','Create'],save:['Guardar','Save'],
+ unsaved:['Cambios sin guardar','Unsaved changes'],autoSaved:['Guardado automáticamente ✓','Saved automatically ✓'],cancel:['Cancelar','Cancel'],createBtn:['Crear','Create'],save:['Guardar','Save'],
  created:['Creado','Created'],saved:['Guardado','Saved'],discardT:['Descartar cambios','Discard changes'],discardM:['Tienes cambios sin guardar. ¿Descartarlos?','You have unsaved changes. Discard them?'],discard:['Descartar','Discard'],
  delT:['Eliminar contenido','Delete content'],delM:[x=>`¿Eliminar «${x}»?`,x=>`Delete "${x}"?`],deleted:['Eliminado','Deleted'],undo:['Deshacer','Undo'],undone:['Deshecho','Undone'],
  copySuffix:[' (copia)',' (copy)'],dupAs:['Duplicado como','Duplicated as'],published:['¡Publicado! 🎉','Published! 🎉'],ideaAdded:['Idea añadida','Idea added'],
@@ -756,7 +756,7 @@ async function ghRun(path,retry){
     shas[path]=(await r.json()).content.sha;
     if(wid&&merged){BASE[wid]=JSON.stringify(merged);
       if(JSON.stringify(merged)!==localSnap){const m=normalize(JSON.parse(BASE[wid]));WS_CACHE[wid]=m;
-        if(wid===ACTIVE&&S&&JSON.stringify(S)===localSnap){S=m;if(UI.drawer&&!UI.dirty)refreshDrawerFromState();if(!UI.drawer)render();lsSave()}}}
+        if(wid===ACTIVE&&S&&JSON.stringify(S)===localSnap){S=m;render();lsSave()}}}
     else if(wid&&!BASE[wid]){try{BASE[wid]=JSON.stringify(q.get())}catch(e){}}
     if(!Object.values(ghQ).some(x=>x!==q&&(x.busy||x.again)))setSync('cloud','sync_gh');
   }catch(e){setSync('err','sync_gherr')}
@@ -1517,7 +1517,17 @@ function aiKeyModal(fromGen){
    ${fromGen&&draft?`<p class="note">${t('aiOrTomorrow')} <button type="button" class="btn ghost sm" data-act="askSug">${t('askNew')}</button></p>`:''}</div>
    <div class="mf">${aiKey()?`<button type="button" class="btn danger" data-act="aiKeyDel">${t('aiDel')}</button>`:''}<span style="flex:1"></span><button type="button" class="btn" data-act="closeModal">${t('cancel')}</button><button class="btn pri" type="submit">${t('save')}</button></div></form>`);
 }
-function markDirty(){UI.dirty=true;const l=$('#dirtyLbl');if(l)l.textContent=t('unsaved')}
+function markDirty(){UI.dirty=true;const l=$('#dirtyLbl');if(l)l.textContent=t('saving');clearTimeout(autoT);autoT=setTimeout(autoSaveDraft,900)}
+let autoT=null;
+function autoSaveDraft(){
+  clearTimeout(autoT);if(!UI.drawer||!draft||dRO()||!UI.dirty)return;
+  const d=JSON.parse(JSON.stringify(draft));
+  if(UI.drawer.isNew){if(!tv(d,'title').trim())return;const now=new Date().toISOString();d.id=nextId();d.createdAt=d.updatedAt=now;draft.id=d.id;draft.createdAt=d.createdAt;S.posts.push(d);UI.drawer.isNew=false;UI.drawer.id=d.id}
+  else{const i=S.posts.findIndex(p=>p.id===UI.drawer.id);const prev=i>=0?S.posts[i].status:null;d.updatedAt=new Date().toISOString();
+    if(d.status==='published'&&prev!=='published')setTimeout(()=>{confetti();toast(t('published'))},250);
+    if(i>=0)S.posts[i]=d;else S.posts.push(d)}
+  UI.dirty=false;save();render();const l=$('#dirtyLbl');if(l)l.textContent=t('autoSaved');
+}
 function saveDraft(){
   if(RO())return;const d=draft;if(!tv(d,'title').trim())setTv(d,'title',t('untitled'));
   const now=new Date().toISOString(),prev=UI.drawer.isNew?null:(S.posts.find(p=>p.id===UI.drawer.id)||{}).status;
@@ -1527,7 +1537,7 @@ function saveDraft(){
   UI.dirty=false;save();closeDrawer(true);render();
 }
 function closeDrawer(force){
-  if(!force&&UI.dirty){confirmModal(t('discardT'),t('discardM'),t('discard'),()=>closeDrawer(true),true);return}
+  if(!force&&UI.dirty){autoSaveDraft();if(UI.dirty&&UI.drawer&&UI.drawer.isNew){confirmModal(t('discardT'),t('discardM'),t('discard'),()=>closeDrawer(true),true);return}}
   $('#drawer').classList.remove('on');$('#scrim').classList.remove('on');UI.drawer=null;UI.dirty=false;draft=null;
 }
 

@@ -217,6 +217,12 @@ tr:hover .rowact{opacity:1}
 .kc{background:#fff;border:1px solid var(--line);border-left:5px solid var(--pc,var(--line2));border-radius:13px;padding:10px 11px;cursor:pointer;display:flex;flex-direction:column;gap:7px;transition:transform .15s,box-shadow .15s}
 .kc:hover{transform:translateY(-2px) rotate(-.4deg);box-shadow:var(--sh)}
 .kc .tt{font-weight:600;line-height:1.35;white-space:normal}
+.ev.pub{background:#dcfce7!important;border-color:#86efac!important;color:#14532d}
+.ev.pub .n::before{content:'✓ ';font-weight:800;color:#16a34a}
+.kc.pub{background:#f0fdf4;border-color:#bbf7d0;border-left-color:#16a34a}
+.kc.pub .tt::before{content:'✓ ';color:#16a34a;font-weight:800}
+.lrow.pub{background:#f0fdf4}
+.lrow.pub .tt{color:#14532d}
 .wfinfo{display:flex;flex-direction:column;gap:2px;font-size:11.5px}
 .wfi{display:flex;gap:6px}.wfi span{color:var(--tx3);min-width:72px;flex:none}.wfi b{font-weight:600;color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wfcopy{font-size:11.5px;color:var(--tx2);background:var(--bg2);border-radius:8px;padding:6px 8px;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
@@ -582,7 +588,7 @@ function setTv(o,f,v){if(LANG==='en'&&(o[f]||(o.en&&o.en[f]!==undefined))){o.en=
 /* ============ CONSTANTS ============ */
 const STATUSES=[
   {k:'idea',l:'Idea',e:'⚪',c:'#9b9a97'},{k:'briefing',l:'Briefing',e:'🔵',c:'#3b82f6'},{k:'progress',l:'In progress',e:'🟠',c:'#f97316'},
-  {k:'review',l:'In review',e:'🟣',c:'#8b5cf6'},{k:'approved',l:'Approved',e:'🟡',c:'#d4a00b'},{k:'scheduled',l:'Scheduled',e:'🟢',c:'#22a35a'},{k:'published',l:'Published',e:'⚫',c:'#37352f'}
+  {k:'review',l:'In review',e:'🟣',c:'#8b5cf6'},{k:'approved',l:'Approved',e:'🟡',c:'#d4a00b'},{k:'scheduled',l:'Scheduled',e:'🗓️',c:'#0891b2'},{k:'published',l:'Published',e:'✅',c:'#16a34a'}
 ];
 const SMAP=Object.fromEntries(STATUSES.map(s=>[s.k,s]));
 const SIDX=Object.fromEntries(STATUSES.map((s,i)=>[s.k,i]));
@@ -954,7 +960,7 @@ function vCalendar(){
     ${m!=='list'?`<button class="btn icon" data-act="calPrev">‹</button><button class="btn sm" data-act="calToday">${t('today')}</button><button class="btn icon" data-act="calNext">›</button>`:''}<span class="lbl">${label}</span></div>
   ${filterBar()}<div class="calwrap"><div class="calmain">${m==='month'?calMonth(posts):m==='week'?calWeek(posts):calList(posts)}</div>${side}</div>`;
 }
-function evChip(p){const s=SMAP[p.status];return `<div class="ev ${isDelayed(p)?'late':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}" style="--pc:${pColor(p.pillar)};--sc:${s.c}" title="${esc(tv(p,'title'))} · ${esc(lv(p.format))} · ${s.l}"><span class="fe">${fEmo(p.format)}</span><span class="n">${esc(tv(p,'title')||t('untitled'))}</span>${p.viral?'<span class="fe">🧪</span>':''}<span class="s"></span></div>`}
+function evChip(p){const s=SMAP[p.status];return `<div class="ev ${isDelayed(p)?'late':''} ${p.status==='published'?'pub':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}" style="--pc:${pColor(p.pillar)};--sc:${s.c}" title="${esc(tv(p,'title'))} · ${esc(lv(p.format))} · ${s.l}"><span class="fe">${fEmo(p.format)}</span><span class="n">${esc(tv(p,'title')||t('untitled'))}</span>${p.viral?'<span class="fe">🧪</span>':''}<span class="s"></span></div>`}
 function bandsFor(ws,we){
   const items=[];
   for(const c of S.paid)for(const f of c.flights){if(!f.start)continue;const fe=f.end||f.start;if(overlap(f.start,fe,ws,we))items.push({kind:'paid',s:f.start,e:fe,label:`💸 ${tv(f,'name')}${f.daily&&!f.tbd?` · ${f.daily} €/d`:''}`,tbd:f.tbd})}
@@ -982,7 +988,7 @@ function calMonth(posts){
   return `<div class="month">${h}</div>`;
 }
 function kCard(p,compact){
-  return `<div class="kc ${isDelayed(p)?'late':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}" style="--pc:${pColor(p.pillar)}">
+  return `<div class="kc ${isDelayed(p)?'late':''} ${p.status==='published'?'pub':''}" draggable="true" data-drag="${p.id}" data-open="${p.id}" style="--pc:${pColor(p.pillar)}">
     <div class="mt"><span>${fEmo(p.format)}</span><span>${esc(lv(p.format))}</span><span class="sp"></span>${p.time&&!compact?`<span style="color:var(--tx3)">${p.time}</span>`:''}${p.date&&compact?`<span style="color:var(--tx3)">${fmtShort(p.date)}</span>`:''}</div>
     <div class="tt">${esc(tv(p,'title')||t('untitled'))}</div>
     <div class="mt">${badge(p.status)}${p.viral?'<span class="tag viral">🧪</span>':''}${p.ads?'<span class="tag ads">💸</span>':''}${isDelayed(p)?`<span class="tag red">${t('delayed')}</span>`:''}<span class="sp"></span>${avatar(p.owner)}</div></div>`;
@@ -996,7 +1002,7 @@ function calWeek(posts){
 function calList(posts){
   if(!posts.length)return `<div class="empty"><span class="big">🌵</span>${t('noResults')}</div>`;
   const groups=[];let cur=null;for(const p of [...posts].sort(cmpDate)){const k=p.date||'';if(!cur||cur.k!==k){cur={k,items:[]};groups.push(cur)}cur.items.push(p)}
-  return groups.map(g=>`<div class="lgroup"><h4>${g.k?fmtLong(g.k):t('noDate')}${g.k===today()?` <span class="tag lime">${t('today')}</span>`:''}${g.k?flightsOn(g.k).map(x=>`<span class="tag ads">💸 ${esc(tv(x.f,'name'))}</span>`).join('')+momentsOn(g.k).map(m=>`<span class="tag" style="background:color-mix(in srgb,${m.color} 20%,#fff)">🎁 ${esc(tv(m,'name'))}</span>`).join(''):''}</h4><div>${g.items.map(p=>`<div class="lrow" data-open="${p.id}"><span class="tm">${fEmo(p.format)}</span><span class="tt">${esc(tv(p,'title')||t('untitled'))} ${p.viral?'🧪':''}</span><span class="hm">${pilChip(p.pillar)}</span><span>${badge(p.status)}</span></div>`).join('')}</div></div>`).join('');
+  return groups.map(g=>`<div class="lgroup"><h4>${g.k?fmtLong(g.k):t('noDate')}${g.k===today()?` <span class="tag lime">${t('today')}</span>`:''}${g.k?flightsOn(g.k).map(x=>`<span class="tag ads">💸 ${esc(tv(x.f,'name'))}</span>`).join('')+momentsOn(g.k).map(m=>`<span class="tag" style="background:color-mix(in srgb,${m.color} 20%,#fff)">🎁 ${esc(tv(m,'name'))}</span>`).join(''):''}</h4><div>${g.items.map(p=>`<div class="lrow ${p.status==='published'?'pub':''}" data-open="${p.id}"><span class="tm">${fEmo(p.format)}</span><span class="tt">${esc(tv(p,'title')||t('untitled'))} ${p.viral?'🧪':''}</span><span class="hm">${pilChip(p.pillar)}</span><span>${badge(p.status)}</span></div>`).join('')}</div></div>`).join('');
 }
 
 /* ============ DATABASE ============ */
@@ -1023,7 +1029,7 @@ function wfCard(p){
   add('d_pillar',pillarName(p.pillar));add('d_owner',(member(p.owner)||{}).name);
   add('d_objective',lv(p.objective));add('d_audience',tv(p,'audience'));add('d_cta',tv(p,'cta'));
   const cp=tv(p,'copy');
-  return `<div class="kc ${isDelayed(p)?'late':''}" data-openro="${p.id}" style="--pc:${pColor(p.pillar)}">
+  return `<div class="kc ${isDelayed(p)?'late':''} ${p.status==='published'?'pub':''}" data-openro="${p.id}" style="--pc:${pColor(p.pillar)}">
     <div class="mt"><span>${fEmo(p.format)}</span><span>${esc(lv(p.format))}</span>${p.viral?'<span class="tag viral">🧪</span>':''}${p.ads?'<span class="tag ads">💸</span>':''}${isDelayed(p)?`<span class="tag red">${t('delayed')}</span>`:''}</div>
     <div class="tt">${esc(tv(p,'title')||t('untitled'))}</div>
     <div class="wfinfo">${L.join('')}</div>

@@ -402,6 +402,8 @@ tr:hover .rowact{opacity:1}
 .sugs{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
 .sug{border:1px dashed #c8b2ff;background:#f7f2ff;border-radius:12px;padding:10px 12px;font-size:12.5px;line-height:1.5;white-space:pre-wrap;position:relative}
 .sug .use{position:absolute;right:8px;top:8px}
+.sug-en{margin-top:8px;padding-top:6px;border-top:1px dotted #c8b2ff;color:#7a7488;font-size:11.5px}
+.sug-en span{font-weight:700;font-size:10px;margin-right:6px;opacity:.8}
 .sughead{display:flex;align-items:center;gap:8px;margin:2px 0 8px}
 .sughead b{font-size:12px;color:#6b3fd6}
 .genfab{position:fixed;right:22px;bottom:22px;z-index:56;border:0;border-radius:30px;padding:12px 18px;background:#6b3fd6;color:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 10px 30px -8px rgba(107,63,214,.6);transition:transform .15s}
@@ -520,7 +522,9 @@ details>summary{list-style:none}details>summary::-webkit-details-marker{display:
 <script>
 /* ============ I18N ============ */
 let LANG='es';
-try{const l=localStorage.getItem('ecm-lang');if(l==='en'||l==='es')LANG=l;else if((navigator.language||'').toLowerCase().startsWith('en'))LANG='en'}catch(e){}
+LANG='es';/* el español prima: la web abre siempre en español */
+const sugTxt=x=>(x&&(x.es||x.en))||'';
+const sugView=x=>esc(sugTxt(x))+(x&&x.es&&x.en&&x.en.trim()!==x.es.trim()?`<div class="sug-en"><span>EN</span>${esc(x.en)}</div>`:'');
 const TX={
  v_overview:['Resumen','Overview'],v_calendar:['Calendario','Calendar'],v_database:['Contenidos','Content'],v_workflow:['Producción','Production'],v_pillars:['Pilares','Pillars'],v_paid:['Paid','Paid'],v_drive:['Carpeta de contenido','Content folder'],driveOpen:['Abrir en Google Drive','Open in Google Drive'],driveH:['Fotos, vídeos y material del cliente. Se abre en Google Drive con la cuenta que tenga acceso a la carpeta.','Client photos, videos and assets. It opens in Google Drive with the account that has access to the folder.'],driveNone:['Aún no hay carpeta. Pega el enlace de Google Drive.','No folder yet. Paste the Google Drive link.'],v_ajustes:['Ajustes','Settings'],
  genBrief:['✨ Mini brief','✨ Mini brief'],briefDone:['Mini brief listo: revísalo y guarda','Mini brief ready: review it and save'],
@@ -1023,7 +1027,7 @@ function vOverview(){
 function propsCard(){
   const td=today(),L=S.posts.filter(p=>p.date&&p.date>=td&&p.date<=addDays(td,7)&&p.status!=='published'&&!tv(p,'copy')&&(p.sug||[]).length).sort(cmpDate);
   if(!L.length)return '';
-  return `<div class="card sec"><h3>${t('todayProps')} <small>${t('todayPropsH')}</small></h3><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">${L.map(p=>{const x=p.sug[0];return `<div class="sug" data-open="${p.id}" style="cursor:pointer"><div style="font-weight:700;margin-bottom:6px;white-space:normal">${fEmo(p.format)} ${fmtShort(p.date)} · ${esc(tv(p,'title'))}</div>${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}</div>`}).join('')}</div></div>`;
+  return `<div class="card sec"><h3>${t('todayProps')} <small>${t('todayPropsH')}</small></h3><div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">${L.map(p=>{const x=p.sug[0];return `<div class="sug" data-open="${p.id}" style="cursor:pointer"><div style="font-weight:700;margin-bottom:6px;white-space:normal">${fEmo(p.format)} ${fmtShort(p.date)} · ${esc(tv(p,'title'))}</div>${esc(sugTxt(x))}</div>`}).join('')}</div></div>`;
 }
 function pillarDist(posts){
   const base=posts.filter(p=>p.date),tot=base.length;
@@ -1323,7 +1327,7 @@ const hideBtn=k=>`<button type="button" class="btn ghost sm" data-hide="${k}">${
 function briefSugBlock(d){
   const x=d.briefSug;if(!x||!(x.es||x.en))return '';
   if(HIDE.brief)return `<div class="fld full"><div class="sughead sugclosed"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div></div>`;
-  return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div><div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
+  return `<div class="fld full"><div class="sughead"><b>${t('briefSugT')}</b><span class="sp"></span>${hideBtn('brief')}</div><div class="sug">${sugView(x)}${dRO()?'':`<button class="btn sm use" data-act="useBrief">${t('useSug')}</button>`}</div></div>`;
 }
 /* ===== floating generator ===== */
 const GEN={open:false,tab:'copy',pid:null,paste:false};
@@ -1383,17 +1387,17 @@ function renderGen(){
   const p=S.posts.find(x=>x.id===GEN.pid);
   const opts=[...S.posts].sort(cmpDate).map(x=>`<option value="${x.id}" ${x.id===GEN.pid?'selected':''}>${x.status==='published'?'✓ ':''}${x.date?fmtShort(x.date)+' · ':''}${esc(tv(x,'title')||t('untitled'))}</option>`).join('');
   const pick=`<label class="meta">${t('gPick')}</label><select class="inp gsel keep" data-genpick>${opts}</select>`;
-  const txt=x=>LANG==='en'?(x.en||x.es):(x.es||x.en);
+  const txt=sugTxt;
   let body='';
   if(GEN.tab==='copy'){
     if(!p)body=`<div class="note">${t('gNone')}</div>`;else{
     const L=Array.isArray(p.sug)?p.sug:[];
-    body=pick+genInstBlock()+(p.sugAt?`<div class="meta">${t('gFrom',fmtShort(p.sugAt.slice(0,10)))}</div>`:'')+(L.length?L.map((x,i)=>`<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="copy|${i}">${t('gUseCopy')}</button>`}</div></div>`).join(''):`<div class="note">${t('gNoCopy')}</div>`)
+    body=pick+genInstBlock()+(p.sugAt?`<div class="meta">${t('gFrom',fmtShort(p.sugAt.slice(0,10)))}</div>`:'')+(L.length?L.map((x,i)=>`<div class="sug">${sugView(x)}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="copy|${i}">${t('gUseCopy')}</button>`}</div></div>`).join(''):`<div class="note">${t('gNoCopy')}</div>`)
       +(RO()?'':(p.wantCopy?`<span class="tag viral">${t('gPending')}</span>`:`<button class="btn sm" data-gask="wantCopy">${t('gAskCopy')}</button>`));}
   }else if(GEN.tab==='brief'){
     if(!p)body=`<div class="note">${t('gNone')}</div>`;else{
     const x=p.briefSug;
-    body=pick+genInstBlock()+(x&&(x.es||x.en)?`${p.briefSugAt?`<div class="meta">${t('gFrom',fmtShort(p.briefSugAt.slice(0,10)))}</div>`:''}<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="brief|0">${t('gUseBrief')}</button>`}</div></div>`:`<div class="note">${t('gNoBrief')}</div>`)
+    body=pick+genInstBlock()+(x&&(x.es||x.en)?`${p.briefSugAt?`<div class="meta">${t('gFrom',fmtShort(p.briefSugAt.slice(0,10)))}</div>`:''}<div class="sug">${sugView(x)}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button>${RO()?'':`<button class="btn sm" data-guse="brief|0">${t('gUseBrief')}</button>`}</div></div>`:`<div class="note">${t('gNoBrief')}</div>`)
       +(RO()?'':`<div style="display:flex;gap:6px;flex-wrap:wrap">${p.wantBrief?`<span class="tag viral">${t('gPending')}</span>`:`<button class="btn sm" data-gask="wantBrief">${t('gAskBrief')}</button>`}<button class="btn sm" data-gtemplate="1" title="${t('gTemplateH')}">${t('gTemplate')}</button></div><div class="meta">${t('gTemplateH')}</div>`);}
   }else{
     const R=S.requests||[];
@@ -1403,7 +1407,7 @@ function renderGen(){
       <input class="inp keep" name="cta" placeholder="CTA"><input class="inp keep" name="audience" placeholder="${t('d_audience')}"></div>
       <button class="btn pri" type="submit">${t('gSend')}</button></form>${genInstBlock()}`}
       ${R.length?`<b style="margin-top:6px">${t('gMyReqs')}</b><div class="reqs" style="display:flex;flex-direction:column;gap:8px">${[...R].reverse().map(r=>`<div class="req"><div style="font-weight:700">${esc(r.idea)}</div><div class="meta">${[lv(r.format),pillarName(r.pillar),r.cta].filter(Boolean).map(esc).join(' · ')}</div>
-        ${r.status==='done'?`${(r.copy||[]).map(x=>`<div class="sug">${esc(txt(x))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button></div></div>`).join('')}${r.brief?`<div class="sug">${esc(txt(r.brief))}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(r.brief))}">${t('gCopyTxt')}</button></div></div>`:''}${RO()?'':`<button class="btn sm" data-gmake="${r.id}">${t('gMakePost')}</button>`}`:`<span class="tag viral">${t('gPending')}</span>`}
+        ${r.status==='done'?`${(r.copy||[]).map(x=>`<div class="sug">${sugView(x)}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(x))}">${t('gCopyTxt')}</button></div></div>`).join('')}${r.brief?`<div class="sug">${sugView(r.brief)}<div class="acts"><button class="btn ghost sm" data-gcopy="${esc(txt(r.brief))}">${t('gCopyTxt')}</button></div></div>`:''}${RO()?'':`<button class="btn sm" data-gmake="${r.id}">${t('gMakePost')}</button>`}`:`<span class="tag viral">${t('gPending')}</span>`}
         ${RO()?'':`<button class="btn ghost sm" data-gdel="${r.id}" style="align-self:flex-end">${t('gDelReq')}</button>`}</div>`).join('')}</div>`:''}`;
   }
   w.innerHTML=`<div class="gh" id="genhead"><b>✨ ${t('genTitle')}</b><span class="sp"></span><button class="btn ghost icon sm" data-act="genClose">✕</button></div>
@@ -1431,7 +1435,7 @@ function sugBlock(d){
   if(HIDE.copy)return `<div class="fld full"><div class="sughead sugclosed"><b>${t('sugT')}</b>${L.length?`<span class="tag">${L.length}</span>`:''}<span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${hideBtn('copy')}</div></div>`;
   return `<div class="fld full"><div class="sughead"><b>${t('sugT')}</b><span class="sp"></span>${d.wantCopy?`<span class="tag viral">${t('sugPending')}</span>`:''}${btn}${hideBtn('copy')}</div>
    <div class="note" style="margin:-4px 0 8px">${t('genHint')}</div>
-   ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${esc(LANG==='en'?(x.en||x.es):(x.es||x.en))}${dRO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
+   ${L.length?`<div class="sugs">${L.map((x,i)=>`<div class="sug">${sugView(x)}${dRO()?'':`<button class="btn sm use" data-usesug="${i}">${t('useSug')}</button>`}</div>`).join('')}</div>`:`<div class="note">${t('noSug')}</div>`}</div>`;
 }
 function copyBrief(d){
   const pl=pillar(d.pillar),c=client();

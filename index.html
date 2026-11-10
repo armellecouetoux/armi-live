@@ -7,30 +7,68 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>ARMI</title>
-<style>html,body{height:100%;margin:0;background:#0A0A0B;color:#6E6E76;font:600 13px/1 Arial,Helvetica,sans-serif;letter-spacing:.2em}body{display:grid;place-items:center}</style>
+<style>html,body{height:100%;margin:0;background:#0A0A0B;color:#6E6E76;font:600 13px/1 Arial,Helvetica,sans-serif;letter-spacing:.2em}body{display:grid;place-items:center}
+#mark{cursor:default;user-select:none;-webkit-user-select:none;padding:20px}
+#gate{display:grid;gap:12px;width:min(340px,86vw);letter-spacing:0;font-weight:400;font-size:14px;line-height:1.45;color:#B9B9C0;text-align:center}
+#gate[hidden]{display:none}
+#gate p{margin:0}
+#gate input{font:inherit;padding:11px 14px;border-radius:10px;border:1px solid #2A2A30;background:#131316;color:#EDEDF0;text-align:center}
+#gate button{font:inherit;font-weight:600;padding:11px 14px;border-radius:10px;border:0;background:#EDEDF0;color:#0A0A0B;cursor:pointer}
+#gate a{color:#9EA0FF}
+#gate .err{color:#FF8A6B}
+</style>
 </head>
-<body>ARMI
+<body><div><div id="mark">ARMI</div>
+<form id="gate" hidden autocomplete="off">
+  <p id="gmsg">Pega tu clave de GitHub para abrir la agenda en este navegador.</p>
+  <input id="gtok" type="password" placeholder="github_pat_…" aria-label="Clave de GitHub" spellcheck="false">
+  <button type="submit">Abrir agenda</button>
+  <p class="err" id="gerr" hidden></p>
+  <p style="font-size:12.5px;color:#7A7A82">¿Caducada? <a href="https://github.com/settings/personal-access-tokens" target="_blank" rel="noopener">Renuévala o crea una nueva en GitHub</a> (repo armi-live · Contents: lectura y escritura).</p>
+</form></div>
 <script>
 // Portada neutra para cualquiera. Si este navegador tiene el token de GitHub de la dueña
 // (el mismo de "Sincronizar dispositivos") y ese token puede escribir en el repo,
 // se carga aquí mismo la agenda completa. El código de la ruta no aparece en esta página.
-(async function(){
-  var t = ''; try { t = localStorage.getItem('armi-gh-token') || ''; } catch(e){}
-  if (!t) return;
-  var H = {'Accept':'application/vnd.github+json', 'Authorization':'Bearer ' + t};
+// Si el token falta o ha caducado: tres toques sobre "ARMI" muestran el campo para pegar uno nuevo.
+(function(){
   var API = 'https://api.github.com/repos/armellecouetoux/armi-live';
-  try {
-    var r = await fetch(API, {headers: H, cache: 'no-store'}); if (!r.ok) return;
-    var repo = await r.json(); if (!repo.permissions || !repo.permissions.push) return;
-    var ls = await fetch(API + '/contents/?ref=main', {headers: H, cache: 'no-store'}); if (!ls.ok) return;
+  var gate = document.getElementById('gate'), msg = document.getElementById('gmsg'), err = document.getElementById('gerr'), inp = document.getElementById('gtok'), mark = document.getElementById('mark');
+  function showGate(text){ if (text) msg.textContent = text; gate.hidden = false; mark.hidden = true; inp.focus(); }
+  var taps = 0, tt; mark.addEventListener('click', function(){ taps++; clearTimeout(tt); tt = setTimeout(function(){ taps = 0; }, 700); if (taps >= 3) showGate(); });
+  async function check(t){
+    var H = {'Accept':'application/vnd.github+json', 'Authorization':'Bearer ' + t};
+    var r = await fetch(API, {headers: H, cache: 'no-store'});
+    if (r.status === 401) return {bad:'expired'};
+    if (!r.ok) return {bad:'http' + r.status};
+    var repo = await r.json(); if (!repo.permissions || !repo.permissions.push) return {bad:'perm'};
+    return {H:H};
+  }
+  async function open(t, fromForm){
+    var c;
+    try { c = await check(t); } catch(e){ if (fromForm){ err.textContent = 'No hay conexión con GitHub. Inténtalo de nuevo.'; err.hidden = false; } else showGate('No se pudo conectar con GitHub. Revisa la conexión y vuelve a intentarlo.'); return; }
+    if (c.bad){
+      var why = c.bad === 'expired' ? 'La clave de GitHub de este navegador ha caducado o ya no es válida.' : c.bad === 'perm' ? 'Esa clave no puede escribir en armi-live.' : 'GitHub no respondió (' + c.bad.replace('http','') + ').';
+      if (fromForm){ err.textContent = why; err.hidden = false; } else showGate(why + ' Pega una clave nueva para abrir la agenda.');
+      return;
+    }
+    if (fromForm){ try { localStorage.setItem('armi-gh-token', t); } catch(e){} }
+    var ls = await fetch(API + '/contents/?ref=main', {headers: c.H, cache: 'no-store'}); if (!ls.ok){ showGate('No se pudo leer el repositorio (' + ls.status + ').'); return; }
     var dirs = (await ls.json()).filter(function(x){ return x.type === 'dir' && /^[a-z0-9]{10,}$/.test(x.name); });
+    var known = ''; try { known = localStorage.getItem('armi-main-dir') || ''; } catch(e){}
+    dirs.sort(function(a, b){ return (b.name === known) - (a.name === known); });
     for (var i = 0; i < dirs.length; i++){
       var p = await fetch(dirs[i].name + '/index.html', {cache: 'no-store'}); if (!p.ok) continue;
       var html = await p.text();
       if (html.indexOf('id="p-home"') < 0) continue;
+      try { localStorage.setItem('armi-main-dir', dirs[i].name); } catch(e){}
       document.open(); document.write(html); document.close(); return;
     }
-  } catch(e){}
+    showGate('No se encontró la agenda en el repositorio.');
+  }
+  gate.addEventListener('submit', function(e){ e.preventDefault(); err.hidden = true; var v = inp.value.trim(); if (v) open(v, true); });
+  var t = ''; try { t = localStorage.getItem('armi-gh-token') || ''; } catch(e){}
+  if (t) open(t, false);
 })();
 </script>
 </body>

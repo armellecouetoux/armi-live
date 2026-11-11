@@ -26,6 +26,7 @@
   "c-mvp7b2iymfmk": "ongoing",
   "t-sh-list": "ongoing",
   "t-sh-inv": "ongoing",
+  "c-mwccgs3zo017": "canceled",
   "t-ed-inv": "ongoing",
   "c-munyaq8f11ht": "priority",
   "t-cq-who": "ongoing",
@@ -230,6 +231,13 @@
     "id": "c-mvp7b2iymfmk",
     "t": "Pantalla Stand Eshow",
     "o": ""
+   }
+  ],
+  "r-sh": [
+   {
+    "id": "c-mwccgs3zo017",
+    "t": "follow-up meeting",
+    "o": "armi"
    }
   ],
   "e-xixpn2zr": [

@@ -616,13 +616,6 @@
     "t": "follow-up meeting",
     "o": "armi"
    }
-  ],
-  "e-v7xgwcw6": [
-   {
-    "id": "c-mwcgfkplh6yr",
-    "t": "Mandar la propuesta a Rafa.",
-    "o": ""
-   }
   ]
  },
  "notes": {
@@ -826,12 +819,6 @@
    "code": "1x2z2ua15r"
   },
   {
-   "key": "leads-o8d",
-   "name": "Leads",
-   "c": "#FF9E9E",
-   "code": "qsgtuvzs7x"
-  },
-  {
    "key": "avya-uyx",
    "name": "Avya",
    "c": "#8FD3FF",
@@ -912,16 +899,6 @@
     "key": "e-c4aakgjq",
     "name": "Paid",
     "d": "2026-11-09",
-    "d2": "",
-    "url": "",
-    "meta": ""
-   }
-  ],
-  "leads-o8d": [
-   {
-    "key": "e-v7xgwcw6",
-    "name": "Propuesta Rafa Squadmakers",
-    "d": "2026-11-13",
     "d2": "",
     "url": "",
     "meta": ""

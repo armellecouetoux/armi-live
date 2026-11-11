@@ -179,6 +179,16 @@
     "id": "c-mwbvvczdkp48",
     "t": "Preparer entretien HP",
     "o": ""
+   },
+   {
+    "id": "c-mwcgh7vpl6n7",
+    "t": "Mandar propuesta Rafa Squadmakers",
+    "o": ""
+   },
+   {
+    "id": "c-mwcghblhg4mj",
+    "t": "Mandar mail de seguimiento HP",
+    "o": ""
    }
   ],
   "e-maq7n03d": [
@@ -211,7 +221,6 @@
  "c-mv86b9na1615": true,
  "c-mvmd7cga6i3f": true,
  "c-mw3jtkubm2q9": true,
- "c-mwbvvczdkp48": true,
  "c-mumy0agjsir5": true,
  "c-mun3llmvrpac": true,
  "c-muo27n0vmwd1": true,
@@ -220,6 +229,7 @@
  "c-mvi45hymov8c": true,
  "c-mvsno4hcrxn4": true,
  "c-mw9elk0fjl6v": true,
+ "c-mwbvvczdkp48": true,
  "edit": {},
  "order": {
   "e-yzinlxh7": [

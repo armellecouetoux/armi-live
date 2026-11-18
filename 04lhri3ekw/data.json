@@ -1,4 +1,21 @@
 {
+ "st": {},
+ "links": {},
+ "custom": {},
+ "edit": {},
+ "order": {},
+ "events": {
+  "squadmakers-dj7": [
+   {
+    "key": "e-ctz4mny3",
+    "name": "Kickoff",
+    "d": "2026-11-23",
+    "d2": "",
+    "url": "",
+    "meta": ""
+   }
+  ]
+ },
  "clients": [
   {
    "key": "squadmakers-dj7",

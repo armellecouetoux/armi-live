@@ -1,7 +1,20 @@
 {
  "st": {},
  "links": {},
- "custom": {},
+ "custom": {
+  "e-1yf8j2ip": [
+   {
+    "id": "c-mwne9bqbqqrl",
+    "t": "Crear slides",
+    "o": ""
+   },
+   {
+    "id": "c-mwne9gfqkdw7",
+    "t": "Mandar la propuesta a Elisabeth",
+    "o": ""
+   }
+  ]
+ },
  "edit": {},
  "order": {},
  "events": {

@@ -601,6 +601,11 @@
     "id": "c-mw9hqkex1o7y",
     "t": "Agregar la carpeta de contenido en el calendario",
     "o": ""
+   },
+   {
+    "id": "c-mwne9sm5ktfs",
+    "t": "Preparar el copy para el contenido validado con Silvia",
+    "o": ""
    }
   ],
   "e-m99kjmc1": [
@@ -653,6 +658,11 @@
    {
     "id": "c-mwne9bqbqqrl",
     "t": "Crear slides",
+    "o": ""
+   },
+   {
+    "id": "c-mwne9gfqkdw7",
+    "t": "Mandar la propuesta a Elisabeth",
     "o": ""
    }
   ]

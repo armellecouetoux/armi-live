@@ -2,7 +2,14 @@
  "st": {
   "c-mwaxykg8ou26": "ongoing"
  },
- "links": {},
+ "links": {
+  "c-mww58fwxwukl": [
+   {
+    "u": "https://docs.google.com/presentation/d/1ZJtANalZrZu0EBULNr5lVwuBXQcplbwahZJc7KE_UMI/edit?slide=id.p1#slide=id.p1",
+    "l": ""
+   }
+  ]
+ },
  "custom": {
   "e-m99kjmc1": [
    {
@@ -33,6 +40,11 @@
    {
     "id": "c-mwkwua74y4yz",
     "t": "Versión corta ES",
+    "o": ""
+   },
+   {
+    "id": "c-mww58fwxwukl",
+    "t": "FULL DECK EN",
     "o": ""
    }
   ]

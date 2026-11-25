@@ -18,16 +18,6 @@
     "o": ""
    },
    {
-    "id": "c-mwaxynujlwhb",
-    "t": "Versión larga EN",
-    "o": ""
-   },
-   {
-    "id": "c-mwaxywigrp26",
-    "t": "Versión corta EN",
-    "o": ""
-   },
-   {
     "id": "c-mwkwu3waf52w",
     "t": "Keynote ES",
     "o": ""
@@ -50,8 +40,6 @@
   ]
  },
  "c-mww58fwxwukl": true,
- "c-mwaxynujlwhb": true,
- "c-mwaxywigrp26": true,
  "edit": {},
  "order": {},
  "events": {
